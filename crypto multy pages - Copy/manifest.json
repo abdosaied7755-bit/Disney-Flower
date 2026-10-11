@@ -13,25 +13,25 @@
   "background_color": "#fffaf0",
   "icons": [
     {
-      "src": "./icons/icon.png",
+      "src": "./icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icons/icon.png",
+      "src": "./icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icons/icon.png",
+      "src": "./icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "./icons/icon.png",
+      "src": "./icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -45,7 +45,7 @@
       "url": "./games.html",
       "icons": [
         {
-          "src": "./icons/icon.png",
+          "src": "./icons/icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -58,7 +58,7 @@
       "url": "./index.html#offers",
       "icons": [
         {
-          "src": "./icons/icon.png",
+          "src": "./icons/icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
