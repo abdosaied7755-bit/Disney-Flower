@@ -18,3 +18,21 @@ build/
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Dependencies
+node_modules/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+
+# Local and editor files
+.netlify/
+.vscode/
+.DS_Store
+Thumbs.db

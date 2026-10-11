@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     </div>
     <div class="chat-messages" id="chatMessages">
-      <div class="msg bot">أهلاً بك! اسألني عن الأقسام أو التوصيل أو العروض.</div>
+      <div class="msg bot initial-message">أهلاً بك! اسألني عن الأقسام أو التوصيل أو العروض.</div>
       <div class="quick-actions">
         <button class="chip" data-store-action="delivery">التوصيل</button>
         <button class="chip" data-store-action="prices">الأسعار</button>

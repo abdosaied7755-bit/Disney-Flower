@@ -15,8 +15,30 @@
     const maxMessageLength = 240;
     const normalize = value => String(value || '').toLowerCase().replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/[ًٌٍَُِّْـ]/g, '').trim();
     const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[character]));
+    const getCurrentUserName = () => {
+      try {
+        const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        return typeof user?.name === 'string' ? user.name.trim() : '';
+      } catch (error) {
+        console.warn('[Store Chatbot] تعذر قراءة جلسة المستخدم:', error);
+        return '';
+      }
+    };
+    const addressUser = text => {
+      const name = getCurrentUserName();
+      return name ? `يا ${escapeHtml(name)}، ${text}` : text;
+    };
+    const updateInitialGreeting = () => {
+      const initialMessage = chatMessages.querySelector('.initial-message');
+      if (!initialMessage) return;
+      const name = getCurrentUserName();
+      initialMessage.textContent = name
+        ? `أهلاً يا ${name}! اسألني عن الأقسام أو التوصيل أو الأسعار، وأنا هساعدك فورًا 😊`
+        : 'أهلاً بك! اسألني عن الأقسام أو التوصيل أو الأسعار، وأنا هساعدك فورًا 😊';
+    };
     const refreshCatalog = () => { catalog = Array.isArray(window.marketCategories) ? window.marketCategories : []; };
     refreshCatalog();
+    updateInitialGreeting();
     window.addEventListener('catalog:updated', refreshCatalog);
 
     const quickButtons = () => `<div class="chat-quick-buttons"><button class="chat-btn" data-store-action="categories">الأقسام</button><button class="chat-btn" data-store-action="prices">أسعار المنتجات</button><button class="chat-btn" data-store-action="delivery">التوصيل</button><button class="chat-btn" data-store-action="payment">الدفع</button></div>`;
@@ -48,7 +70,7 @@
     function appendBot(text, buttons = '') {
       const botMessage = document.createElement('div');
       botMessage.className = 'msg bot';
-      botMessage.innerHTML = `${text}${buttons || ''}`;
+      botMessage.innerHTML = `${addressUser(text)}${buttons || ''}`;
       chatMessages.appendChild(botMessage);
       chatMessages.scrollTop = chatMessages.scrollHeight;
       attachHandlers();
@@ -99,7 +121,11 @@
     }
 
     function resetConversation() {
-      chatMessages.innerHTML = '<div class="msg bot initial-message">أهلاً بك! اسألني عن الأقسام أو التوصيل أو الأسعار، وأنا هساعدك فورًا 😊</div>' + quickButtons();
+      const name = getCurrentUserName();
+      const greeting = name
+        ? `أهلاً يا ${escapeHtml(name)}! اسألني عن الأقسام أو التوصيل أو الأسعار، وأنا هساعدك فورًا 😊`
+        : 'أهلاً بك! اسألني عن الأقسام أو التوصيل أو الأسعار، وأنا هساعدك فورًا 😊';
+      chatMessages.innerHTML = `<div class="msg bot initial-message">${greeting}</div>` + quickButtons();
       attachHandlers();
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
