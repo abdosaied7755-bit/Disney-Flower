@@ -40,20 +40,20 @@
     card.querySelector('[data-action="decrease"]').addEventListener('click', () => { output.value = Math.max(1, quantity() - 1); output.textContent = output.value; });
     card.querySelector('[data-action="add"]').addEventListener('click', () => {
       const cart = getCart();
-      const id = `market_${product.id || `${category.id}_${product.name}`}`;
+      const id = `market_${category.id}_${product.name}`;
       const existing = cart.find(item => item.id === id);
       if (existing) existing.quantity = (existing.quantity || 1) + quantity();
-      else cart.push({ id, type: 'market', key: category.id, productId: product.id || null, name: product.name, priceEGP: product.price, img: product.image, quantity: quantity() });
+      else cart.push({ id, type: 'market', key: category.id, name: product.name, priceEGP: product.price, img: product.image, quantity: quantity() });
       saveCart(cart);
       card.classList.remove('is-added');
       requestAnimationFrame(() => card.classList.add('is-added'));
     });
     card.querySelector('[data-action="buy"]').addEventListener('click', () => {
       const cart = getCart();
-      const id = `market_${product.id || `${category.id}_${product.name}`}`;
+      const id = `market_${category.id}_${product.name}`;
       const existing = cart.find(item => item.id === id);
       if (existing) existing.quantity = (existing.quantity || 1) + quantity();
-      else cart.push({ id, type: 'market', key: category.id, productId: product.id || null, name: product.name, priceEGP: product.price, img: product.image, quantity: quantity() });
+      else cart.push({ id, type: 'market', key: category.id, name: product.name, priceEGP: product.price, img: product.image, quantity: quantity() });
       saveCart(cart);
       window.location.href = 'checkout.html';
     });

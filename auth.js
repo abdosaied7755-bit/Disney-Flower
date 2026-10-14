@@ -1,199 +1,355 @@
 /**
- * Supabase Auth integration for the static GitHub Pages storefront.
- * Passwords are handled by Supabase Auth and are never stored in localStorage.
+ * AUTH SYSTEM - Registration First Flow
+ * Register → Switch to Login → Dashboard
  */
-(function initAuthSystem() {
+
+(function() {
   'use strict';
 
-  const LEGACY_USERS_KEY = 'users';
-  const CURRENT_USER_KEY = 'currentUser';
-  let initialized = false;
-  const getClient = () => window.supabaseCatalog?.client || null;
-  const getName = user => user?.user_metadata?.name || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'المستخدم';
-  const getSafeUser = user => user ? ({ id: user.id, name: getName(user), email: user.email || '', createdAt: user.created_at || new Date().toISOString() }) : null;
-
-  function setup() {
-    if (initialized || !document.getElementById('authOverlay')) return;
-    initialized = true;
-    localStorage.removeItem(LEGACY_USERS_KEY);
-    setupEventListeners();
-    switchTab('register');
-    syncSession();
+  // Initialize
+  function init() {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setup);
+    } else {
+      setup();
+    }
   }
 
+  function setup() {
+    setupEventListeners();
+    checkSession();
+    // Set register as default tab
+    setDefaultTab();
+  }
+
+  function setDefaultTab() {
+    const registerTab = document.querySelector('[data-tab="register"]');
+    const loginTab = document.querySelector('[data-tab="login"]');
+    const registerForm = document.getElementById('registerForm');
+    const loginForm = document.getElementById('loginForm');
+    
+    if (registerTab && loginTab && registerForm && loginForm) {
+      // Ensure register is active
+      loginTab.classList.remove('active');
+      registerTab.classList.add('active');
+      loginForm.classList.remove('active');
+      registerForm.classList.add('active');
+    }
+  }
+
+  // Event Listeners
   function setupEventListeners() {
-    document.getElementById('openAuthBtn')?.addEventListener('click', openModal);
-    document.getElementById('closeAuthBtn')?.addEventListener('click', closeModal);
-    document.getElementById('authOverlay')?.addEventListener('click', event => { if (event.target.id === 'authOverlay') closeModal(); });
-    document.querySelectorAll('.auth-tab').forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
-    document.getElementById('loginFormElement')?.addEventListener('submit', handleLogin);
-    document.getElementById('registerFormElement')?.addEventListener('submit', handleRegister);
-    document.getElementById('userBtn')?.addEventListener('click', toggleUserMenu);
-    document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
-    document.addEventListener('click', event => {
+    // Open Modal
+    const loginBtn = document.getElementById('openAuthBtn');
+    if (loginBtn) {
+      loginBtn.addEventListener('click', openModal);
+    }
+
+    // Close Modal
+    const closeBtn = document.getElementById('closeAuthBtn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeModal);
+    }
+
+    // Close on overlay click
+    const overlay = document.getElementById('authOverlay');
+    if (overlay) {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeModal();
+      });
+    }
+
+    // Tab switching
+    const tabs = document.querySelectorAll('.auth-tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabName = tab.getAttribute('data-tab');
+        switchTab(tabName);
+      });
+    });
+
+    // Forms
+    const loginForm = document.getElementById('loginFormElement');
+    const registerForm = document.getElementById('registerFormElement');
+    
+    if (loginForm) loginForm.addEventListener('submit', handleLogin);
+    if (registerForm) registerForm.addEventListener('submit', handleRegister);
+
+    // User Menu
+    const userBtn = document.getElementById('userBtn');
+    if (userBtn) {
+      userBtn.addEventListener('click', toggleUserMenu);
+    }
+
+    // Logout
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', handleLogout);
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
       const userMenu = document.getElementById('userMenu');
       const userBtn = document.getElementById('userBtn');
-      if (userMenu && !userMenu.contains(event.target) && event.target !== userBtn) userMenu.classList.remove('open');
+      if (userMenu && !userMenu.contains(e.target) && e.target !== userBtn) {
+        userMenu.classList.remove('open');
+      }
     });
   }
 
+  // Modal
   function openModal() {
     const overlay = document.getElementById('authOverlay');
-    if (!overlay) return;
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    clearAuthForms();
-    hideAlerts();
-    switchTab('register');
+    if (overlay) {
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      clearForms();
+      hideAlerts();
+      // Always show register first
+      setDefaultTab();
+    }
   }
 
   function closeModal() {
     const overlay = document.getElementById('authOverlay');
-    if (!overlay) return;
-    overlay.classList.remove('active');
-    document.body.style.overflow = '';
-    clearAuthForms();
-    hideAlerts();
-  }
-
-  function switchTab(tab) {
-    const isLogin = tab === 'login';
-    document.querySelector('[data-tab="login"]')?.classList.toggle('active', isLogin);
-    document.querySelector('[data-tab="register"]')?.classList.toggle('active', !isLogin);
-    document.getElementById('loginForm')?.classList.toggle('active', isLogin);
-    document.getElementById('registerForm')?.classList.toggle('active', !isLogin);
-    hideAlerts();
-  }
-
-  async function handleRegister(event) {
-    event.preventDefault();
-    const client = getClient();
-    const name = document.getElementById('registerName')?.value.trim();
-    const email = document.getElementById('registerEmail')?.value.trim().toLowerCase();
-    const password = document.getElementById('registerPassword')?.value || '';
-    if (!client) return showAlert('register', 'error', 'خدمة الحساب غير متاحة حاليًا. حاول مرة أخرى.');
-    if (!name || name.length < 2) return showAlert('register', 'error', 'الرجاء إدخال اسم صحيح (حرفين على الأقل)');
-    if (!validateEmail(email)) return showAlert('register', 'error', 'الرجاء إدخال بريد إلكتروني صحيح');
-    if (password.length < 6) return showAlert('register', 'error', 'كلمة المرور يجب أن تكون 6 أحرف على الأقل');
-
-    setFormBusy(event.currentTarget, true);
-    const { data, error } = await client.auth.signUp({ email, password, options: { data: { name } } });
-    setFormBusy(event.currentTarget, false);
-    if (error) return showAlert('register', 'error', formatAuthError(error));
-
-    if (data.session) {
-      closeModal();
-      showToast(`تم تسجيلك بنجاح يا ${name}`);
-    } else {
-      showAlert('register', 'success', 'تم إنشاء الحساب. راجع بريدك الإلكتروني لتأكيد الحساب ثم سجّل الدخول.');
-      event.currentTarget.reset();
-      window.setTimeout(() => switchTab('login'), 1800);
+    if (overlay) {
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+      clearForms();
+      hideAlerts();
     }
   }
 
-  async function handleLogin(event) {
-    event.preventDefault();
-    const client = getClient();
-    const email = document.getElementById('loginEmail')?.value.trim().toLowerCase();
-    const password = document.getElementById('loginPassword')?.value || '';
-    if (!client) return showAlert('login', 'error', 'خدمة الحساب غير متاحة حاليًا. حاول مرة أخرى.');
-    if (!validateEmail(email)) return showAlert('login', 'error', 'الرجاء إدخال بريد إلكتروني صحيح');
-    if (!password) return showAlert('login', 'error', 'الرجاء إدخال كلمة المرور');
+  function switchTab(tab) {
+    const loginTab = document.querySelector('[data-tab="login"]');
+    const registerTab = document.querySelector('[data-tab="register"]');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
 
-    setFormBusy(event.currentTarget, true);
-    const { data, error } = await client.auth.signInWithPassword({ email, password });
-    setFormBusy(event.currentTarget, false);
-    if (error) return showAlert('login', 'error', formatAuthError(error));
-    persistUser(data.user);
+    if (tab === 'login') {
+      loginTab?.classList.add('active');
+      registerTab?.classList.remove('active');
+      loginForm?.classList.add('active');
+      registerForm?.classList.remove('active');
+    } else {
+      registerTab?.classList.add('active');
+      loginTab?.classList.remove('active');
+      registerForm?.classList.add('active');
+      loginForm?.classList.remove('active');
+    }
+    
+    hideAlerts();
+  }
+
+  // Register
+  function handleRegister(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('registerName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value;
+
+    // Validation
+    if (!name || name.length < 2) {
+      showAlert('register', 'error', 'الرجاء إدخال اسم صحيح (حرفين على الأقل)');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      showAlert('register', 'error', 'الرجاء إدخال بريد إلكتروني صحيح');
+      return;
+    }
+
+    if (!password || password.length < 6) {
+      showAlert('register', 'error', 'كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+      return;
+    }
+
+    // Check if user exists
+    const users = getUsers();
+    const exists = users.some(u => u.email.toLowerCase() === email.toLowerCase());
+    
+    if (exists) {
+      showAlert('register', 'error', 'هذا البريد مسجل بالفعل! الرجاء تسجيل الدخول');
+      return;
+    }
+
+    // Create user
+    const newUser = {
+      id: Date.now(),
+      name: name,
+      email: email,
+      password: password,
+      createdAt: new Date().toISOString()
+    };
+
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+
+    // Success - Switch to login
+    showAlert('register', 'success', 'تم إنشاء الحساب بنجاح! قم بتسجيل الدخول الآن');
+    
+    setTimeout(() => {
+      // Switch to login form
+      switchTab('login');
+      
+      // Clear register form
+      e.target.reset();
+      hideAlerts();
+      
+      // Show toast
+      showToast(`تم تسجيلك بنجاح يا ${name}! الآن سجل دخولك`);
+    }, 1500);
+  }
+
+  // Login
+  function handleLogin(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    // Validation
+    if (!validateEmail(email)) {
+      showAlert('login', 'error', 'الرجاء إدخال بريد إلكتروني صحيح');
+      return;
+    }
+
+    if (!password) {
+      showAlert('login', 'error', 'الرجاء إدخال كلمة المرور');
+      return;
+    }
+
+    // Find user
+    const users = getUsers();
+    const user = users.find(u => 
+      u.email.toLowerCase() === email.toLowerCase() && 
+      u.password === password
+    );
+
+    if (!user) {
+      showAlert('login', 'error', 'البريد الإلكتروني أو كلمة المرور غير صحيحة');
+      return;
+    }
+
+    // Success
+    loginUser(user);
     closeModal();
-    showToast(`مرحباً ${getName(data.user)}! تم تسجيل الدخول بنجاح`);
+    showToast(`مرحباً ${user.name}! تم تسجيل الدخول بنجاح ✓`);
   }
 
-  async function handleLogout(event) {
-    event?.preventDefault();
-    const client = getClient();
-    if (client) await client.auth.signOut();
-    localStorage.removeItem(CURRENT_USER_KEY);
+  // Logout
+  function handleLogout(e) {
+    e.preventDefault();
+    
+    localStorage.removeItem('currentUser');
     updateUI(null);
-    document.getElementById('userMenu')?.classList.remove('open');
+    showToast('تم تسجيل الخروج بنجاح');
+    
+    // Redirect if on dashboard
+    if (window.location.pathname.includes('dashboard')) {
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1000);
+    }
   }
 
-  async function syncSession() {
-    const client = getClient();
-    if (!client) return updateUI(null);
-    const { data } = await client.auth.getSession();
-    updateFromAuthUser(data.session?.user || null);
-    client.auth.onAuthStateChange((_event, session) => updateFromAuthUser(session?.user || null));
+  // User Management
+  function loginUser(user) {
+    const session = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      createdAt: user.createdAt
+    };
+    
+    localStorage.setItem('currentUser', JSON.stringify(session));
+    updateUI(session);
   }
 
-  function updateFromAuthUser(user) {
-    if (user) persistUser(user);
-    else localStorage.removeItem(CURRENT_USER_KEY);
-    updateUI(getSafeUser(user));
-  }
-
-  function persistUser(user) {
-    const safeUser = getSafeUser(user);
-    if (safeUser) localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(safeUser));
+  function checkSession() {
+    const currentUser = getCurrentUser();
+    updateUI(currentUser);
   }
 
   function getCurrentUser() {
-    try { return JSON.parse(localStorage.getItem(CURRENT_USER_KEY) || 'null'); } catch { return null; }
+    const data = localStorage.getItem('currentUser');
+    return data ? JSON.parse(data) : null;
   }
 
+  function getUsers() {
+    const data = localStorage.getItem('users');
+    return data ? JSON.parse(data) : [];
+  }
+
+  // UI Update
   function updateUI(user) {
     const loginBtn = document.getElementById('openAuthBtn');
     const userMenu = document.getElementById('userMenu');
     const userName = document.getElementById('userName');
     const userAvatar = document.getElementById('userAvatar');
+
     if (user) {
+      // Logged in
       if (loginBtn) loginBtn.style.display = 'none';
-      userMenu?.classList.add('active');
+      if (userMenu) userMenu.classList.add('active');
       if (userName) userName.textContent = user.name;
       if (userAvatar) userAvatar.textContent = user.name.charAt(0).toUpperCase();
     } else {
+      // Logged out
       if (loginBtn) loginBtn.style.display = 'flex';
-      userMenu?.classList.remove('active');
+      if (userMenu) userMenu.classList.remove('active');
     }
   }
 
-  function toggleUserMenu() { document.getElementById('userMenu')?.classList.toggle('open'); }
-  function clearAuthForms() { document.getElementById('registerFormElement')?.reset(); document.getElementById('loginFormElement')?.reset(); }
-  function setFormBusy(form, busy) { form?.querySelector('button[type="submit"]')?.toggleAttribute('disabled', busy); }
-  function validateEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email || ''); }
+  function toggleUserMenu() {
+    const userMenu = document.getElementById('userMenu');
+    if (userMenu) {
+      userMenu.classList.toggle('open');
+    }
+  }
 
-  function formatAuthError(error) {
-    const message = String(error?.message || '').toLowerCase();
-    if (message.includes('email not confirmed')) return 'أكد بريدك الإلكتروني أولًا ثم حاول تسجيل الدخول.';
-    if (message.includes('already registered') || message.includes('user already registered')) return 'هذا البريد مسجل بالفعل. جرّب تسجيل الدخول.';
-    if (message.includes('invalid login credentials')) return 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
-    return error?.message || 'حدث خطأ. حاول مرة أخرى.';
+  // Helpers
+  function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
   function showAlert(form, type, message) {
-    const alert = document.getElementById(`${form}Alert`);
-    if (!alert) return;
-    alert.className = `alert alert-${type} show`;
-    alert.textContent = message;
+    const alertId = form + 'Alert';
+    const alert = document.getElementById(alertId);
+    
+    if (alert) {
+      alert.className = `alert alert-${type} show`;
+      alert.textContent = message;
+    }
   }
 
-  function hideAlerts() { document.querySelectorAll('#registerAlert, #loginAlert').forEach(alert => alert.classList.remove('show')); }
+  function hideAlerts() {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+      alert.classList.remove('show');
+    });
+  }
+
+  function clearForms() {
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => form.reset());
+  }
 
   function showToast(message) {
-    const toast = document.getElementById('toast');
-    if (!toast) return;
-    toast.textContent = message;
-    toast.style.display = 'block';
-    window.setTimeout(() => { toast.style.display = 'none'; }, 2600);
+    // Toast is disabled - do nothing
+    // Comment out to hide all toast notifications
+    return;
   }
 
-  document.addEventListener('click', event => {
-    if (event.target.closest('#openAuthBtn')) { setup(); openModal(); }
-  });
+  // Public API
+  window.AuthSystem = {
+    getCurrentUser: getCurrentUser,
+    isLoggedIn: () => getCurrentUser() !== null,
+    logout: handleLogout
+  };
 
-  window.AuthSystem = { getCurrentUser, isLoggedIn: () => Boolean(getCurrentUser()), logout: handleLogout, init: setup };
-  window.addEventListener('store:footer-ready', setup);
-  window.setTimeout(setup, 500);
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup);
-  else setup();
+  // Start
+  init();
+
 })();
