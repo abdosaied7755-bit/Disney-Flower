@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function() {
           
           <div class="form-group">
             <label>كلمة المرور</label>
-            <input type="text" class="form-input private-input" id="registerPassword" placeholder="أدخل كلمة مرور قوية (6 أحرف على الأقل)" autocomplete="off" autocapitalize="none" spellcheck="false" required>
+            <input type="password" class="form-input private-input" id="registerPassword" placeholder="أدخل كلمة مرور قوية (6 أحرف على الأقل)" autocomplete="new-password" required>
           </div>
           
           <button type="submit" class="btn-submit">إنشاء الحساب</button>
@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function() {
           
           <div class="form-group">
             <label>كلمة المرور</label>
-            <input type="text" class="form-input private-input" id="loginPassword" placeholder="أدخل كلمة المرور" autocomplete="off" autocapitalize="none" spellcheck="false" required>
+            <input type="password" class="form-input private-input" id="loginPassword" placeholder="أدخل كلمة المرور" autocomplete="current-password" required>
           </div>
           
           <button type="submit" class="btn-submit">تسجيل الدخول</button>
@@ -338,6 +338,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const footerPlaceholder = document.getElementById('footer-placeholder');
   if (footerPlaceholder) {
     footerPlaceholder.innerHTML = footerHTML;
+    document.getElementById('openAuthBtn')?.addEventListener('click', () => {
+      window.AuthSystem?.init?.();
+      document.getElementById('authOverlay')?.classList.add('active');
+    });
+    window.AuthSystem?.init?.();
+    window.setTimeout(() => window.dispatchEvent(new CustomEvent('store:footer-ready')), 0);
     console.log('✅ Footer HTML injected');
   }
 
@@ -429,6 +435,7 @@ function initializeChatbot() {
   const chatToggle = document.querySelector('.chat-toggle');
   const chatWidget = document.querySelector('.chat-widget');
   const chatClose = document.querySelector('.chat-close');
+  const chatClear = document.querySelector('.chat-clear');
   const chatInput = document.getElementById('chatInput');
   const chatSend = document.getElementById('chatSend');
   const chatMessages = document.getElementById('chatMessages');

@@ -179,10 +179,10 @@ marketCategories.forEach(category => {
 
   function addProduct(category, product, quantity, card) {
     const cart = getCart();
-    const id = `market_${category.id}_${product.name}`;
+    const id = `market_${product.id || `${category.id}_${product.name}`}`;
     const existing = cart.find(item => item.id === id);
     if (existing) existing.quantity = (existing.quantity || 1) + quantity;
-    else cart.push({ id, type: 'market', key: category.id, name: product.name, priceEGP: product.price, img: product.image, quantity });
+    else cart.push({ id, type: 'market', key: category.id, productId: product.id || null, name: product.name, priceEGP: product.price, img: product.image, quantity });
     saveCart(cart);
     if (card) {
       card.classList.remove('is-added');

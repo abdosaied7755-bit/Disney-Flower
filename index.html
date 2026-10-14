@@ -113,7 +113,7 @@
   <!-- Video Background -->
   <div class="video-background">
     <video autoplay muted loop playsinline id="bgVideo">
-      <source src="./Assestant/ground.mp4" type="video/mp4">
+
     </video>
   </div>
 
@@ -130,7 +130,7 @@
         </ul>
         <div class="nav-tools">
           <!-- Login Button -->
-          <button class="login-btn" id="openAuthBtn">
+          <button class="login-btn" id="openAuthBtn" onclick="window.AuthSystem?.init?.();document.getElementById('authOverlay')?.classList.add('active');">
             <i class="fas fa-user"></i>
             <span>Login </span>
           </button>
@@ -463,7 +463,7 @@
     })();
   </script><!-- Load shared footer -->
   <script src="./store-chatbot.js?v=1.1"></script>
-  <script src="./shared-footer.js"></script>
+  <script src="./shared-footer.js?v=2.0"></script>
 
   <!-- Store Loader Script -->
   <script src="./loader.js?v=7.0"></script>
@@ -496,6 +496,6 @@
   <script src="./market-search.js?v=1.0"></script>
   <script src="./crypto-script.js?v=7.0"></script>
   <script src="./ux-enhancements.js?v=1.0"></script>
-  <script src="./auth.js?v=1.0"></script>
+  <script src="./auth.js?v=2.3"></script>
 </body>
 </html>

@@ -131,7 +131,7 @@ button{
   <form class="login-box" id="adminLoginForm" autocomplete="off">
     <h2>🔐 ADMIN</h2>
     <input type="text" id="adminEmail" placeholder="Admin email (Supabase Auth)" autocomplete="off" autocapitalize="none" spellcheck="false" required>
-    <input type="text" id="password" class="private-input" placeholder="Password" autocomplete="off" autocapitalize="none" spellcheck="false" required>
+    <input type="password" id="password" class="private-input" placeholder="Password" autocomplete="current-password" required>
     <button type="submit">Login</button>
   </form>
 </div>
@@ -174,28 +174,35 @@ button{
 </div>
 
 <script type="module">
-const ADMIN_PASSWORD = "LOOTO-ADMIN-2026";
+const client = window.supabaseCatalog?.client;
+let dashboardStarted = false;
+
+async function isAdminUser(user) {
+  if (!client || !user) return false;
+  const { data, error } = await client.from("profiles").select("role").eq("id", user.id).maybeSingle();
+  return !error && data?.role === "admin";
+}
+
+function showDashboard() {
+  if (dashboardStarted) return;
+  dashboardStarted = true;
+  document.getElementById("adminLoginForm").reset();
+  document.getElementById("login").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+  init();
+}
 
 window.login = async () => {
-  if (document.getElementById("password").value !== ADMIN_PASSWORD) {
-    alert("Wrong password");
-    return;
+  if (!client) return alert("تعذر الاتصال بـ Supabase.");
+  const adminEmail = document.getElementById("adminEmail").value.trim().toLowerCase();
+  const password = document.getElementById("password").value;
+  const { data, error } = await client.auth.signInWithPassword({ email: adminEmail, password });
+  if (error) return alert(`تعذر تسجيل الدخول: ${error.message}`);
+  if (!(await isAdminUser(data.user))) {
+    await client.auth.signOut();
+    return alert("هذا الحساب ليس لديه صلاحية إدارة.");
   }
-  const adminEmail = document.getElementById("adminEmail").value.trim();
-  if (adminEmail && window.supabaseCatalog) {
-    const { error } = await window.supabaseCatalog.client.auth.signInWithPassword({
-      email: adminEmail,
-      password: document.getElementById("password").value
-    });
-    if (error) {
-      alert(`Supabase Auth failed: ${error.message}`);
-      return;
-    }
-  }
-  document.getElementById("adminLoginForm").reset();
-  document.getElementById("login").style.display="none";
-  document.getElementById("dashboard").style.display="block";
-  init();
+  showDashboard();
 };
 
 document.getElementById("adminLoginForm").addEventListener("submit", event => {
@@ -203,7 +210,7 @@ document.getElementById("adminLoginForm").addEventListener("submit", event => {
   login();
 });
 
-const client = window.supabaseCatalog?.client;
+
 
 const chart = new Chart(document.getElementById("chart"), {
   type:"bar",
@@ -249,29 +256,12 @@ async function init(){
 
   const resetVisitorsBtn = document.getElementById("resetVisitorsBtn");
   const visitorAdminStatus = document.getElementById("visitorAdminStatus");
-  const passwordDialog = document.getElementById("visitorPasswordDialog");
-  const passwordForm = document.getElementById("visitorPasswordForm");
-  const passwordInput = document.getElementById("visitorAdminPassword");
-  const cancelPassword = document.getElementById("cancelVisitorPassword");
-  const closePasswordDialog = () => {
-    passwordDialog.hidden = true;
-    passwordForm.reset();
-  };
-  if (cancelPassword) cancelPassword.addEventListener("click", closePasswordDialog);
-  if (resetVisitorsBtn) resetVisitorsBtn.addEventListener("click", () => {
-    passwordDialog.hidden = false;
-    passwordInput.focus();
-  });
-  if (passwordForm) passwordForm.addEventListener("submit", async event => {
-    event.preventDefault();
-    const password = passwordInput.value;
-    closePasswordDialog();
-    if (!window.confirm("سيتم تصفير الإجمالي واليومي والشهري وحذف سجل الحضور. هل تريد المتابعة؟")) return;
+  if (resetVisitorsBtn) resetVisitorsBtn.addEventListener("click", async () => {
+    if (!window.confirm("سيتم تصفير إحصائيات الزيارات وحذف سجل الحضور. هل تريد المتابعة؟")) return;
     resetVisitorsBtn.disabled = true;
     visitorAdminStatus.textContent = "جارٍ تنفيذ المسح...";
-    visitorAdminStatus.className = "visitor-admin-status";
     try {
-      const { data, error } = await client.rpc("reset_visitor_data", { p_admin_password: password });
+      const { data, error } = await client.rpc("reset_visitor_data");
       if (error) throw error;
       visitorAdminStatus.textContent = `تم المسح. السجلات المحذوفة: ${data?.daily_rows || 0} عداد يومي و${data?.presence_rows || 0} حضور.`;
       await refresh();
@@ -294,6 +284,12 @@ async function init(){
   refresh();
   setInterval(refresh, 5000);
 }
+
+(async function restoreAdminSession() {
+  if (!client) return;
+  const { data } = await client.auth.getSession();
+  if (data.session && await isAdminUser(data.session.user)) showDashboard();
+})();
 </script>
 <script src="./admin-catalog.js"></script>
 
