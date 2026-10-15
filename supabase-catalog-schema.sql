@@ -6,10 +6,15 @@ create table if not exists public.categories (
   name text not null,
   description text not null default '',
   image_url text not null default '',
+  parent_id uuid references public.categories(id) on delete cascade,
   sort_order integer not null default 0,
   is_active boolean not null default true,
   created_at timestamptz not null default now()
 );
+
+-- Safe migration for projects that already have the categories table.
+alter table public.categories add column if not exists parent_id uuid references public.categories(id) on delete cascade;
+create index if not exists categories_parent_id_idx on public.categories(parent_id);
 
 create table if not exists public.products (
   id uuid primary key default gen_random_uuid(),
@@ -17,10 +22,16 @@ create table if not exists public.products (
   name text not null,
   unit text not null default '',
   price numeric(12,2) not null default 0 check (price >= 0),
+  old_price numeric(12,2) check (old_price is null or old_price >= 0),
   image_url text not null default '',
   is_active boolean not null default true,
+  is_special_offer boolean not null default false,
   created_at timestamptz not null default now()
 );
+
+-- Safe migration for projects that already have the products table.
+alter table public.products add column if not exists is_special_offer boolean not null default false;
+alter table public.products add column if not exists old_price numeric(12,2) check (old_price is null or old_price >= 0);
 
 alter table public.categories enable row level security;
 alter table public.products enable row level security;

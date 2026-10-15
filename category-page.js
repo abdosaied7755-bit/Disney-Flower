@@ -115,6 +115,7 @@ marketCategories.forEach(category => {
   const productCount = document.getElementById('productCount');
   const backButton = document.getElementById('categoryBackBtn');
   const searchInput = document.getElementById('categorySearch');
+  let activeCategoryId = null;
 
   if (!categoryCards || !productView) return;
 
@@ -124,6 +125,9 @@ marketCategories.forEach(category => {
     localStorage.setItem('gameCart', JSON.stringify(cart));
     if (typeof updateNavCartUI === 'function') updateNavCartUI();
   };
+
+  const getCategoryList = () => window.marketCategoriesFlat || marketCategories;
+  const nestedCategoryTemplate = category => `<button type='button' class='nested-category-card' data-nested-category='${category.id}'><div class='nested-category-card-image' style='background-image:url(${category.image || category.products?.[0]?.image || ''})'></div><div class='nested-category-card-content'><h3>${category.name}</h3><p>${category.description || ''}</p><strong>${category.allProducts?.length || category.products?.length || 0} منتجات <i class='fas fa-arrow-left'></i></strong></div></button>`;
 
   function renderCategories(query = '') {
     const normalizedQuery = query.trim().toLowerCase();
@@ -143,16 +147,36 @@ marketCategories.forEach(category => {
   }
 
   function openCategory(categoryId) {
-    const category = marketCategories.find(item => item.id === categoryId);
+    const category = getCategoryList().find(item => String(item.id) === String(categoryId));
     if (!category) return;
+    activeCategoryId = category.id;
+    const categoryProducts = category.products || [];
+    const childCategories = category.children || [];
     categoryCards.hidden = true;
     productView.hidden = false;
     backButton.classList.add('visible');
     categoryTitle.textContent = category.name;
     productEyebrow.textContent = category.description;
-    productTitle.textContent = `منتجات ${category.name}`;
-    productCount.textContent = `${category.products.length} منتجات مختارة`;
-    productGrid.innerHTML = category.products.map((product, index) => productTemplate(category, product, index)).join('');
+    productTitle.textContent = childCategories.length ? `أقسام ${category.name}` : `منتجات ${category.name}`;
+    productCount.textContent = `${category.allProducts?.length || categoryProducts.length} منتجات داخل القسم`;
+    productGrid.innerHTML = childCategories.map(nestedCategoryTemplate).join('') + categoryProducts.map((product, index) => productTemplate(category, product, index)).join('');
+    productGrid.querySelectorAll('[data-nested-category]').forEach(card => {
+      card.addEventListener('click', () => openCategory(card.dataset.nestedCategory));
+    });
+    productGrid.querySelectorAll('.product-card').forEach((card, index) => {
+      if (!categoryProducts[index].isSpecialOffer) return;
+      card.classList.add('is-special-offer');
+      const badge = document.createElement('span');
+      badge.className = 'special-offer-badge';
+      badge.textContent = 'عرض خاص';
+      card.prepend(badge);
+      if (categoryProducts[index].oldPrice > categoryProducts[index].price) {
+        const oldPrice = document.createElement('del');
+        oldPrice.className = 'product-old-price';
+        oldPrice.textContent = money(categoryProducts[index].oldPrice);
+        card.querySelector('.product-price')?.before(oldPrice);
+      }
+    });
     bindProductActions(category);
     document.querySelector('.category-browser-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -195,12 +219,20 @@ marketCategories.forEach(category => {
     window.location.href = 'checkout.html';
   }
 
-  backButton.addEventListener('click', () => { productView.hidden = true; categoryCards.hidden = false; backButton.classList.remove('visible'); categoryTitle.textContent = 'تسوق حسب القسم'; });
+  backButton.addEventListener('click', () => {
+    const current = getCategoryList().find(category => String(category.id) === String(activeCategoryId));
+    if (current?.parentId) return openCategory(current.parentId);
+    activeCategoryId = null;
+    productView.hidden = true;
+    categoryCards.hidden = false;
+    backButton.classList.remove('visible');
+    categoryTitle.textContent = 'تسوق حسب القسم';
+  });
   searchInput?.addEventListener('input', event => renderCategories(event.target.value));
   window.addEventListener('catalog:updated', () => {
     renderCategories(searchInput?.value || '');
     if (!productView.hidden) {
-      const activeCategory = marketCategories.find(category => category.name === categoryTitle.textContent);
+      const activeCategory = getCategoryList().find(category => String(category.id) === String(activeCategoryId));
       if (activeCategory) openCategory(activeCategory.id);
     }
   });

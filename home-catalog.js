@@ -64,7 +64,10 @@
         <i class="fas ${getCategoryIcon(category)}" aria-hidden="true"></i><strong>${escapeHtml(category.name)}</strong><small>${escapeHtml(category.description)}</small>
       </a>`).join('') || '<p>لا توجد أقسام مضافة بعد.</p>';
 
-    const products = categories.flatMap(category => (category.products || []).map(product => ({ ...product, category })));
+    const products = categories.flatMap(category => (category.allProducts || category.products || []).map(product => ({
+      ...product,
+      category: (window.marketCategoriesFlat || []).find(item => String(item.id) === String(product.categoryId)) || category
+    })));
     const today = new Date();
     const dayNumber = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) / 86400000;
     const dailyProducts = products.length > 2
@@ -77,6 +80,19 @@
         </div>
         <div class="game-card-content"><h3 class="game-card-title">${escapeHtml(product.name)}</h3><div class="game-card-stats"><div class="stat-item"><i class="fas fa-layer-group"></i><span>${escapeHtml(product.category.name)}</span></div><div class="stat-item"><i class="fas fa-tag"></i><span>${Number(product.price).toLocaleString('ar-EG')} جنيه</span></div></div><div class="game-card-price"><span class="price-label"><i class="fas fa-weight-scale"></i> الوحدة: ${escapeHtml(product.unit)}</span></div></div>
       </article>`).join('') || '<p>لا توجد منتجات مضافة بعد.</p>';
+
+    productGrid.querySelectorAll('.catalog-product-card').forEach((card, index) => {
+      if (!dailyProducts[index]?.isSpecialOffer) return;
+      card.classList.add('is-special-offer');
+      const badge = document.createElement('span');
+      badge.className = 'special-offer-badge';
+      badge.textContent = 'عرض خاص';
+      card.querySelector('.game-card-image')?.appendChild(badge);
+      if (dailyProducts[index].oldPrice > dailyProducts[index].price) {
+        const price = card.querySelector('.game-card-stats .stat-item:nth-child(2) span');
+        if (price) price.innerHTML = `<del class='catalog-old-price'>${dailyProducts[index].oldPrice.toLocaleString('ar-EG')} جنيه</del> <strong>${dailyProducts[index].price.toLocaleString('ar-EG')} جنيه</strong>`;
+      }
+    });
 
     if (featureImage && catalogSlides.length) {
       let activeSlide = 0;

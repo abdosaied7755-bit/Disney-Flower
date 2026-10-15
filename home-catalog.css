@@ -54,3 +54,7 @@
 .market-home .market-products .price-label { display: inline-flex; align-items: center; gap: 6px; padding: 0; background: transparent !important; border: 0 !important; color: var(--site-green) !important; }
 .market-home .market-search-btn, .market-home .btn-primary-gradient, .market-home .game-card-btn { background: var(--site-green) !important; border-color: var(--site-green) !important; color: var(--site-cream) !important; }
 .market-home .market-search-btn:hover, .market-home .btn-primary-gradient:hover, .market-home .game-card-btn:hover { background: var(--site-mint) !important; color: var(--site-ink) !important; }
+.catalog-product-card.is-special-offer { position: relative; border: 2px solid #f4a62a; box-shadow: 0 16px 34px rgba(244,166,42,.25); }
+.catalog-product-card .special-offer-badge { position: absolute; top: 12px; right: 12px; z-index: 4; display: inline-flex; align-items: center; padding: 7px 11px; border-radius: 999px; background: linear-gradient(135deg,#ffb52e,#f06a2d); color: #fff; font-size: .76rem; font-weight: 900; box-shadow: 0 7px 16px rgba(205,93,24,.3); }
+.catalog-old-price { margin-left: 5px; color: #a16a42; font-size: .75rem; text-decoration-thickness: 2px; }
+.catalog-product-card.is-special-offer .game-card-stats .stat-item:nth-child(2) strong { color: #e26b2d; }

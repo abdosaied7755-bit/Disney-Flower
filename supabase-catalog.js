@@ -14,16 +14,43 @@
       description: category.description || '',
       meta: `${products.length} منتج`,
       image: category.image_url || category.image || '',
+      parentId: category.parent_id || null,
       products: products.map(product => ({
         id: product.id,
         name: product.name,
         unit: product.unit || '',
         price: Number(product.price) || 0,
+        oldPrice: product.old_price == null ? null : Number(product.old_price),
         image: product.image_url || product.image || '',
         categoryId: product.category_id,
-        isActive: product.is_active !== false
+        isActive: product.is_active !== false,
+        isSpecialOffer: product.is_special_offer === true
       }))
     };
+  }
+
+  function addCategoryTreeData(categories) {
+    const byId = new Map(categories.map(category => [String(category.id), category]));
+    categories.forEach(category => {
+      category.children = [];
+      if (category.parentId && byId.has(String(category.parentId))) {
+        byId.get(String(category.parentId)).children.push(category);
+      }
+    });
+
+    const collectProducts = category => {
+      category.allProducts = [...category.products];
+      category.children.forEach(child => {
+        collectProducts(child);
+        category.allProducts.push(...child.allProducts);
+      });
+      category.meta = `${category.allProducts.length} منتج`;
+      return category.allProducts;
+    };
+
+    categories.filter(category => !category.parentId || !byId.has(String(category.parentId)))
+      .forEach(collectProducts);
+    return categories;
   }
 
   async function loadCatalog() {
@@ -44,11 +71,13 @@
       return groups;
     }, {});
 
-    const nextCategories = categoriesResult.data.map(category => mapCategory(category, productsByCategory[category.id] || []));
-    if (Array.isArray(window.marketCategories)) window.marketCategories.splice(0, window.marketCategories.length, ...nextCategories);
-    else window.marketCategories = nextCategories;
+    const nextCategories = addCategoryTreeData(categoriesResult.data.map(category => mapCategory(category, productsByCategory[category.id] || [])));
+    const rootCategories = nextCategories.filter(category => !category.parentId || !nextCategories.some(parent => String(parent.id) === String(category.parentId)));
+    if (Array.isArray(window.marketCategories)) window.marketCategories.splice(0, window.marketCategories.length, ...rootCategories);
+    else window.marketCategories = rootCategories;
+    window.marketCategoriesFlat = nextCategories;
     window.supabaseCatalog.loadedFromDatabase = true;
-    window.dispatchEvent(new CustomEvent('catalog:updated', { detail: nextCategories }));
+    window.dispatchEvent(new CustomEvent('catalog:updated', { detail: rootCategories }));
     return true;
   }
 
