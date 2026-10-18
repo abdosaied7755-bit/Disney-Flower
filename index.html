@@ -43,7 +43,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon.png">
   <title>Market Online - الرئيسية</title>
   <link rel="stylesheet" href="./crypto-style.css?v=7.0">
-  <link rel="stylesheet" href="./footer-advanced.css?v=7.0">
+  <link rel="stylesheet" href="./footer-advanced.css?v=7.1">
   <link rel="stylesheet" href="./loader.css?v=7.0">
   <link rel="stylesheet" href="./pwa-style.css?v=7.0">
   <link rel="stylesheet" href="./ux-enhancements.css?v=1.0">
@@ -127,6 +127,7 @@
         <ul class="nav-menu" id="navMenu">
           <li><a href="index.html" data-key="home" class="active"><i class="fas fa-home"></i> الرئيسية</a></li>
           <li><a href="games.html" data-key="departments"><i class="fas fa-layer-group"></i> الأقسام</a></li>
+          <li><a href="offers.html" data-key="offers"><i class="fas fa-tags"></i> العروض</a></li><li><a href="reviews.html" data-key="reviews"><i class="fas fa-star"></i> آراء العملاء</a></li>
         </ul>
         <div class="nav-tools">
           <!-- Login Button -->
@@ -191,7 +192,7 @@
       </div>
     </div>
     <div class="cart-actions-premium">
-      <button class="btn btn-primary btn-block" id="cartCheckout">
+      <button class="btn btn-primary btn-block" id="cartCheckout" disabled aria-disabled="true">
         <i class="fab fa-whatsapp"></i> إتمام الطلب
       </button>
     </div>
@@ -267,7 +268,7 @@
       <div class="market-discovery-layout">
         <article class="market-feature-deal">
           <div class="market-feature-deal-image"></div>
-          <div class="market-feature-deal-content"><span class="market-deal-label"><i class="fas fa-bolt"></i> عرض اليوم</span><h3>جهز مطبخك بتوفير أكبر</h3><p>اختيارات طازة وأساسية تساعدك تعمل طلب كامل بسهولة.</p><a href="#offers" class="btn-primary-gradient"><span>شوف العروض</span><i class="fas fa-arrow-left"></i></a></div>
+          <div class="market-feature-deal-content"><span class="market-deal-label"><i class="fas fa-bolt"></i> عرض اليوم</span><h3>جهز مطبخك بتوفير أكبر</h3><p>اختيارات طازة وأساسية تساعدك تعمل طلب كامل بسهولة.</p><a href="offers.html" class="btn-primary-gradient"><span>شوف العروض</span><i class="fas fa-arrow-left"></i></a></div>
         </article>
         <div class="market-department-panel"><div class="market-panel-heading"><h3>الأقسام الرئيسية</h3><a href="games.html">عرض الكل <i class="fas fa-arrow-left"></i></a></div><div class="market-department-grid"><a href="game-detail.html?category=produce" class="market-department-card department-produce"><i class="fas fa-apple-whole"></i><strong>خضار وفاكهة</strong><small>طازة كل يوم</small></a><a href="game-detail.html?category=pantry" class="market-department-card department-pantry"><i class="fas fa-wheat-awn"></i><strong>بقالة أساسية</strong><small>كل احتياجات البيت</small></a><a href="game-detail.html?category=drinks" class="market-department-card department-drinks"><i class="fas fa-bottle-water"></i><strong>مشروبات وسناكس</strong><small>للقعدة الحلوة</small></a><a href="game-detail.html?category=dairy" class="market-department-card department-dairy"><i class="fas fa-cheese"></i><strong>ألبان وأجبان</strong><small>اختيارات يومية</small></a><a href="game-detail.html?category=care" class="market-department-card department-care"><i class="fas fa-spray-can-sparkles"></i><strong>تنظيف وعناية</strong><small>بيت مرتب بسهولة</small></a><a href="game-detail.html?category=kitchen" class="market-department-card department-home"><i class="fas fa-kitchen-set"></i><strong>مستلزمات المطبخ</strong><small>كل شيء في مكانه</small></a></div></div>
       </div>
@@ -440,7 +441,7 @@
   <script src="./favorites.js"></script>
 
   <!-- Footer will be inserted here by the script -->
-  <div id="footer-placeholder"></div>
+  <div id="footer-placeholder" data-footer-variant="full"></div>
 
   <!-- Hidden Admin Gateway: 5 clicks in 2s on logo -> admin page -->
   <script>
@@ -463,7 +464,7 @@
     })();
   </script><!-- Load shared footer -->
   <script src="./store-chatbot.js?v=1.1"></script>
-  <script src="./shared-footer.js"></script>
+  <script src="./shared-footer.js?v=2.1"></script>
 
   <!-- Store Loader Script -->
   <script src="./loader.js?v=7.0"></script>
@@ -478,7 +479,7 @@
             
             navigator.serviceWorker.addEventListener('message', (event) => {
               if (event.data && event.data.type === 'NAVIGATE_TO_FLASH_DEALS') {
-                window.location.href = 'index.html#offers';
+                window.location.href = 'offers.html';
               }
             });
           })
@@ -496,6 +497,6 @@
   <script src="./market-search.js?v=1.0"></script>
   <script src="./crypto-script.js?v=7.0"></script>
   <script src="./ux-enhancements.js?v=1.0"></script>
-  <script src="./auth.js?v=1.0"></script>
+  <script src="./auth.js?v=1.2"></script>
 </body>
 </html>

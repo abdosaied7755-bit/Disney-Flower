@@ -40,16 +40,133 @@ drop policy if exists "public can read active categories" on public.categories;
 drop policy if exists "public can read active products" on public.products;
 drop policy if exists "public can read products" on public.products;
 drop policy if exists "authenticated can manage categories" on public.categories;
+drop policy if exists "admin can manage categories" on public.categories;
 drop policy if exists "authenticated can manage products" on public.products;
+drop policy if exists "admin can manage products" on public.products;
 create policy "public can read active categories" on public.categories for select using (is_active = true);
 -- Inactive products remain visible so the storefront can show an unavailable card.
 create policy "public can read products" on public.products for select using (true);
 
--- The current dashboard uses its existing admin password. Replace these policies
--- with Supabase Auth based policies before exposing write access publicly.
-create policy "authenticated can manage categories" on public.categories for all to authenticated using (true) with check (true);
-create policy "authenticated can manage products" on public.products for all to authenticated using (true) with check (true);
+-- Admin writes are allowed only for the Supabase Auth account used by the dashboard.
+create or replace function public.is_admin_user()
+returns boolean
+language sql
+stable
+as $$
+  select coalesce((auth.jwt() ->> 'email') = 'bitomanyax30@gmail.com', false);
+$$;
 
+create policy "admin can manage categories" on public.categories for all to authenticated using (public.is_admin_user()) with check (public.is_admin_user());
+create policy "admin can manage products" on public.products for all to authenticated using (public.is_admin_user()) with check (public.is_admin_user());
+
+-- Customer reviews are moderated before they become public.
+create table if not exists public.customer_reviews (
+  id uuid primary key default gen_random_uuid(),
+  customer_id text not null,
+  customer_name text not null,
+  customer_email text not null default '',
+  rating smallint not null check (rating between 1 and 5),
+  review_text text not null check (char_length(trim(review_text)) between 10 and 1000),
+  is_published boolean not null default false,
+  is_featured boolean not null default false,
+  admin_reply text not null default '',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.customer_reviews add column if not exists customer_email text not null default '';
+alter table public.customer_reviews add column if not exists is_published boolean not null default false;
+alter table public.customer_reviews add column if not exists is_featured boolean not null default false;
+alter table public.customer_reviews add column if not exists admin_reply text not null default '';
+alter table public.customer_reviews add column if not exists updated_at timestamptz not null default now();
+
+alter table public.customer_reviews enable row level security;
+
+drop policy if exists "public can read published reviews" on public.customer_reviews;
+drop policy if exists "registered customers can submit reviews" on public.customer_reviews;
+drop policy if exists "authenticated can manage reviews" on public.customer_reviews;
+drop policy if exists "admin can manage reviews" on public.customer_reviews;
+create policy "public can read published reviews"
+  on public.customer_reviews for select
+  to anon, authenticated
+  using (is_published = true);
+
+-- Reviews are accepted only for an authenticated Supabase user and remain hidden
+-- until an authenticated admin publishes them.
+create policy "registered customers can submit reviews"
+  on public.customer_reviews for insert
+  to authenticated
+  with check (
+    is_published = false
+    and customer_id = auth.uid()::text
+    and char_length(trim(customer_name)) between 2 and 120
+    and rating between 1 and 5
+    and char_length(trim(review_text)) between 10 and 1000
+  );
+
+create policy "admin can manage reviews"
+  on public.customer_reviews for all
+  to authenticated
+  using (public.is_admin_user())
+  with check (public.is_admin_user());
+
+grant select on table public.customer_reviews to anon, authenticated;
+grant insert on table public.customer_reviews to authenticated;
+grant update, delete on table public.customer_reviews to authenticated;
+
+-- Customer profiles mirror Supabase Auth users without storing passwords in the app.
+create table if not exists public.customer_profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  full_name text not null default '',
+  email text not null default '',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.customer_profiles enable row level security;
+
+drop policy if exists "customers can read own profile" on public.customer_profiles;
+drop policy if exists "customers can update own profile" on public.customer_profiles;
+
+create policy "customers can read own profile"
+  on public.customer_profiles for select
+  to authenticated
+  using (auth.uid() = id);
+
+create policy "customers can update own profile"
+  on public.customer_profiles for update
+  to authenticated
+  using (auth.uid() = id)
+  with check (auth.uid() = id);
+
+grant select, update on table public.customer_profiles to authenticated;
+
+create or replace function public.handle_new_customer_profile()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $function$
+begin
+  insert into public.customer_profiles (id, full_name, email)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'name', ''),
+    coalesce(new.email, '')
+  )
+  on conflict (id) do update set
+    full_name = excluded.full_name,
+    email = excluded.email,
+    updated_at = now();
+
+  return new;
+end;
+$function$;
+
+drop trigger if exists on_auth_user_created_customer_profile on auth.users;
+create trigger on_auth_user_created_customer_profile
+  after insert on auth.users
+  for each row execute procedure public.handle_new_customer_profile();
 -- Enable live catalog updates for storefront visitors (safe to run repeatedly).
 do $$
 begin

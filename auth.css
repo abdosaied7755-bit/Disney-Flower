@@ -548,3 +548,39 @@
     min-width: auto;
   }
 }
+
+/* Market Online auth palette */
+:root {
+  --auth-gradient: linear-gradient(135deg, #064c3a, #087f5b);
+  --auth-bg: rgba(19, 62, 51, 0.98);
+  --auth-border: rgba(143, 221, 169, 0.28);
+}
+
+.auth-close {
+  background: rgba(143, 221, 169, 0.12);
+  color: #8fdda9;
+}
+
+.auth-close:hover {
+  background: rgba(143, 221, 169, 0.24);
+}
+
+.toast {
+  animation: none;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity .25s ease, transform .25s ease;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-success {
+  border-color: rgba(143, 221, 169, .45);
+}
+
+.toast-error {
+  border-color: rgba(248, 170, 155, .5);
+}

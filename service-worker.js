@@ -85,7 +85,7 @@ self.addEventListener('notificationclick', (event) => {
       // إذا لم يكن مفتوح، فتح نافذة جديدة
       if (clients.openWindow) {
         const url = event.action === 'view' || !event.action 
-          ? self.registration.scope + 'index.html#offers'
+          ? self.registration.scope + 'offers.html'
           : self.registration.scope;
         return clients.openWindow(url);
       }

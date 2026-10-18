@@ -141,128 +141,253 @@
     hideAlerts();
   }
 
+  // Supabase Auth is the production account store. LocalStorage is only a
+  // localhost fallback so the local preview can still be tested if Supabase
+  // Email Auth has not been enabled yet.
+  function getSupabaseClient() {
+    return window.supabaseCatalog && window.supabaseCatalog.client
+      ? window.supabaseCatalog.client
+      : null;
+  }
+
+  function isLocalDevelopment() {
+    return window.location.protocol === 'file:' ||
+      ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
+  }
+
+  function supabaseUserToSession(user) {
+    const metadata = user && user.user_metadata ? user.user_metadata : {};
+    const email = (user && user.email) || '';
+    return {
+      id: user.id,
+      name: metadata.name || metadata.full_name || email.split('@')[0] || 'المستخدم',
+      email,
+      createdAt: user.created_at || new Date().toISOString(),
+      authProvider: 'supabase'
+    };
+  }
+
+  function persistSupabaseUser(user) {
+    const session = supabaseUserToSession(user);
+    localStorage.setItem('currentUser', JSON.stringify(session));
+    updateUI(session);
+    return session;
+  }
+
+  async function syncSupabaseSession() {
+    const client = getSupabaseClient();
+    if (!client) return;
+    try {
+      const { data } = await client.auth.getSession();
+      if (data?.session?.user) {
+        // Supabase is the source of truth whenever a remote session exists.
+        // This also replaces an old localhost user left in localStorage.
+        persistSupabaseUser(data.session.user);
+        return;
+      }
+
+      // Do not keep showing a stale remote account after its session ends.
+      const currentUser = getCurrentUser();
+      if (currentUser?.authProvider === 'supabase' || (!isLocalDevelopment() && currentUser?.authProvider === 'local')) {
+        localStorage.removeItem('currentUser');
+        updateUI(null);
+      }
+      // A local user is preserved only for the localhost preview fallback.
+    } catch (error) {
+      console.warn('Supabase session check failed:', error);
+    }
+  }
+
+  function getAuthErrorMessage(error, form) {
+    const message = String(error?.message || '').toLowerCase();
+    if (message.includes('already registered') || message.includes('already been registered')) {
+      return 'هذا البريد مسجل بالفعل! جرّب تسجيل الدخول.';
+    }
+    if (message.includes('invalid login credentials')) {
+      return 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+    }
+    if (message.includes('email not confirmed')) {
+      return 'الحساب ده اتعمل قبل إيقاف Confirm email وما زال غير مؤكد. أكّده من Authentication > Users في Supabase أو احذفه وسجّل بالبريد من جديد.';
+    }
+    if (message.includes('email logins are disabled') || message.includes('email provider is disabled')) {
+      return isLocalDevelopment()
+        ? 'تسجيل البريد غير مفعّل في Supabase، لذلك تم تفعيل التسجيل المحلي للمعاينة فقط.'
+        : 'تسجيل البريد غير مفعّل في Supabase. فعّل Email provider من Authentication > Providers.';
+    }
+    if (message.includes('signups not allowed') || message.includes('signup is disabled')) {
+      return 'إنشاء الحسابات متوقف في Supabase. فعّل Allow new users to sign up من إعدادات Authentication.';
+    }
+    if (message.includes('password') && (message.includes('6') || message.includes('weak'))) {
+      return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل.';
+    }
+    if (message.includes('rate limit') || message.includes('too many')) {
+      return 'تم تجاوز عدد المحاولات. انتظر قليلًا ثم حاول مرة أخرى.';
+    }
+    return form === 'register'
+      ? 'تعذر إنشاء الحساب الآن. تأكد من البيانات وحاول مرة أخرى.'
+      : 'تعذر تسجيل الدخول الآن. تأكد من البيانات وحاول مرة أخرى.';
+  }
+
+  function registerLocally(name, email, password, form) {
+    const users = getUsers();
+    const exists = users.some(user => String(user.email || '').toLowerCase() === email.toLowerCase());
+    if (exists) {
+      showAlert('register', 'error', 'هذا البريد مسجل بالفعل! الرجاء تسجيل الدخول');
+      return false;
+    }
+
+    users.push({
+      id: 'local-' + Date.now(),
+      name,
+      email,
+      password,
+      createdAt: new Date().toISOString(),
+      authProvider: 'local'
+    });
+    localStorage.setItem('users', JSON.stringify(users));
+    showAlert('register', 'success', 'تم إنشاء الحساب محليًا للمعاينة. في الاستضافة يجب تفعيل Supabase Email Auth.');
+    setTimeout(() => {
+      switchTab('login');
+      form.reset();
+      hideAlerts();
+      showToast(`تم تسجيلك بنجاح يا ${name}! الآن سجّل دخولك`);
+    }, 1500);
+    return true;
+  }
+
   // Register
-  function handleRegister(e) {
+  async function handleRegister(e) {
     e.preventDefault();
-    
     const name = document.getElementById('registerName').value.trim();
     const email = document.getElementById('registerEmail').value.trim();
     const password = document.getElementById('registerPassword').value;
 
-    // Validation
     if (!name || name.length < 2) {
       showAlert('register', 'error', 'الرجاء إدخال اسم صحيح (حرفين على الأقل)');
       return;
     }
-
     if (!validateEmail(email)) {
       showAlert('register', 'error', 'الرجاء إدخال بريد إلكتروني صحيح');
       return;
     }
-
     if (!password || password.length < 6) {
       showAlert('register', 'error', 'كلمة المرور يجب أن تكون 6 أحرف على الأقل');
       return;
     }
 
-    // Check if user exists
-    const users = getUsers();
-    const exists = users.some(u => u.email.toLowerCase() === email.toLowerCase());
-    
-    if (exists) {
-      showAlert('register', 'error', 'هذا البريد مسجل بالفعل! الرجاء تسجيل الدخول');
+    const client = getSupabaseClient();
+    if (client) {
+      try {
+        const result = await client.auth.signUp({
+          email,
+          password,
+          options: { data: { name } }
+        });
+        if (result.error) throw result.error;
+
+        if (result.data?.session?.user) {
+          persistSupabaseUser(result.data.session.user);
+          e.target.reset();
+          closeModal();
+          showToast('تم إنشاء حسابك وتسجيل الدخول بنجاح ✓');
+          return;
+        }
+
+        showAlert('register', 'error', 'تم حفظ الحساب، لكن Supabase لم ينشئ جلسة دخول. تأكد من إيقاف Confirm email ثم جرّب تسجيل الدخول.');
+        return;
+      } catch (error) {
+        const message = String(error?.message || '').toLowerCase();
+        const canFallback = isLocalDevelopment() && (
+          message.includes('email logins are disabled') ||
+          message.includes('email provider is disabled') ||
+          message.includes('failed to fetch') ||
+          message.includes('network') ||
+          message.includes('rate limit') ||
+          message.includes('too many')
+        );
+        if (!canFallback) {
+          showAlert('register', 'error', getAuthErrorMessage(error, 'register'));
+          return;
+        }
+      }
+    } else if (!isLocalDevelopment()) {
+      showAlert('register', 'error', 'تعذر الاتصال بخدمة الحسابات. لا يمكن إنشاء حساب على الاستضافة بدون Supabase.');
       return;
     }
 
-    // Create user
-    const newUser = {
-      id: Date.now(),
-      name: name,
-      email: email,
-      password: password,
-      createdAt: new Date().toISOString()
-    };
-
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-
-    // Success - Switch to login
-    showAlert('register', 'success', 'تم إنشاء الحساب بنجاح! قم بتسجيل الدخول الآن');
-    
-    setTimeout(() => {
-      // Switch to login form
-      switchTab('login');
-      
-      // Clear register form
-      e.target.reset();
-      hideAlerts();
-      
-      // Show toast
-      showToast(`تم تسجيلك بنجاح يا ${name}! الآن سجل دخولك`);
-    }, 1500);
+    registerLocally(name, email, password, e.target);
   }
 
   // Login
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
-    
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
 
-    // Validation
     if (!validateEmail(email)) {
       showAlert('login', 'error', 'الرجاء إدخال بريد إلكتروني صحيح');
       return;
     }
-
     if (!password) {
       showAlert('login', 'error', 'الرجاء إدخال كلمة المرور');
       return;
     }
 
-    // Find user
-    const users = getUsers();
-    const user = users.find(u => 
-      u.email.toLowerCase() === email.toLowerCase() && 
-      u.password === password
-    );
+    const client = getSupabaseClient();
+    let remoteError = null;
+    if (client) {
+      try {
+        const result = await client.auth.signInWithPassword({ email, password });
+        if (!result.error && result.data?.user) {
+          const session = persistSupabaseUser(result.data.user);
+          closeModal();
+          showToast(`مرحباً ${session.name}! تم تسجيل الدخول بنجاح ✓`);
+          return;
+        }
+        remoteError = result.error;
+      } catch (error) {
+        remoteError = error;
+      }
+    }
 
-    if (!user) {
-      showAlert('login', 'error', 'البريد الإلكتروني أو كلمة المرور غير صحيحة');
+    const localUser = getUsers().find(user =>
+      String(user.email || '').toLowerCase() === email.toLowerCase() && user.password === password
+    );
+    if (localUser && isLocalDevelopment()) {
+      loginUser(localUser, 'local');
+      closeModal();
+      showToast(`مرحباً ${localUser.name}! تم تسجيل الدخول بنجاح ✓`);
       return;
     }
 
-    // Success
-    loginUser(user);
-    closeModal();
-    showToast(`مرحباً ${user.name}! تم تسجيل الدخول بنجاح ✓`);
+    showAlert('login', 'error', remoteError ? getAuthErrorMessage(remoteError, 'login') : 'البريد الإلكتروني أو كلمة المرور غير صحيحة');
   }
 
   // Logout
-  function handleLogout(e) {
-    e.preventDefault();
-    
+  async function handleLogout(e) {
+    if (e) e.preventDefault();
+    const currentUser = getCurrentUser();
+    const client = getSupabaseClient();
+    if (client && currentUser?.authProvider === 'supabase') {
+      try { await client.auth.signOut(); } catch (error) { console.warn('Supabase logout failed:', error); }
+    }
     localStorage.removeItem('currentUser');
     updateUI(null);
-    showToast('تم تسجيل الخروج بنجاح');
-    
-    // Redirect if on dashboard
+    showToast('تم تسجيل الخروج بنجاح. نتمنى رؤيتك قريباً');
     if (window.location.pathname.includes('dashboard')) {
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 1000);
+      setTimeout(() => { window.location.href = 'index.html'; }, 1000);
     }
   }
 
   // User Management
-  function loginUser(user) {
+  function loginUser(user, provider) {
     const session = {
       id: user.id,
       name: user.name,
       email: user.email,
-      createdAt: user.createdAt
+      createdAt: user.createdAt,
+      authProvider: provider || user.authProvider || 'local'
     };
-    
     localStorage.setItem('currentUser', JSON.stringify(session));
     updateUI(session);
   }
@@ -270,16 +395,26 @@
   function checkSession() {
     const currentUser = getCurrentUser();
     updateUI(currentUser);
+    syncSupabaseSession();
   }
 
   function getCurrentUser() {
-    const data = localStorage.getItem('currentUser');
-    return data ? JSON.parse(data) : null;
+    try {
+      const data = localStorage.getItem('currentUser');
+      return data ? JSON.parse(data) : null;
+    } catch (error) {
+      localStorage.removeItem('currentUser');
+      return null;
+    }
   }
 
   function getUsers() {
-    const data = localStorage.getItem('users');
-    return data ? JSON.parse(data) : [];
+    try {
+      const data = localStorage.getItem('users');
+      return data ? JSON.parse(data) : [];
+    } catch (error) {
+      return [];
+    }
   }
 
   // UI Update
@@ -290,16 +425,15 @@
     const userAvatar = document.getElementById('userAvatar');
 
     if (user) {
-      // Logged in
       if (loginBtn) loginBtn.style.display = 'none';
       if (userMenu) userMenu.classList.add('active');
       if (userName) userName.textContent = user.name;
       if (userAvatar) userAvatar.textContent = user.name.charAt(0).toUpperCase();
     } else {
-      // Logged out
       if (loginBtn) loginBtn.style.display = 'flex';
       if (userMenu) userMenu.classList.remove('active');
     }
+    window.dispatchEvent(new CustomEvent('auth:changed', { detail: user }));
   }
 
   function toggleUserMenu() {

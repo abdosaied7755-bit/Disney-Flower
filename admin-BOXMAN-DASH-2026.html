@@ -93,7 +93,8 @@ button{
 .password-dialog-card input{width:100%;box-sizing:border-box;padding:12px;border:1px solid #9dd3a4;border-radius:9px;background:#fff;color:#064c3a;font:inherit}
 .password-dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.password-dialog-actions button{padding:10px 15px;border-radius:9px;color:#fff}.password-dialog-actions .cancel{background:#71867c}
 
-/* Responsive: Tablets */
+.offer-admin-card{border-color:rgba(245,166,35,.45);background:linear-gradient(145deg,rgba(245,166,35,.08),var(--card) 42%)}.offer-admin-heading{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}.offer-admin-heading h3{margin:0 0 5px}.offer-admin-heading p{margin:0;opacity:.72;line-height:1.6;font-size:.86rem}.offer-admin-icon{display:grid;flex:none;width:42px;height:42px;place-items:center;border-radius:13px;background:linear-gradient(135deg,#ee6c2d,#f5a623);color:#fff;font-size:1.1rem}.offer-form label{display:grid;gap:6px;color:rgba(232,232,243,.82);font-size:.82rem;font-weight:700}.offer-price-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.offer-price-grid input{margin-top:0}.offer-submit-btn{background:linear-gradient(135deg,#ee6c2d,#f5a623)!important}.offer-list-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 8px}.offer-list-heading span{opacity:.65;font-size:.78rem}.admin-offer-row small strong{color:#ffc66a}.admin-offer-discount{color:#72f0ba!important;font-weight:800}.admin-offer-row .catalog-row-actions button:first-child{background:#995c2d}.offer-admin-card .catalog-list{max-height:300px}
+.reviews-admin-section{margin-top:20px;display:grid;gap:20px}.reviews-admin-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.reviews-admin-heading h2{margin:0 0 7px}.reviews-admin-heading p{margin:0;opacity:.72;line-height:1.7;font-size:.86rem}.reviews-admin-grid{display:grid;grid-template-columns:minmax(280px,.8fr) minmax(0,1.2fr);gap:20px}.reviews-admin-section .catalog-form textarea{width:100%;box-sizing:border-box;resize:vertical;min-height:92px;padding:11px;border:1px solid rgba(255,255,255,.15);border-radius:8px;background:#0c1030;color:var(--text);font:inherit;line-height:1.7}.reviews-admin-section .catalog-form label{display:grid;gap:6px;color:rgba(232,232,243,.82);font-size:.82rem;font-weight:700}.reviews-admin-status{display:block;min-height:22px;margin-top:12px;color:#72f0ba}.reviews-admin-status.error{color:#ff879d}.admin-review-row{align-items:flex-start}.admin-review-row-main{min-width:0;flex:1}.admin-review-row-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}.admin-review-row-main p{margin:7px 0 5px;line-height:1.6;font-size:.82rem;overflow-wrap:anywhere}.admin-review-row-main small{opacity:.7}.admin-review-rating{color:#ffc66a;white-space:nowrap;font-size:.82rem}.admin-review-rating small{color:var(--text);font-size:.7rem;margin-right:4px}.reviews-admin-section .catalog-list{max-height:520px}.catalog-empty{padding:18px;border:1px dashed rgba(255,255,255,.15);border-radius:9px;text-align:center;opacity:.7}@media (max-width:992px){.reviews-admin-grid{grid-template-columns:1fr}}/* Responsive: Tablets */
 @media (max-width: 992px) {
   .header { padding:12px 16px; }
   .header h1 { font-size:1.05rem; }
@@ -130,8 +131,8 @@ button{
 <div id="login">
   <form class="login-box" id="adminLoginForm" autocomplete="off">
     <h2>🔐 ADMIN</h2>
-    <input type="text" id="adminEmail" placeholder="Admin email (Supabase Auth)" autocomplete="off" autocapitalize="none" spellcheck="false" required>
-    <input type="text" id="password" class="private-input" placeholder="Password" autocomplete="off" autocapitalize="none" spellcheck="false" required>
+    <input type="email" id="adminEmail" placeholder="Admin email" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+    <input type="password" id="password" class="private-input" placeholder="Password" autocomplete="current-password" required>
     <button type="submit">Login</button>
   </form>
 </div>
@@ -168,34 +169,96 @@ button{
     <div class="catalog-admin-grid">
       <div class="card"><h3>الفئات</h3><form id="categoryForm" class="catalog-form"><input name="name" placeholder="اسم الفئة" required><input name="description" placeholder="وصف مختصر"><input name="image_url" type="url" placeholder="رابط صورة الفئة"><input name="image_file" type="file" accept="image/*"><div><button type="submit">إضافة الفئة</button> <button type="button" class="secondary" id="resetCategoryForm">تفريغ</button></div></form><div id="adminCategoryList" class="catalog-list"></div></div>
       <div class="card"><h3>المنتجات</h3><form id="productForm" class="catalog-form"><select name="category_id" id="productCategory" required></select><input name="name" placeholder="اسم المنتج" required><input name="unit" placeholder="الوحدة مثل 1 كجم"><input name="price" type="number" min="0" step="0.01" placeholder="السعر" required><select name="is_active" aria-label="حالة المنتج"><option value="true">متاح</option><option value="false">غير متاح</option></select><input name="image_url" type="url" placeholder="رابط صورة المنتج"><input name="image_file" type="file" accept="image/*"><div><button type="submit">إضافة المنتج</button> <button type="button" class="secondary" id="resetProductForm">تفريغ</button></div></form><input id="productSearchAdmin" class="catalog-search" type="search" placeholder="ابحث باسم المنتج..." aria-label="ابحث باسم المنتج"><div id="adminProductList" class="catalog-list"></div></div>
+      <div class="card offer-admin-card">
+        <div class="offer-admin-heading"><span class="offer-admin-icon"><i class="fas fa-tags"></i></span><div><h3>إدارة العروض والخصومات</h3><p>أضف عرضًا جديدًا بالسعر القديم والسعر بعد الخصم، وسيظهر تلقائيًا في صفحة العروض.</p></div></div>
+        <form id="offerForm" class="catalog-form offer-form">
+          <select name="category_id" id="offerCategory" required aria-label="قسم العرض"></select>
+          <input name="name" placeholder="اسم المنتج أو العرض" required>
+          <input name="unit" placeholder="الوحدة مثل 1 كجم">
+          <div class="offer-price-grid"><label>السعر القديم<input name="old_price" type="number" min="0.01" step="0.01" placeholder="مثال: 120" required></label><label>السعر بعد الخصم<input name="price" type="number" min="0" step="0.01" placeholder="مثال: 95" required></label></div>
+          <select name="is_active" aria-label="حالة العرض"><option value="true">العرض متاح</option><option value="false">العرض غير متاح</option></select>
+          <input name="image_url" type="url" placeholder="رابط صورة العرض">
+          <input name="image_file" type="file" accept="image/*">
+          <div><button type="submit" class="offer-submit-btn">إضافة العرض</button> <button type="button" class="secondary" id="resetOfferForm">تفريغ</button></div>
+        </form>
+        <div class="offer-list-heading"><strong>العروض الحالية</strong><span>يمكنك تعديلها أو حذفها</span></div>
+        <div id="adminOfferList" class="catalog-list"></div>
+      </div>
+    </div>
+  </section>
+  <section class="reviews-admin-section">
+    <div class="card reviews-admin-heading">
+      <div><h2>إدارة تقييمات العملاء</h2><p>راجع التقييمات، عدّلها، انشرها أو اخليها قيد المراجعة. تقدر كمان تضيف تقييم يدوي وتكتب رد الإدارة.</p><span id="reviewsAdminStatus" class="reviews-admin-status" role="status"></span></div>
+      <span class="offer-admin-icon"><i class="fas fa-star"></i></span>
+    </div>
+    <div class="reviews-admin-grid">
+      <div class="card">
+        <h3 id="adminReviewFormTitle">إضافة تقييم جديد</h3>
+        <form id="adminReviewForm" class="catalog-form">
+          <input name="customer_name" placeholder="اسم العميل" required minlength="2">
+          <input name="customer_email" type="email" placeholder="البريد الإلكتروني (اختياري)">
+          <label>عدد النجوم<select name="rating" required><option value="5">5 نجوم</option><option value="4">4 نجوم</option><option value="3">3 نجوم</option><option value="2">نجمتان</option><option value="1">نجمة واحدة</option></select></label>
+          <label>نص التقييم<textarea name="review_text" rows="5" maxlength="1000" placeholder="اكتب تجربة العميل..." required></textarea></label>
+          <label>حالة التقييم<select name="is_published"><option value="true">منشور للزوار</option><option value="false">قيد المراجعة</option></select></label>
+          <label>تمييز التقييم<select name="is_featured"><option value="false">تقييم عادي</option><option value="true">تجربة مميزة</option></select></label>
+          <label>رد الإدارة (اختياري)<textarea name="admin_reply" rows="3" maxlength="500" placeholder="اكتب ردًا يظهر داخل كرت التقييم..."></textarea></label>
+          <div><button type="submit" id="adminReviewSubmit">إضافة التقييم</button> <button type="button" class="secondary" id="adminReviewReset">تفريغ</button></div>
+        </form>
+      </div>
+      <div class="card">
+        <div class="offer-list-heading"><strong>كل التقييمات</strong><span>تعديل وحذف ونشر من هنا</span></div>
+        <div id="adminReviewList" class="catalog-list"></div>
+      </div>
     </div>
   </section>
   <div class="footer">Protected admin page. </div>
 </div>
 
 <script type="module">
+const ADMIN_EMAIL = "bitomanyax30@gmail.com";
 const ADMIN_PASSWORD = "LOOTO-ADMIN-2026";
 
+function isLocalPreview() {
+  return window.location.protocol === 'file:' || ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
+}
+
+function showAdminDashboard(mode) {
+  window.adminAuthMode = mode;
+  document.getElementById("adminLoginForm").reset();
+  document.getElementById("login").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+  init();
+  window.dispatchEvent(new CustomEvent('admin:authenticated', { detail: { mode } }));
+}
+
 window.login = async () => {
-  if (document.getElementById("password").value !== ADMIN_PASSWORD) {
-    alert("Wrong password");
+  const adminEmail = document.getElementById("adminEmail").value.trim().toLowerCase();
+  const adminPassword = document.getElementById("password").value;
+  if (adminEmail !== ADMIN_EMAIL || adminPassword !== ADMIN_PASSWORD) {
+    alert("Wrong admin email or password");
     return;
   }
-  const adminEmail = document.getElementById("adminEmail").value.trim();
-  if (adminEmail && window.supabaseCatalog) {
-    const { error } = await window.supabaseCatalog.client.auth.signInWithPassword({
-      email: adminEmail,
-      password: document.getElementById("password").value
-    });
-    if (error) {
-      alert(`Supabase Auth failed: ${error.message}`);
+
+  const client = window.supabaseCatalog?.client;
+  if (!client) {
+    if (isLocalPreview()) return showAdminDashboard('local');
+    alert("تعذر الاتصال بـ Supabase. لا يمكن فتح إدارة البيانات على الاستضافة بدون تسجيل الأدمن.");
+    return;
+  }
+
+  const { error } = await client.auth.signInWithPassword({
+    email: ADMIN_EMAIL,
+    password: ADMIN_PASSWORD
+  });
+  if (error) {
+    if (isLocalPreview() && /email|signup|fetch|network|disabled|rate limit|too many/i.test(error.message || '')) {
+      showAdminDashboard('local');
       return;
     }
+    alert(`تعذر تسجيل دخول الأدمن إلى Supabase: ${error.message}`);
+    return;
   }
-  document.getElementById("adminLoginForm").reset();
-  document.getElementById("login").style.display="none";
-  document.getElementById("dashboard").style.display="block";
-  init();
+  showAdminDashboard('supabase');
 };
 
 document.getElementById("adminLoginForm").addEventListener("submit", event => {
@@ -296,6 +359,7 @@ async function init(){
 }
 </script>
 <script src="./admin-catalog.js"></script>
+<script src="./admin-reviews.js"></script>
 
 <script>
   // Non-invasive enhancements: last updated + refresh button

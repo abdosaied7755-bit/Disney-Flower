@@ -1,0 +1,73 @@
+<svg width="640" height="500" viewBox="0 0 640 500" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">تجارب عملاء Market Online</title>
+  <desc id="desc">رسم توضيحي لسلة تسوق وأشخاص يشاركون تقييماتهم</desc>
+  <defs>
+    <linearGradient id="bag" x1="172" y1="157" x2="405" y2="407" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D8F3D1"/>
+      <stop offset="1" stop-color="#7BD397"/>
+    </linearGradient>
+    <linearGradient id="bagShade" x1="220" y1="232" x2="400" y2="412" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#11956E"/>
+      <stop offset="1" stop-color="#05634F"/>
+    </linearGradient>
+    <linearGradient id="bubble" x1="100" y1="65" x2="243" y2="148" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF4C6"/>
+      <stop offset="1" stop-color="#FFE09A"/>
+    </linearGradient>
+    <filter id="shadow" x="0" y="0" width="640" height="500" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#003D32" flood-opacity=".22"/>
+    </filter>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+  </defs>
+
+  <circle cx="332" cy="250" r="190" fill="#8FDF9B" fill-opacity=".18"/>
+  <circle cx="332" cy="250" r="150" fill="#FFE2A0" fill-opacity=".10"/>
+  <path d="M48 410C115 332 190 326 251 361C314 397 385 433 483 372C532 342 574 339 613 359" stroke="#B9F0C0" stroke-opacity=".28" stroke-width="2" stroke-dasharray="7 12"/>
+  <g opacity=".7" fill="#FFD77F">
+    <circle cx="83" cy="201" r="5"/><circle cx="541" cy="136" r="4"/><circle cx="492" cy="424" r="6"/>
+  </g>
+
+  <g class="hero-person hero-person-left">
+    <circle cx="128" cy="317" r="54" fill="#FFE1C4"/>
+    <path d="M77 308C82 254 145 237 177 283C169 266 151 258 128 258C95 258 73 279 77 308Z" fill="#214C41"/>
+    <path d="M62 412C70 353 96 331 128 331C160 331 186 353 194 412H62Z" fill="#F4AD37"/>
+    <path d="M92 322C101 340 112 349 128 349C144 349 156 340 164 322C151 329 140 333 128 333C116 333 104 329 92 322Z" fill="#F5B98F"/>
+    <circle cx="108" cy="308" r="4" fill="#173F35"/><circle cx="148" cy="308" r="4" fill="#173F35"/>
+    <path d="M117 323C124 328 132 328 139 323" stroke="#B8735A" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <g class="hero-person hero-person-right">
+    <circle cx="506" cy="310" r="49" fill="#C88661"/>
+    <path d="M461 299C460 254 490 234 524 245C547 253 558 274 551 306C537 286 524 275 499 275C486 275 473 283 461 299Z" fill="#082F2A"/>
+    <path d="M442 417C448 357 472 333 506 333C540 333 565 357 571 417H442Z" fill="#B8E6C2"/>
+    <circle cx="486" cy="309" r="4" fill="#173F35"/><circle cx="526" cy="309" r="4" fill="#173F35"/>
+    <path d="M494 324C501 329 509 329 516 324" stroke="#7A4B3B" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <path d="M189 196H414L397 395C395 416 378 432 357 432H245C224 432 207 416 205 395L189 196Z" fill="url(#bag)"/>
+    <path d="M227 199C227 143 257 113 302 113C347 113 377 143 377 199" stroke="#D8F3D1" stroke-width="18" stroke-linecap="round"/>
+    <path d="M212 244C252 271 302 282 352 273C376 269 395 261 411 250L397 395C395 416 378 432 357 432H245C224 432 207 416 205 395L212 244Z" fill="url(#bagShade)"/>
+    <path d="M253 280L294 325L357 251" stroke="#FFF7DD" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M256 362C283 379 322 384 355 369" stroke="#A9E9AF" stroke-opacity=".65" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <g class="hero-rating-bubble" filter="url(#shadow)">
+    <path d="M84 75C84 56 99 41 118 41H237C256 41 271 56 271 75V118C271 137 256 152 237 152H151L123 177L126 152H118C99 152 84 137 84 118V75Z" fill="url(#bubble)"/>
+    <g fill="#ECA52D"><path d="M121 76L126 88L139 89L129 97L132 110L121 103L110 110L113 97L103 89L116 88L121 76Z"/><path d="M154 76L159 88L172 89L162 97L165 110L154 103L143 110L146 97L136 89L149 88L154 76Z"/><path d="M187 76L192 88L205 89L195 97L198 110L187 103L176 110L179 97L169 89L182 88L187 76Z"/><path d="M220 76L225 88L238 89L228 97L231 110L220 103L209 110L212 97L202 89L215 88L220 76Z"/></g>
+    <path d="M132 127C148 136 166 136 182 127" stroke="#0B8A62" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <g class="hero-quote-bubble" filter="url(#shadow)">
+    <path d="M434 64C434 49 446 37 461 37H570C585 37 597 49 597 64V105C597 120 585 132 570 132H524L501 153L504 132H461C446 132 434 120 434 105V64Z" fill="#FFFFFF" fill-opacity=".94"/>
+    <circle cx="467" cy="84" r="15" fill="#DDF3DE"/><path d="M461 84L466 89L475 78" stroke="#0B8A62" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M495 78H563M495 91H549M495 104H536" stroke="#0B8A62" stroke-opacity=".5" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <g class="hero-sparkle" fill="#FFE2A0">
+    <path d="M574 224L580 239L595 245L580 251L574 266L568 251L553 245L568 239L574 224Z"/>
+    <path d="M90 224L94 234L104 238L94 242L90 252L86 242L76 238L86 234L90 224Z"/>
+  </g>
+</svg>

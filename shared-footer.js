@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </h3>
           <ul class="footer-links">
             <li><a href="games.html"><i class="fas fa-chevron-left"></i> جميع الأقسام</a></li>
-            <li><a href="index.html#offers"><i class="fas fa-chevron-left"></i> العروض الخاصة</a></li>
+            <li><a href="offers.html"><i class="fas fa-chevron-left"></i> العروض الخاصة</a></li><li><a href="reviews.html"><i class="fas fa-chevron-left"></i> آراء العملاء</a></li>
             <li><a href="index.html#delivery"><i class="fas fa-chevron-left"></i> التوصيل</a></li>
             <li><a href="games.html"><i class="fas fa-chevron-left"></i> تسوق الآن</a></li>
             <li><a href="index.html#about"><i class="fas fa-chevron-left"></i> التوصيل والدعم</a></li>
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <ul class="footer-links">
             <li><a href="game-detail.html?category=produce"><i class="fas fa-apple-whole"></i><span>خضار وفاكهة</span></a></li>
             <li><a href="game-detail.html?category=pantry"><i class="fas fa-basket-shopping"></i><span>بقالة أساسية</span></a></li>
-            <li><a href="index.html#offers"><i class="fas fa-tags"></i><span>عروض الأسبوع</span></a></li>
+            <li><a href="offers.html"><i class="fas fa-tags"></i><span>عروض الأسبوع</span></a></li><li><a href="reviews.html"><i class="fas fa-star"></i><span>آراء العملاء</span></a></li>
             <li><a href="game-detail.html?category=care"><i class="fas fa-spray-can-sparkles"></i><span>تنظيف وعناية</span></a></li>
             <li><a href="index.html#delivery"><i class="fas fa-truck-fast"></i><span>التوصيل</span></a></li>
             <li><a href="index.html#about"><i class="fas fa-store"></i><span>من نحن</span></a></li>
@@ -334,11 +334,33 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 `;
 
-  // Insert footer HTML
+  const compactFooterHTML = `
+  <footer class="compact-footer" aria-label="تذييل مختصر">
+    <div class="compact-footer-inner">
+      <a class="compact-footer-brand" href="index.html">
+        <img src="./icons/icon.png" alt="">
+        <span>Market Online</span>
+      </a>
+      <nav class="compact-footer-links" aria-label="روابط سريعة">
+        <a href="index.html">الرئيسية</a>
+        <a href="games.html">الأقسام</a>
+        <a href="offers.html">العروض</a>
+        <a href="reviews.html">آراء العملاء</a>
+      </nav>
+      <span class="compact-footer-copy">© 2025 Market Online</span>
+    </div>
+  </footer>
+`;
+
+  // الصفحة الرئيسية فقط تستخدم الفوتر الكامل؛ باقي الصفحات تستخدم النسخة المختصرة.
   const footerPlaceholder = document.getElementById('footer-placeholder');
   if (footerPlaceholder) {
-    footerPlaceholder.innerHTML = footerHTML;
-    console.log('✅ Footer HTML injected');
+    const footerVariant = footerPlaceholder.dataset.footerVariant || 'compact';
+    const chatAndExtras = footerHTML.slice(footerHTML.indexOf('<!-- Floating Chatbot CTA -->'));
+    footerPlaceholder.innerHTML = footerVariant === 'full'
+      ? footerHTML
+      : compactFooterHTML + chatAndExtras;
+    console.log(`✅ ${footerVariant === 'full' ? 'Full' : 'Compact'} footer HTML injected`);
   }
 
   // Initialize newsletter subscription handler

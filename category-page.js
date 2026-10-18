@@ -105,6 +105,23 @@ marketCategories.forEach(category => {
   }
 });
 
+const localOfferSeeds = {
+  produce: { name: 'سلة فاكهة موسمية', oldPrice: 125 },
+  pantry: { name: 'أرز مصري فاخر', oldPrice: 52 },
+  drinks: { name: 'قهوة مطحونة', oldPrice: 105 },
+  dairy: { name: 'لبن كامل الدسم', oldPrice: 55 },
+  care: { name: 'منظف متعدد الاستخدام', oldPrice: 84 },
+  kitchen: { name: 'طقم علب حفظ', oldPrice: 165 }
+};
+
+marketCategories.forEach(category => {
+  const offer = localOfferSeeds[category.id];
+  const product = offer && category.products.find(item => item.name === offer.name);
+  if (!product || !(offer.oldPrice > product.price)) return;
+  product.oldPrice = offer.oldPrice;
+  product.isSpecialOffer = true;
+});
+
 (function initCategoryStore() {
   const categoryCards = document.getElementById('categoryCards');
   const productView = document.getElementById('productView');

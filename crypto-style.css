@@ -8466,3 +8466,22 @@ body :is(.online-games,
     padding: 12px 15px;
   }
 }
+
+/* Empty cart checkout state */
+.cart-actions-premium #cartCheckout:disabled,
+.cart-actions-premium #cartCheckout.is-disabled {
+  background: #94a79d !important;
+  border-color: #94a79d !important;
+  color: #edf3ef !important;
+  opacity: .72;
+  cursor: not-allowed;
+  filter: grayscale(.2);
+  box-shadow: none !important;
+  transform: none !important;
+}
+.cart-actions-premium #cartCheckout:disabled:hover,
+.cart-actions-premium #cartCheckout.is-disabled:hover {
+  background: #94a79d !important;
+  color: #edf3ef !important;
+  transform: none !important;
+}
