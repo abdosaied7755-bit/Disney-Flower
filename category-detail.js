@@ -1,4 +1,5 @@
 (async function initCategoryDetail() {
+  const disneyFallbackImage = 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1400&q=86';
   const categoryId = new URLSearchParams(window.location.search).get('category');
   const requestedProduct = new URLSearchParams(window.location.search).get('product');
   const categories = window.marketCategories || [];
@@ -20,14 +21,14 @@
     if (!category) return;
     const products = category.products || [];
     const childCategories = category.children || [];
-    document.title = `Market Online - ${category.name}`;
+    document.title = `Disney - ${category.name}`;
     title.textContent = category.name;
     description.textContent = `${category.description} - اختيارات مختارة بأسعار واضحة وتوصيل سريع.`;
     count.textContent = `${(category.allProducts || products).filter(product => product.isActive !== false).length} منتجات داخل القسم`;
     const childCards = childCategories.map(child => `<a class='nested-category-card' href='game-detail.html?category=${encodeURIComponent(child.id)}'><div class='nested-category-card-image' style='background-image:url(${child.image || child.products?.[0]?.image || ''})'></div><div class='nested-category-card-content'><h3>${child.name}</h3><p>${child.description || ''}</p><strong>${child.allProducts?.length || child.products?.length || 0} منتجات <i class='fas fa-arrow-left'></i></strong></div></a>`).join('');
     const productCards = products.map((product, index) => `
     <article class="product-card${product.isActive === false ? ' is-unavailable' : ''}" data-product-index="${index}" aria-disabled="${product.isActive === false}">
-      <div class="product-card-image" style="background-image:url('${product.image}')"></div>
+      <div class="product-card-image" style="background-image:url('${product.image || "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1400&q=86"}')"></div>
       <div class="product-card-body">
         <h3>${product.name}</h3><span class="product-unit">${product.unit}</span><strong class="product-price">${money(product.price)}</strong>
         ${product.isActive === false ? '<strong class="product-unavailable-label">غير متاح</strong>' : '<div class="product-actions"><div class="quantity-control"><button type="button" data-action="decrease" aria-label="تقليل الكمية">-</button><output>1</output><button type="button" data-action="increase" aria-label="زيادة الكمية">+</button></div><button class="product-add-btn" type="button" data-action="add"><i class="fas fa-cart-plus"></i> أضف للسلة</button><button class="product-buy-btn" type="button" data-action="buy"><i class="fab fa-whatsapp"></i> شراء</button></div>'}
@@ -76,20 +77,20 @@
     card.querySelector('[data-action="decrease"]').addEventListener('click', () => { output.value = Math.max(1, quantity() - 1); output.textContent = output.value; });
     card.querySelector('[data-action="add"]').addEventListener('click', () => {
       const cart = getCart();
-      const id = `market_${category.id}_${product.name}`;
+      const id = `disney_${product.id || `${category.id}_${product.name}`}`;
       const existing = cart.find(item => item.id === id);
       if (existing) existing.quantity = (existing.quantity || 1) + quantity();
-      else cart.push({ id, type: 'market', key: category.id, name: product.name, priceEGP: product.price, img: product.image, quantity: quantity() });
+      else cart.push({ id, type: 'disney', key: category.id, productId: product.id || null, name: product.name, priceEGP: product.price, oldPriceEGP: product.oldPrice || null, img: product.image || 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1400&q=86', quantity: quantity() });
       saveCart(cart);
       card.classList.remove('is-added');
       requestAnimationFrame(() => card.classList.add('is-added'));
     });
     card.querySelector('[data-action="buy"]').addEventListener('click', () => {
       const cart = getCart();
-      const id = `market_${category.id}_${product.name}`;
+      const id = `disney_${product.id || `${category.id}_${product.name}`}`;
       const existing = cart.find(item => item.id === id);
       if (existing) existing.quantity = (existing.quantity || 1) + quantity();
-      else cart.push({ id, type: 'market', key: category.id, name: product.name, priceEGP: product.price, img: product.image, quantity: quantity() });
+      else cart.push({ id, type: 'disney', key: category.id, productId: product.id || null, name: product.name, priceEGP: product.price, oldPriceEGP: product.oldPrice || null, img: product.image || 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1400&q=86', quantity: quantity() });
       saveCart(cart);
       window.location.href = 'checkout.html';
     });

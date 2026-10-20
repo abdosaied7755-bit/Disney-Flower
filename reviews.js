@@ -2,44 +2,7 @@
   'use strict';
 
   const STORAGE_KEY = 'marketCustomerReviews';
-  const DEMO_REVIEWS = [
-    {
-      id: 'demo-review-1',
-      customer_id: 'demo-sarah',
-      customer_name: 'سارة محمد',
-      customer_email: '',
-      rating: 5,
-      review_text: 'الطلب وصل مرتب وفي معاده، والخضار كان طازة جدًا. عجبني كمان إن الأسعار والعروض كانت واضحة من غير مفاجآت.',
-      is_published: true,
-      is_featured: true,
-      admin_reply: 'سعداء إن التجربة عجبتك يا سارة، ونستناكي في طلباتك الجاية.',
-      created_at: '2026-09-28T10:30:00.000Z'
-    },
-    {
-      id: 'demo-review-2',
-      customer_id: 'demo-ahmed',
-      customer_name: 'أحمد السيد',
-      customer_email: '',
-      rating: 4,
-      review_text: 'التصفح سهل جدًا والسلة والدفع خلصوا بسرعة. أتمنى أشوف اختيارات أكتر من منتجات الألبان قريب.',
-      is_published: true,
-      is_featured: false,
-      admin_reply: 'ملاحظتك وصلت، وبنشتغل على توسيع اختيارات الألبان قريبًا.',
-      created_at: '2026-09-21T15:10:00.000Z'
-    },
-    {
-      id: 'demo-review-3',
-      customer_id: 'demo-mariam',
-      customer_name: 'مريم حسن',
-      customer_email: '',
-      rating: 5,
-      review_text: 'من أحسن الحاجات إن كل حاجة وصلت متغلفة كويس. خدمة العملاء ردت عليا بسرعة والتوصيل كان محترم جدًا.',
-      is_published: true,
-      is_featured: true,
-      admin_reply: '',
-      created_at: '2026-09-14T12:45:00.000Z'
-    }
-  ];
+  const DEMO_REVIEWS = [];
 
   const state = { reviews: [], query: '', filter: 'all', source: 'local' };
 
@@ -80,8 +43,7 @@
     } catch (error) {
       console.warn('تعذر قراءة التقييمات المحلية', error);
     }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(DEMO_REVIEWS));
-    return [...DEMO_REVIEWS];
+    return [];
   };
 
   const starsMarkup = (rating) => {
@@ -113,12 +75,12 @@
 
     grid.innerHTML = filtered.map(review => {
       const featured = review.is_featured ? '<span class="review-featured-label"><i class="fas fa-crown"></i> تجربة مميزة</span>' : '';
-      const reply = review.admin_reply ? '<div class="review-admin-reply"><strong><i class="fas fa-reply"></i> رد Market Online</strong>' + escapeHtml(review.admin_reply) + '</div>' : '';
+      const reply = review.admin_reply ? '<div class="review-admin-reply"><strong><i class="fas fa-reply"></i> رد Disney</strong>' + escapeHtml(review.admin_reply) + '</div>' : '';
       const safeRating = Math.max(0, Math.min(5, Number(review.rating) || 0));
       return '<article class="review-card ' + (review.is_featured ? 'featured' : '') + '">' +
         featured +
         '<div class="review-card-head"><span class="review-avatar">' + escapeHtml(initials(review.customer_name)) + '</span>' +
-        '<div><strong class="review-card-name">' + escapeHtml(review.customer_name || 'عميل Market Online') + '</strong><span class="review-card-date">' + escapeHtml(formatDate(review.created_at)) + '</span></div>' +
+        '<div><strong class="review-card-name">' + escapeHtml(review.customer_name || 'عميل Disney') + '</strong><span class="review-card-date">' + escapeHtml(formatDate(review.created_at)) + '</span></div>' +
         '<div class="review-card-stars" aria-label="' + safeRating + ' من 5 نجوم"><span class="review-card-stars-icons">' + starsMarkup(safeRating) + '</span><strong class="review-card-rating-text">' + safeRating + '/5</strong></div></div>' +
         '<p class="review-card-text">' + escapeHtml(review.review_text) + '</p>' + reply + '</article>';
     }).join('');
@@ -145,7 +107,7 @@
     form.hidden = !loggedIn;
 
     if (loggedIn) {
-      const name = user.name || 'عميل Market Online';
+      const name = user.name || 'عميل Disney';
       userName.textContent = name;
       userAvatar.textContent = initials(name).charAt(0);
     }
@@ -219,7 +181,7 @@
 
     const payload = {
       customer_id: String(user.id || user.email || ('local-' + Date.now())),
-      customer_name: String(user.name || 'عميل Market Online').trim(),
+      customer_name: String(user.name || 'عميل Disney').trim(),
       customer_email: String(user.email || '').trim(),
       rating,
       review_text: text,

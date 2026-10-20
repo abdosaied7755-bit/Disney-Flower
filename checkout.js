@@ -28,8 +28,8 @@
     const heading = invoiceCard.querySelector('.invoice-heading');
     const logo = document.createElement('img');
     logo.className = 'invoice-receipt-logo';
-    logo.src = './icons/icon.png';
-    logo.alt = 'Market Online';
+    logo.src = './Assets/disny.png';
+    logo.alt = 'Disney Flower';
     heading.prepend(logo);
 
     const customerBox = document.createElement('div');
@@ -66,7 +66,7 @@
 
     const stamp = document.createElement('div');
     stamp.className = 'invoice-stamp';
-    stamp.textContent = 'Market Online';
+    stamp.textContent = 'Disney';
     invoiceCard.appendChild(stamp);
 
     const actions = document.createElement('div');
@@ -184,7 +184,7 @@
     };
     const subtotal = cart.reduce((sum, item) => sum + itemPrice(item) * itemQuantity(item), 0);
     const total = subtotal + deliveryFee;
-    const logo = await imageToDataUrl('./icons/icon.png');
+    const logo = await imageToDataUrl('./Assets/disny.png');
     const productRows = await Promise.all(cart.map(async item => {
       const image = await imageToDataUrl(item.img);
       return [
@@ -196,8 +196,8 @@
         image ? { image, fit: [54, 54], alignment: 'right' } : { text: '' }
       ];
     }));
-    const boxLayout = { hLineWidth: () => 0.7, vLineWidth: () => 0.7, hLineColor: () => '#8fdda9', vLineColor: () => '#8fdda9', paddingLeft: () => 10, paddingRight: () => 10, paddingTop: () => 7, paddingBottom: () => 7, fillColor: () => '#f1f8ea' };
-    const lineLayout = { hLineWidth: () => 0.6, vLineWidth: () => 0.6, hLineColor: () => '#8fdda9', vLineColor: () => '#8fdda9', paddingLeft: () => 8, paddingRight: () => 8, paddingTop: () => 9, paddingBottom: () => 9 };
+    const boxLayout = { hLineWidth: () => 0.7, vLineWidth: () => 0.7, hLineColor: () => '#8fdda9', vLineColor: () => '#8fdda9', paddingLeft: () => 10, paddingRight: () => 10, paddingTop: () => 12, paddingBottom: () => 12, fillColor: () => '#f1f8ea' };
+    const lineLayout = { hLineWidth: () => 0.6, vLineWidth: () => 0.6, hLineColor: () => '#8fdda9', vLineColor: () => '#8fdda9', paddingLeft: () => 8, paddingRight: () => 8, paddingTop: () => 11, paddingBottom: () => 11 };
     const docDefinition = {
       pageSize: 'A4',
       pageMargins: [24, 24, 24, 24],
@@ -215,7 +215,7 @@
       },
       content: [
         { columns: [
-          { width: '*', stack: [{ text: 'Market Online', style: 'brand', alignment: 'right' }, { text: label.title, style: 'title', alignment: 'right' }] },
+          { width: '*', stack: [{ text: 'Disney', style: 'brand', alignment: 'right' }, { text: label.title, style: 'title', alignment: 'right' }] },
           logo ? { width: 54, image: logo, fit: [48, 48], alignment: 'right' } : { width: 54, text: '' }
         ], columnGap: 10, margin: [0, 0, 0, 8] },
         { canvas: [{ type: 'line', x1: 0, y1: 0, x2: 547, y2: 0, lineWidth: 0.7, lineColor: '#8fdda9' }], margin: [0, 0, 0, 10] },
@@ -232,7 +232,7 @@
           [{ text: pdfMoney(deliveryFee), alignment: 'left' }, { text: label.delivery, alignment: 'right' }],
           [{ text: pdfMoney(total), alignment: 'left', style: 'total' }, { text: label.total, alignment: 'right', style: 'total' }]
         ] }, layout: lineLayout, margin: [0, 0, 0, 12] },
-        { text: 'Market Online', alignment: 'center', style: 'stamp' }
+        { text: 'Disney', alignment: 'center', style: 'stamp' }
       ]
     };
     const blob = await new Promise(resolve => pdfMake.createPdf(docDefinition).getBlob(resolve));
@@ -348,7 +348,7 @@
       && navigator.canShare({ files: [file] });
     if (!canShareFile) return false;
     try {
-      await navigator.share({ title: 'Market Online', text: message, files: [file] });
+      await navigator.share({ title: 'Disney', text: message, files: [file] });
       return true;
     } catch (error) {
       return false;
@@ -387,7 +387,7 @@
 
   renderInvoice();
 
-  form.addEventListener('submit', event => {
+    form.addEventListener('submit', async event => {
     event.preventDefault();
     if (!cart.length) return;
     const values = Object.fromEntries(new FormData(form));
@@ -399,13 +399,13 @@
     errorElement.textContent = '';
     const subtotal = cart.reduce((sum, item) => sum + itemPrice(item) * itemQuantity(item), 0);
     const total = subtotal + deliveryFee;
+    const submitButton = form.querySelector('.checkout-submit');
+    submitButton.disabled = true;
     const lines = cart.map(item => `• ${item.name} × ${itemQuantity(item)} = ${money(itemPrice(item) * itemQuantity(item))}`).join('\n');
     const sentAt = new Date();
     updateReceiptMeta(sentAt);
-    const message = `السلام عليكم، عايز أأكد الطلب ده من Market Online:\n\nاسم العميل: ${values.customerName}\nالعنوان: ${values.customerAddress}\nرقم الموبايل: ${phone}\nالتاريخ والوقت: ${receiptDateTime(sentAt)}\n\nالأصناف:\n${lines}\n\nإجمالي المنتجات: ${money(subtotal)}\nالتوصيل: ${money(deliveryFee)}\nالإجمالي النهائي: ${money(total)}`;
-    const submitButton = form.querySelector('.checkout-submit');
-    submitButton.disabled = true;
-    window.open(`https://wa.me/201034046979?text=${encodeURIComponent(message)}`, '_blank');
+    const message = `السلام عليكم، عايز أأكد الطلب ده من Disney:\n\nرقم الطلب: ${orderNumber}\nاسم العميل: ${values.customerName}\nالعنوان: ${values.customerAddress}\nرقم الموبايل: ${phone}${values.giftMessage ? `\nرسالة الإهداء: ${values.giftMessage}` : ''}${values.deliveryDate ? `\nتاريخ التوصيل: ${values.deliveryDate}` : ''}${values.deliverySlot ? `\nالفترة: ${values.deliverySlot}` : ''}${values.deliveryInstructions ? `\nتعليمات: ${values.deliveryInstructions}` : ''}\nالتاريخ والوقت: ${receiptDateTime(sentAt)}\n\nالأصناف:\n${lines}\n\nإجمالي المنتجات: ${money(subtotal)}\nالتوصيل: ${money(deliveryFee)}\nالإجمالي النهائي: ${money(total)}`;
+    window.open(`https://wa.me/201004896232?text=${encodeURIComponent(message)}`, '_blank');
     localStorage.removeItem('gameCart');
     submitButton.disabled = false;
   });

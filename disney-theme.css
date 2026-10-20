@@ -1,0 +1,139 @@
+:root {
+  --disney-pink: #f4a7c1;
+  --disney-pink-soft: #fce6ee;
+  --disney-pink-pale: #fff0f5;
+  --disney-wine: #8e244d;
+  --disney-wine-dark: #681b39;
+  --disney-cream: #fff8f2;
+  --disney-ink: #33232b;
+  --disney-muted: #765b67;
+  --disney-border: rgba(142, 36, 77, .16);
+  --disney-shadow: 0 20px 60px rgba(104, 27, 57, .13);
+  --disney-radius: 22px;
+  --disney-font: "Tajawal", "Rubik", system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body, button, input, textarea, select { font-family: var(--disney-font) !important; }
+body.market-home, body.checkout-page { background: var(--disney-cream) !important; color: var(--disney-ink) !important; }
+.video-background { display: none !important; }
+
+.market-home .navbar,
+.category-page .navbar,
+.checkout-header { background: rgba(255, 248, 242, .96) !important; border-bottom: 1px solid var(--disney-border) !important; box-shadow: 0 8px 28px rgba(104, 27, 57, .08) !important; backdrop-filter: blur(18px); }
+.nav-content { min-height: 76px; }
+.nav-logo img, .checkout-brand img, .fotimg, .compact-footer-brand img, .loader-logo-icon, .pwa-modal-logo, .invoice-receipt-logo { object-fit: contain; }
+.nav-logo img { width: 68px !important; height: 68px !important; border-radius: 18px; }
+.nav-logo::after { content: "Disney"; display: none; color: var(--disney-wine); font-family: Georgia, serif; font-size: 1.35rem; font-weight: 700; }
+.nav-menu a { color: var(--disney-ink) !important; font-weight: 700; }
+.nav-menu a:hover, .nav-menu a.active { color: var(--disney-wine) !important; }
+.nav-menu a::after { background: var(--disney-pink) !important; }
+.nav-tools button, .login-btn { color: var(--disney-wine) !important; }
+.cart-icon-btn { border-color: var(--disney-border) !important; background: #fff !important; }
+.cart-badge { background: var(--disney-wine) !important; color: #fff !important; }
+.login-btn { border-color: var(--disney-border) !important; background: var(--disney-pink-soft) !important; }
+.burger-btn span { background: var(--disney-wine) !important; }
+
+.market-hero { min-height: 720px !important; background: linear-gradient(135deg, #fff8f2 0%, #fce6ee 56%, #f4a7c1 100%) !important; }
+.market-hero-slides::after { background: linear-gradient(90deg, rgba(255,248,242,.96), rgba(255,248,242,.65) 44%, rgba(255,248,242,.06)) !important; }
+.market-hero-slide { background-position: center; }
+.market-hero-copy { max-width: 590px !important; padding: 34px !important; border: 1px solid rgba(142,36,77,.14) !important; border-radius: 28px !important; background: rgba(255,248,242,.88) !important; box-shadow: var(--disney-shadow) !important; }
+.market-kicker, .section-badge { background: var(--disney-pink-soft) !important; border-color: var(--disney-pink) !important; color: var(--disney-wine) !important; }
+.market-hero-copy h1, .market-hero-copy h1 span { color: var(--disney-wine-dark) !important; }
+.market-hero-copy h1 span, .gradient-text, .market-discovery-header h2 span, .delivery-copy h2 span { color: var(--disney-wine) !important; }
+.market-hero-copy p, .delivery-copy p, .market-discovery-header p { color: var(--disney-muted) !important; }
+.market-search { border-color: var(--disney-border) !important; background: #fff !important; box-shadow: 0 14px 32px rgba(104,27,57,.08) !important; }
+.market-search-field input { color: var(--disney-ink) !important; }
+.market-search-btn, .btn-primary-gradient, .game-card-btn, .product-add-btn, .checkout-submit, .reviews-primary-btn { background: linear-gradient(135deg, var(--disney-wine), #b83f6b) !important; border-color: var(--disney-wine) !important; color: #fff !important; box-shadow: 0 12px 24px rgba(142,36,77,.18) !important; }
+.market-search-btn:hover, .btn-primary-gradient:hover, .game-card-btn:hover, .product-add-btn:hover, .checkout-submit:hover, .reviews-primary-btn:hover { background: linear-gradient(135deg, var(--disney-wine-dark), var(--disney-wine)) !important; transform: translateY(-2px); }
+.market-install-btn { border-color: var(--disney-pink) !important; background: #fff !important; color: var(--disney-wine) !important; }
+.market-hero-highlights i, .delivery-note i, .delivery-benefits i, .market-discovery-strip i { color: var(--disney-wine) !important; }
+.market-product-collage { filter: drop-shadow(0 22px 38px rgba(104,27,57,.15)); }
+.hero-product { border-color: rgba(255,255,255,.88) !important; box-shadow: 0 18px 38px rgba(104,27,57,.18) !important; }
+.hero-product-brand { background: rgba(255,248,242,.95) !important; color: var(--disney-wine) !important; border-color: var(--disney-pink) !important; }
+.market-floating-card { border-color: var(--disney-border) !important; background: rgba(255,248,242,.94) !important; color: var(--disney-wine) !important; box-shadow: var(--disney-shadow) !important; }
+.market-floating-card i { color: var(--disney-wine) !important; }
+
+.market-discovery, .delivery-feature, .market-products, .market-delivery-section { background: var(--disney-cream) !important; color: var(--disney-ink) !important; }
+.market-discovery { padding-top: 92px !important; }
+.market-feature-deal { border-radius: 28px !important; box-shadow: var(--disney-shadow) !important; background: var(--disney-wine) !important; }
+.market-feature-deal-content h3, .market-feature-deal-content p { color: #fff !important; }
+.market-deal-label { background: var(--disney-pink) !important; color: var(--disney-wine-dark) !important; }
+.market-department-panel, .market-department-card, .market-discovery-strip, .game-showcase-card, .market-live-panel, .market-order-step { border-color: var(--disney-border) !important; background: #fff !important; color: var(--disney-ink) !important; box-shadow: 0 12px 32px rgba(104,27,57,.07) !important; }
+.market-department-card:hover, .market-order-step:hover { border-color: var(--disney-pink) !important; background: var(--disney-pink-soft) !important; }
+.market-department-card i, .market-department-card strong, .market-panel-heading a { color: var(--disney-wine) !important; }
+.market-department-card small, .market-discovery-strip { color: var(--disney-muted) !important; }
+.department-produce, .department-pantry, .department-drinks, .department-dairy, .department-care, .department-home { background: var(--disney-pink-pale) !important; }
+.delivery-feature { background: linear-gradient(135deg, #fff8f2, #fce6ee) !important; }
+.delivery-copy h2 { color: var(--disney-wine-dark) !important; }
+.delivery-benefits span { border-color: var(--disney-border) !important; background: rgba(255,255,255,.8) !important; }
+.delivery-glow { background: var(--disney-pink) !important; box-shadow: 0 25px 60px rgba(142,36,77,.17) !important; }
+.market-home .delivery-bike-image { filter: saturate(.85) hue-rotate(290deg) !important; }
+
+.market-products { padding-top: 92px !important; }
+.section-title-modern, .section-title-modern span { color: var(--disney-wine-dark) !important; }
+.game-showcase-card { overflow: hidden; border-radius: var(--disney-radius) !important; }
+.game-card-image { background-color: var(--disney-pink-soft) !important; }
+.game-card-content, .game-card-title { color: var(--disney-ink) !important; }
+.game-card-stats i, .price-label { color: var(--disney-wine) !important; }
+.game-card-badge, .special-offer-badge { background: var(--disney-wine) !important; color: #fff !important; }
+.game-card-badge.discount-badge, .game-card-badge.new-badge, .game-card-badge.trending-badge { background: var(--disney-pink) !important; color: var(--disney-wine-dark) !important; }
+.catalog-old-price, .product-old-price { color: #9c7888 !important; }
+
+.cart-drawer-premium { background: var(--disney-cream) !important; border-inline-start: 1px solid var(--disney-border) !important; box-shadow: -20px 0 60px rgba(104,27,57,.15) !important; }
+.cart-header-premium { background: linear-gradient(135deg, var(--disney-wine), #b83f6b) !important; }
+.cart-item-premium, .cart-summary { border-color: var(--disney-border) !important; background: #fff !important; }
+.cart-total, #cartTotal { color: var(--disney-wine) !important; }
+
+.category-page, .category-detail-page, .offers-page, .reviews-page { background: var(--disney-cream) !important; }
+.category-hero, .offers-hero, .reviews-hero { background: linear-gradient(135deg, #fff8f2, #fce6ee) !important; }
+.category-card, .product-card, .offers-card, .review-card, .review-composer-card, .reviews-list-panel { border-color: var(--disney-border) !important; border-radius: var(--disney-radius) !important; background: #fff !important; box-shadow: 0 14px 32px rgba(104,27,57,.07) !important; }
+.category-card:hover, .product-card:hover, .offers-card:hover { border-color: var(--disney-pink) !important; box-shadow: var(--disney-shadow) !important; }
+.category-card h3, .product-card h3, .offers-card h3, .reviews-section h2, .reviews-hero h1 { color: var(--disney-wine-dark) !important; }
+.category-card-meta strong, .product-price, .offers-price, .review-card-stars, .reviews-stats strong { color: var(--disney-wine) !important; }
+.product-card-image, .category-card-image, .offers-card-image { background-color: var(--disney-pink-soft) !important; }
+.product-add-btn, .product-buy-btn { border-radius: 12px !important; }
+.product-buy-btn { background: var(--disney-pink-soft) !important; border-color: var(--disney-pink) !important; color: var(--disney-wine) !important; }
+
+.checkout-page { min-height: 100vh; }
+.checkout-header { padding: 12px clamp(16px, 4vw, 60px) !important; }
+.checkout-brand { color: var(--disney-wine) !important; font-family: Georgia, serif !important; }
+.checkout-main { background: var(--disney-cream) !important; }
+.customer-form, .invoice-card { border-color: var(--disney-border) !important; background: #fff !important; box-shadow: var(--disney-shadow) !important; }
+.customer-form input, .customer-form textarea { border-color: var(--disney-border) !important; color: var(--disney-ink) !important; }
+.customer-form input:focus, .customer-form textarea:focus { border-color: var(--disney-pink) !important; box-shadow: 0 0 0 4px rgba(244,167,193,.22) !important; }
+.invoice-heading { border-color: var(--disney-border) !important; }
+.invoice-heading > div > span, .invoice-stamp { color: var(--disney-wine) !important; }
+.invoice-totals, .invoice-item { border-color: var(--disney-border) !important; }
+
+.auth-modal, .auth-overlay { --auth-primary: var(--disney-wine); }
+.auth-tab.active, .auth-submit, .auth-btn-primary { background: var(--disney-wine) !important; color: #fff !important; }
+.auth-form-container input:focus { border-color: var(--disney-pink) !important; box-shadow: 0 0 0 3px rgba(244,167,193,.22) !important; }
+
+.advanced-footer, .compact-footer { background: var(--disney-wine-dark) !important; color: #fff !important; }
+.advanced-footer .baraka-brand, .compact-footer-brand span, .advanced-footer a:hover { color: var(--disney-pink) !important; }
+.footer-contact .contact-value, .footer-contact .contact-label { color: #fff !important; }
+.footer-newsletter { border-color: rgba(244,167,193,.28) !important; background: rgba(255,255,255,.08) !important; }
+
+img { max-width: 100%; }
+img[src*="images.unsplash.com"], img[src*="loremflickr.com"] { background: var(--disney-pink-soft); }
+button, a, input, textarea, select { transition: color .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease; }
+:focus-visible { outline: 3px solid var(--disney-pink) !important; outline-offset: 3px; }
+
+@media (max-width: 850px) {
+  .market-hero { min-height: auto !important; padding: 130px 0 70px !important; }
+  .market-hero-grid { grid-template-columns: 1fr !important; }
+  .market-hero-copy { margin-inline: auto; }
+  .market-hero-visual { min-height: 440px; order: -1; }
+  .market-discovery-layout { grid-template-columns: 1fr !important; }
+  .market-feature-deal { min-height: 360px !important; }
+  .market-department-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 560px) {
+  .nav-logo img { width: 56px !important; height: 56px !important; }
+  .market-hero-copy { padding: 22px !important; }
+  .market-department-grid, .delivery-benefits { grid-template-columns: 1fr 1fr !important; }
+  .delivery-benefits span:last-child { grid-column: 1 / -1; }
+  .market-hero-visual { min-height: 340px; transform: scale(.9); }
+  .market-floating-card { font-size: .75rem; }
+}

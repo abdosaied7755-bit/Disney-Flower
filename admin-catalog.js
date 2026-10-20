@@ -281,6 +281,10 @@
     const payload = {
       category_id: values.category_id,
       name: String(values.name || '').trim(),
+      description: String(values.description || '').trim(),
+      product_type: String(values.product_type || '').trim(),
+      occasion: String(values.occasion || '').trim(),
+      stock_quantity: Math.max(0, Number(values.stock_quantity || 0)),
       unit: String(values.unit || '').trim(),
       price: price,
       old_price: oldPrice,
@@ -325,6 +329,10 @@
     const payload = {
       category_id: values.category_id,
       name: String(values.name || '').trim(),
+      description: String(values.description || '').trim(),
+      product_type: String(values.product_type || '').trim(),
+      occasion: String(values.occasion || '').trim(),
+      stock_quantity: Math.max(0, Number(values.stock_quantity || 0)),
       unit: String(values.unit || '').trim(),
       price: price,
       old_price: oldPrice,
@@ -454,7 +462,7 @@
   window.addEventListener('catalog:error', event => {
     const message = event.detail?.message || '';
     if (message.includes('schema cache') || message.includes('Could not find the table')) {
-      setStatus('لم يتم إنشاء جداول Supabase بعد. افتح ملف supabase-catalog-schema.sql وانسخ محتواه إلى SQL Editor داخل مشروع Supabase ثم اضغط Run.', true);
+      setStatus('لم يتم إنشاء جداول Supabase بعد. افتح ملف supabase-disney-schema.sql ثم supabase-disney-seed.sql وانسخ محتواهما إلى SQL Editor داخل مشروع Disney بالترتيب ثم اضغط Run.', true);
     } else {
       setStatus(message || 'تعذر الاتصال بـ Supabase.', true);
     }

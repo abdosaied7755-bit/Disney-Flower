@@ -890,11 +890,11 @@
           </div>
           <div class="card-body">
             <div class="contact-methods">
-              <a href="https://wa.me/201034046979" target="_blank" class="contact-method whatsapp">
+              <a href="https://wa.me/201063498957" target="_blank" class="contact-method whatsapp">
                 <i class="fab fa-whatsapp"></i>
                 <div>
                   <h4>واتساب</h4>
-                  <p>الرد الفوري 24/7</p>
+                  <p>الرد الفوري 24/7 - 01063498957</p>
                 </div>
                 <i class="fas fa-arrow-left"></i>
               </a>
@@ -908,11 +908,11 @@
                 <i class="fas fa-arrow-left"></i>
               </a>
 
-              <a href="https://wa.me/201034046979" class="contact-method chat">
+              <a href="https://wa.me/201063498957" class="contact-method chat">
                 <i class="fas fa-comments"></i>
                 <div>
                   <h4>الدردشة المباشرة</h4>
-                  <p>تحدث مع فريق الدعم</p>
+                  <p>تحدث مع فريق الدعم - 01063498957</p>
                 </div>
                 <i class="fas fa-arrow-left"></i>
               </a>
@@ -1210,7 +1210,7 @@
     },
     shareOnWhatsApp: function() {
       const link = document.getElementById('referralLink').value;
-      const text = `انضم إلى Market Online واحصل على ألعابك المفضلة! استخدم رابطي للحصول على نقاط مجانية: ${link}`;
+      const text = `انضم إلى Disney Flower واحصل على ألعابك المفضلة! استخدم رابطي للحصول على نقاط مجانية: ${link}`;
       window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     },
     shareOnFacebook: function() {
@@ -1219,7 +1219,7 @@
     },
     shareOnTwitter: function() {
       const link = document.getElementById('referralLink').value;
-      const text = `انضم إلى Market Online واحصل على ألعابك المفضلة!`;
+      const text = `انضم إلى Disney Flower واحصل على ألعابك المفضلة!`;
       window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(link)}`, '_blank');
     },
     saveProfile: function(e) {

@@ -244,16 +244,17 @@
   // ==========================================
   function enhanceAccessibility() {
     // إضافة Skip to Content
+    if (document.querySelector('.skip-to-content')) return;
     const skipLink = document.createElement('a');
-    skipLink.href = '#online-games';
+    skipLink.href = document.getElementById('departments') ? '#departments' : (document.querySelector('main') ? '#'+(document.querySelector('main').id || 'main') : '#');
     skipLink.className = 'skip-to-content';
     skipLink.textContent = 'تخطي إلى المحتوى';
     skipLink.style.cssText = `
       position: absolute;
       top: -40px;
       left: 0;
-      background: #8b3dff;
-      color: white;
+      background: var(--disney-wine);
+      color: var(--disney-cream);
       padding: 8px 16px;
       text-decoration: none;
       border-radius: 0 0 8px 0;
@@ -309,6 +310,130 @@
     }
   }
 
+  // ==========================================
+  // Card image zoom
+  // ==========================================
+  function initCardImageZoom() {
+    if (document.documentElement.dataset.cardImageZoomReady === 'true') return;
+    document.documentElement.dataset.cardImageZoomReady = 'true';
+
+    const lightbox = document.createElement('div');
+    lightbox.className = 'card-image-lightbox';
+    lightbox.setAttribute('aria-hidden', 'true');
+    lightbox.setAttribute('inert', '');
+    lightbox.innerHTML = `
+      <div class="card-image-lightbox-dialog" role="dialog" aria-modal="true" aria-label="عرض صورة المنتج">
+        <button class="card-image-lightbox-close" type="button" aria-label="إغلاق عرض الصورة" title="إغلاق">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+        <img class="card-image-lightbox-image" alt="" decoding="async">
+        <p class="card-image-lightbox-caption"></p>
+      </div>
+    `;
+    document.body.appendChild(lightbox);
+
+    const preview = lightbox.querySelector('.card-image-lightbox-image');
+    const caption = lightbox.querySelector('.card-image-lightbox-caption');
+    const closeButton = lightbox.querySelector('.card-image-lightbox-close');
+    let lastTrigger = null;
+
+    const closeLightbox = () => {
+      lightbox.setAttribute('inert', '');
+      lightbox.classList.remove('is-open');
+      document.body.classList.remove('image-lightbox-open');
+      preview.removeAttribute('src');
+      setTimeout(() => {
+        lightbox.setAttribute('aria-hidden', 'true');
+        if (lastTrigger) lastTrigger.focus({ preventScroll: true });
+      }, 0);
+    };
+
+    const openLightbox = (source, trigger) => {
+      if (!source) return;
+      lastTrigger = trigger;
+      preview.src = source.url;
+      preview.alt = source.alt || 'صورة المنتج';
+      caption.textContent = source.alt || '';
+      lightbox.classList.add('is-open');
+      lightbox.removeAttribute('inert');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('image-lightbox-open');
+      closeButton.focus({ preventScroll: true });
+    };
+
+    const readBackgroundUrl = (element) => {
+      const value = getComputedStyle(element).backgroundImage || element.style.backgroundImage || '';
+      const match = value.match(/url\((?:"([^"]+)"|'([^']+)'|([^)]*))\)/i);
+      return match ? (match[1] || match[2] || match[3] || '').trim() : '';
+    };
+
+    const getSource = (target) => {
+      const image = target.closest('.offer-card-media img, .memory-polaroid img');
+      if (image) {
+        return {
+          url: image.currentSrc || image.src,
+          alt: image.alt
+        };
+      }
+
+      const surface = target.closest('.category-card-image, .product-card-image, .nested-category-card-image, .game-card-image');
+      if (!surface) return null;
+      const url = readBackgroundUrl(surface);
+      if (!url || url === 'none') return null;
+      const card = surface.closest('article, a, figure');
+      const alt = surface.getAttribute('aria-label') || card?.querySelector('h3, h4, strong')?.textContent?.trim() || '';
+      return { url, alt };
+    };
+
+    document.addEventListener('click', (event) => {
+      if (event.target.closest('button, a, input, select, textarea')) return;
+      const trigger = event.target.closest('.offer-card-media img, .memory-polaroid img, .category-card-image, .product-card-image, .nested-category-card-image, .game-card-image');
+      if (!trigger) return;
+      const source = getSource(event.target);
+      if (source) {
+        event.preventDefault();
+        openLightbox(source, trigger);
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && lightbox.classList.contains('is-open')) {
+        closeLightbox();
+        return;
+      }
+
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const trigger = event.target.closest('.offer-card-media img, .memory-polaroid img, .category-card-image, .product-card-image, .nested-category-card-image, .game-card-image');
+      if (!trigger || event.target !== trigger) return;
+      const source = getSource(trigger);
+      if (source) {
+        event.preventDefault();
+        openLightbox(source, trigger);
+      }
+    });
+
+    document.addEventListener('focusin', (event) => {
+      const trigger = event.target.closest('.offer-card-media img, .memory-polaroid img, .category-card-image, .product-card-image, .nested-category-card-image, .game-card-image');
+      if (!trigger || trigger.dataset.zoomReady === 'true') return;
+      trigger.dataset.zoomReady = 'true';
+      trigger.classList.add('card-image-zoom-target');
+      trigger.setAttribute('tabindex', '0');
+      trigger.setAttribute('role', 'button');
+      trigger.setAttribute('aria-label', 'تكبير الصورة');
+    });
+
+    document.querySelectorAll('.offer-card-media img, .memory-polaroid img, .category-card-image, .product-card-image, .nested-category-card-image, .game-card-image').forEach((trigger) => {
+      trigger.classList.add('card-image-zoom-target');
+      trigger.setAttribute('tabindex', '0');
+      trigger.setAttribute('role', 'button');
+      trigger.setAttribute('aria-label', 'تكبير الصورة');
+    });
+
+    closeButton.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (event) => {
+      if (event.target === lightbox) closeLightbox();
+    });
+  }
   function startEnhancements() {
     console.log('🚀 UX Enhancements initialized');
     
@@ -319,6 +444,7 @@
     enhanceLazyLoading();
     enhanceTouchExperience();
     enhanceAccessibility();
+    initCardImageZoom();
     updateRealTimeElements();
     trackUserBehavior();
     

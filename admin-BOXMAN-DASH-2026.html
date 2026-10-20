@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard</title>
-<link rel="stylesheet" href="./crypto-style.css">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Disney - لوحة الإدارة</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase-catalog.js"></script>
@@ -116,39 +116,44 @@ button{
   canvas#chart { height: 180px !important; width: 100% !important; }
 }
 </style>
-<link rel="stylesheet" href="./site-theme.css?v=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="./disney-light.css?v=1.4">
 </head>
-<body>
+<body class="admin-romance">
   <div class="header">
-    <h1><img src="./icons/icon.png" alt="" style="width: 50px; height: 50px;"> LIVE DASHBOARD</h1>
+    <h1><img src="./Assets/disny.png" alt="Disney Flower" style="width: 50px; height: 50px;"> لوحة Disney المباشرة</h1>
     <div class="meta">
-      <span>Last updated: <strong id="lastUpdated">—</strong></span>
+      <span>آخر تحديث: <strong id="lastUpdated">—</strong></span>
       <a class="btn home-btn" href="./index.html">الرئيسية</a>
-      <button class="btn" id="refreshBtn">Refresh</button>
+      <button class="btn" id="refreshBtn">تحديث</button>
     </div>
   </div>
 
 <div id="login">
   <form class="login-box" id="adminLoginForm" autocomplete="off">
-    <h2>🔐 ADMIN</h2>
-    <input type="email" id="adminEmail" placeholder="Admin email" autocomplete="username" autocapitalize="none" spellcheck="false" required>
-    <input type="password" id="password" class="private-input" placeholder="Password" autocomplete="current-password" required>
-    <button type="submit">Login</button>
+    <h2>🔐 لوحة إدارة Disney</h2>
+    <input type="text" inputmode="email" id="adminEmail" name="admin-login-email" placeholder="البريد الإلكتروني للمدير" autocomplete="off" data-form-type="other" data-lpignore="true" autocapitalize="none" spellcheck="false" required>
+    <input type="password" id="password" name="admin-login-password" class="private-input" placeholder="كلمة المرور" autocomplete="new-password" data-lpignore="true" required>
+    <button type="submit">تسجيل الدخول</button>
   </form>
 </div>
 
 <div id="dashboard">
   <div class="stats">
-    <div class="card"><h3>Online</h3><span id="online" class="online">0</span></div>
-    <div class="card"><h3>Total</h3><span id="total">0</span></div>
-    <div class="card"><h3>Today</h3><span id="daily">0</span></div>
-    <div class="card"><h3>Month</h3><span id="monthly">0</span></div>
+    <div class="card"><h3>متصل الآن</h3><span id="online" class="online">0</span></div>
+    <div class="card"><h3>الإجمالي</h3><span id="total">0</span></div>
+    <div class="card"><h3>اليوم</h3><span id="daily">0</span></div>
+    <div class="card"><h3>هذا الشهر</h3><span id="monthly">0</span></div>
   </div>
   <div class="password-dialog" id="visitorPasswordDialog" hidden>
     <form class="password-dialog-card" id="visitorPasswordForm">
       <h3>تأكيد مسح بيانات العملاء</h3>
       <p>أدخل كلمة مرور الإدارة للمتابعة.</p>
-      <input id="visitorAdminPassword" type="password" autocomplete="current-password" required aria-label="كلمة مرور الإدارة">
+      <input id="visitorAdminPassword" type="password" autocomplete="new-password" data-lpignore="true" required aria-label="كلمة مرور الإدارة">
       <div class="password-dialog-actions">
         <button type="button" class="cancel" id="cancelVisitorPassword">إلغاء</button>
         <button type="submit">متابعة المسح</button>
@@ -161,14 +166,14 @@ button{
   </div>
   <div class="card visitor-admin-actions">
     <div><h3 style="margin:0 0 5px">إدارة بيانات العملاء</h3><small>يمسح عدادات الزيارات وسجل الحضور فقط، ولا يحذف الكتالوج.</small></div>
-    <button type="button" class="danger" id="resetVisitorsBtn">مسح بيانات العملاء</button>
+    <button type="button" class="danger" id="resetVisitorsBtn">تصفير عدادات الزوار</button>
     <span id="visitorAdminStatus" class="visitor-admin-status" role="status"></span>
   </div>
   <section class="catalog-admin">
     <div class="card"><h2>إدارة الكتالوج</h2><p>إضافة وتعديل وحذف الفئات والمنتجات المتصلة بـ Supabase.</p><div id="catalogStatus" class="catalog-status"></div></div>
     <div class="catalog-admin-grid">
       <div class="card"><h3>الفئات</h3><form id="categoryForm" class="catalog-form"><input name="name" placeholder="اسم الفئة" required><input name="description" placeholder="وصف مختصر"><input name="image_url" type="url" placeholder="رابط صورة الفئة"><input name="image_file" type="file" accept="image/*"><div><button type="submit">إضافة الفئة</button> <button type="button" class="secondary" id="resetCategoryForm">تفريغ</button></div></form><div id="adminCategoryList" class="catalog-list"></div></div>
-      <div class="card"><h3>المنتجات</h3><form id="productForm" class="catalog-form"><select name="category_id" id="productCategory" required></select><input name="name" placeholder="اسم المنتج" required><input name="unit" placeholder="الوحدة مثل 1 كجم"><input name="price" type="number" min="0" step="0.01" placeholder="السعر" required><select name="is_active" aria-label="حالة المنتج"><option value="true">متاح</option><option value="false">غير متاح</option></select><input name="image_url" type="url" placeholder="رابط صورة المنتج"><input name="image_file" type="file" accept="image/*"><div><button type="submit">إضافة المنتج</button> <button type="button" class="secondary" id="resetProductForm">تفريغ</button></div></form><input id="productSearchAdmin" class="catalog-search" type="search" placeholder="ابحث باسم المنتج..." aria-label="ابحث باسم المنتج"><div id="adminProductList" class="catalog-list"></div></div>
+      <div class="card"><h3>المنتجات</h3><form id="productForm" class="catalog-form"><select name="category_id" id="productCategory" required></select><input name="name" placeholder="اسم المنتج" required><input name="unit" placeholder="الوحدة مثل باقة أو بوكس"><input name="description" placeholder="وصف المنتج"><input name="product_type" placeholder="نوع المنتج مثل ورد طبيعي"><input name="occasion" placeholder="المناسبة"><input name="stock_quantity" type="number" min="0" step="1" placeholder="المخزون" required><input name="price" type="number" min="0" step="0.01" placeholder="السعر" required><select name="is_active" aria-label="حالة المنتج"><option value="true">متاح</option><option value="false">غير متاح</option></select><input name="image_url" type="url" placeholder="رابط صورة المنتج"><input name="image_file" type="file" accept="image/*"><div><button type="submit">إضافة المنتج</button> <button type="button" class="secondary" id="resetProductForm">تفريغ</button></div></form><input id="productSearchAdmin" class="catalog-search" type="search" placeholder="ابحث باسم المنتج..." aria-label="ابحث باسم المنتج"><div id="adminProductList" class="catalog-list"></div></div>
       <div class="card offer-admin-card">
         <div class="offer-admin-heading"><span class="offer-admin-icon"><i class="fas fa-tags"></i></span><div><h3>إدارة العروض والخصومات</h3><p>أضف عرضًا جديدًا بالسعر القديم والسعر بعد الخصم، وسيظهر تلقائيًا في صفحة العروض.</p></div></div>
         <form id="offerForm" class="catalog-form offer-form">
@@ -211,54 +216,42 @@ button{
       </div>
     </div>
   </section>
-  <div class="footer">Protected admin page. </div>
+  <div class="footer">لوحة إدارة محمية بصلاحيات Supabase.</div>
 </div>
 
 <script type="module">
-const ADMIN_EMAIL = "bitomanyax30@gmail.com";
-const ADMIN_PASSWORD = "LOOTO-ADMIN-2026";
+let adminInitialized = false;
 
-function isLocalPreview() {
-  return window.location.protocol === 'file:' || ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
+window.showAdminDashboard = function showAdminDashboard() {
+  const loginPanel = document.getElementById('login');
+  const dashboardPanel = document.getElementById('dashboard');
+  if (loginPanel) loginPanel.style.display = 'none';
+  if (dashboardPanel) dashboardPanel.style.display = 'block';
+  if (!adminInitialized) {
+    adminInitialized = true;
+    init();
+  }
 }
-
-function showAdminDashboard(mode) {
-  window.adminAuthMode = mode;
-  document.getElementById("adminLoginForm").reset();
-  document.getElementById("login").style.display = "none";
-  document.getElementById("dashboard").style.display = "block";
-  init();
-  window.dispatchEvent(new CustomEvent('admin:authenticated', { detail: { mode } }));
-}
-
 window.login = async () => {
   const adminEmail = document.getElementById("adminEmail").value.trim().toLowerCase();
   const adminPassword = document.getElementById("password").value;
-  if (adminEmail !== ADMIN_EMAIL || adminPassword !== ADMIN_PASSWORD) {
-    alert("Wrong admin email or password");
-    return;
-  }
-
   const client = window.supabaseCatalog?.client;
   if (!client) {
-    if (isLocalPreview()) return showAdminDashboard('local');
-    alert("تعذر الاتصال بـ Supabase. لا يمكن فتح إدارة البيانات على الاستضافة بدون تسجيل الأدمن.");
+    alert("تعذر الاتصال بـ Supabase. لا يمكن فتح لوحة الإدارة دون تسجيل دخول موثوق.");
     return;
   }
-
-  const { error } = await client.auth.signInWithPassword({
-    email: ADMIN_EMAIL,
-    password: ADMIN_PASSWORD
-  });
-  if (error) {
-    if (isLocalPreview() && /email|signup|fetch|network|disabled|rate limit|too many/i.test(error.message || '')) {
-      showAdminDashboard('local');
-      return;
-    }
-    alert(`تعذر تسجيل دخول الأدمن إلى Supabase: ${error.message}`);
+  const { error: signInError } = await client.auth.signInWithPassword({ email: adminEmail, password: adminPassword });
+  if (signInError) {
+    alert(`تعذر تسجيل الدخول: ${signInError.message}`);
     return;
   }
-  showAdminDashboard('supabase');
+  const { data: isAdmin, error: adminError } = await client.rpc("is_admin_user");
+  if (adminError || isAdmin !== true) {
+    await client.auth.signOut();
+    alert("هذا الحساب لا يملك صلاحية إدارة Disney.");
+    return;
+  }
+  window.showAdminDashboard("supabase");
 };
 
 document.getElementById("adminLoginForm").addEventListener("submit", event => {
@@ -266,12 +259,15 @@ document.getElementById("adminLoginForm").addEventListener("submit", event => {
   login();
 });
 
+const adminEmailInput = document.getElementById("adminEmail");
+if (adminEmailInput) adminEmailInput.value = "";
+
 const client = window.supabaseCatalog?.client;
 
 const chart = new Chart(document.getElementById("chart"), {
   type:"bar",
   data:{
-    labels:["Today","Month","Total"],
+    labels:["اليوم","هذا الشهر","الإجمالي"],
     datasets:[{
       data:[0,0,0],
       backgroundColor:["#087f5b","#8fdda9","#064c3a"]
@@ -287,25 +283,24 @@ async function init(){
   }
 
   async function loadCounters(){
-    const { data: d, error } = await client
-      .from("visitor_stats")
-      .select("total,daily,monthly")
-      .eq("id", 1)
-      .single();
-    if (error) throw error;
-    total.innerText = d.total;
-    daily.innerText = d.daily;
-    monthly.innerText = d.monthly;
-    chart.data.datasets[0].data=[d.daily,d.monthly,d.total];
-    chart.update();
+    const today = new Date().toISOString().slice(0, 10);
+    const firstOfMonth = new Date(); firstOfMonth.setDate(1);
+    const [allResult, todayResult, monthResult] = await Promise.all([
+      client.from("visitor_stats").select("total_visits"),
+      client.from("visitor_daily").select("visits").eq("visit_date", today).maybeSingle(),
+      client.from("visitor_daily").select("visits").gte("visit_date", firstOfMonth.toISOString().slice(0, 10))
+    ]);
+    if (allResult.error || todayResult.error || monthResult.error) throw (allResult.error || todayResult.error || monthResult.error);
+    const totalCount = (allResult.data || []).reduce((sum, row) => sum + Number(row.total_visits || 0), 0);
+    const todayCount = Number(todayResult.data?.visits || 0);
+    const monthCount = (monthResult.data || []).reduce((sum, row) => sum + Number(row.visits || 0), 0);
+    total.innerText = totalCount; daily.innerText = todayCount; monthly.innerText = monthCount;
+    chart.data.datasets[0].data = [todayCount, monthCount, totalCount]; chart.update();
   }
 
   async function loadOnline(){
     const cutoff = new Date(Date.now() - 30000).toISOString();
-    const { count, error } = await client
-      .from("visitor_presence")
-      .select("visitor_id", { count: "exact", head: true })
-      .gt("last_active", cutoff);
+    const { count, error } = await client.from("visitor_presence").select("visitor_id", { count: "exact", head: true }).gt("last_seen_at", cutoff);
     if (error) throw error;
     online.innerText = count || 0;
   }
@@ -336,7 +331,7 @@ async function init(){
     try {
       const { data, error } = await client.rpc("reset_visitor_data", { p_admin_password: password });
       if (error) throw error;
-      visitorAdminStatus.textContent = `تم المسح. السجلات المحذوفة: ${data?.daily_rows || 0} عداد يومي و${data?.presence_rows || 0} حضور.`;
+      visitorAdminStatus.textContent = "تم المسح. السجلات المحذوفة: " + (data?.total_rows || 0) + " إجمالي و" + (data?.daily_rows || 0) + " يومي و" + (data?.presence_rows || 0) + " حضور."
       await refresh();
     } catch (error) {
       visitorAdminStatus.textContent = error.message || "تعذر تنفيذ المسح.";

@@ -94,6 +94,69 @@
     if (savingsElement) savingsElement.textContent = savings.toLocaleString('ar-EG') + ' جنيه';
   }
 
+  let customCategoryDropdown = null;
+
+  function setupCategoryDropdown() {
+    if (!categoryFilter || customCategoryDropdown) return;
+    const host = categoryFilter.closest('.offers-filter-box');
+    if (!host) return;
+
+    host.classList.add('offers-custom-select');
+    categoryFilter.classList.add('offers-native-select');
+    categoryFilter.setAttribute('tabindex', '-1');
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'offers-filter-trigger';
+    trigger.setAttribute('aria-haspopup', 'listbox');
+    trigger.setAttribute('aria-expanded', 'false');
+    trigger.innerHTML = '<span class="offers-filter-trigger-text"></span><i class="fas fa-chevron-down" aria-hidden="true"></i>';
+
+    const menu = document.createElement('div');
+    menu.className = 'offers-filter-menu';
+    menu.setAttribute('role', 'listbox');
+    host.append(trigger, menu);
+
+    const close = () => {
+      host.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    };
+    const renderOptions = () => {
+      menu.innerHTML = Array.from(categoryFilter.options).map(option =>
+        '<button type="button" role="option" data-value="' + escapeHtml(option.value) + '" aria-selected="' + (option.value === categoryFilter.value) + '">' + escapeHtml(option.textContent) + '</button>'
+      ).join('');
+      const selected = categoryFilter.options[categoryFilter.selectedIndex];
+      const label = trigger.querySelector('.offers-filter-trigger-text');
+      if (label) label.textContent = selected ? selected.textContent : '';
+    };
+
+    trigger.addEventListener('click', () => {
+      const open = !host.classList.contains('is-open');
+      document.querySelectorAll('.offers-custom-select.is-open').forEach(other => {
+        if (other !== host) other.classList.remove('is-open');
+      });
+      host.classList.toggle('is-open', open);
+      trigger.setAttribute('aria-expanded', String(open));
+    });
+    trigger.addEventListener('keydown', event => {
+      if (event.key === 'Escape') close();
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); trigger.click(); }
+    });
+    menu.addEventListener('click', event => {
+      const option = event.target.closest('[data-value]');
+      if (!option) return;
+      categoryFilter.value = option.dataset.value;
+      categoryFilter.dispatchEvent(new Event('change', { bubbles: true }));
+      close();
+    });
+    categoryFilter.addEventListener('change', renderOptions);
+    document.addEventListener('click', event => {
+      if (!host.contains(event.target)) close();
+    });
+
+    customCategoryDropdown = { renderOptions };
+    renderOptions();
+  }
   function renderCategoryFilter() {
     if (!categoryFilter) return;
 
@@ -114,6 +177,8 @@
       '<option value="' + escapeHtml(item.id) + '">' + escapeHtml(item.name) + '</option>'
     ).join('');
     categoryFilter.value = state.category;
+    setupCategoryDropdown();
+    customCategoryDropdown?.renderOptions();
   }
 
   function cardTemplate(item, index) {

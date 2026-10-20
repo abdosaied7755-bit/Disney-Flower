@@ -9,11 +9,11 @@ document.addEventListener('DOMContentLoaded', function() {
         <!-- About Column -->
         <div class="footer-column footer-brand">
           <div class="brand-logo">
-            <img src="./icons/icon.png" alt="" class="fotimg">
-            <span class="baraka-brand">Market Online</span>
+            <img src="./Assets/disny.png" alt="Disney Flower" class="fotimg">
+            <span class="baraka-brand">Disney</span>
           </div>
           <p class="brand-description">
-            سوقك اليومي الموثوق لكل احتياجات البيت، من المنتجات الطازة إلى مستلزمات المنزل، مع عروض حقيقية وتوصيل سريع.
+            Disney للهدايا والورود الطبيعية، نجهز كل طلب بعناية ونوصله داخل قنا بتغليف يليق بالمناسبة.
           </p>
           <div class="trust-indicators">
             <div class="trust-item">
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <li><a href="offers.html"><i class="fas fa-chevron-left"></i> العروض الخاصة</a></li><li><a href="reviews.html"><i class="fas fa-chevron-left"></i> آراء العملاء</a></li>
             <li><a href="index.html#delivery"><i class="fas fa-chevron-left"></i> التوصيل</a></li>
             <li><a href="games.html"><i class="fas fa-chevron-left"></i> تسوق الآن</a></li>
-            <li><a href="index.html#about"><i class="fas fa-chevron-left"></i> التوصيل والدعم</a></li>
+            <li><a href="index.html#delivery"><i class="fas fa-chevron-left"></i> التوصيل والدعم</a></li>
             <li><a href="index.html#delivery"><i class="fas fa-chevron-left"></i> كيف نوصّل طلبك</a></li>
           </ul>
         </div>
@@ -54,12 +54,12 @@ document.addEventListener('DOMContentLoaded', function() {
             الأقسام الأكثر طلباً
           </h3>
           <ul class="footer-links">
-            <li><a href="game-detail.html?category=produce"><i class="fas fa-apple-whole"></i><span>خضار وفاكهة</span></a></li>
-            <li><a href="game-detail.html?category=pantry"><i class="fas fa-basket-shopping"></i><span>بقالة أساسية</span></a></li>
+            <li><a href="games.html"><i class="fas fa-spa"></i><span>بوكيهات الورد</span></a></li>
+            <li><a href="games.html"><i class="fas fa-gift"></i><span>بوكسات الهدايا</span></a></li>
             <li><a href="offers.html"><i class="fas fa-tags"></i><span>عروض الأسبوع</span></a></li><li><a href="reviews.html"><i class="fas fa-star"></i><span>آراء العملاء</span></a></li>
-            <li><a href="game-detail.html?category=care"><i class="fas fa-spray-can-sparkles"></i><span>تنظيف وعناية</span></a></li>
+            <li><a href="games.html"><i class="fas fa-cookie-bite"></i><span>الشوكولاتة والحلويات</span></a></li>
             <li><a href="index.html#delivery"><i class="fas fa-truck-fast"></i><span>التوصيل</span></a></li>
-            <li><a href="index.html#about"><i class="fas fa-store"></i><span>من نحن</span></a></li>
+            <li><a href="index.html#delivery"><i class="fas fa-store"></i><span>من نحن</span></a></li>
           </ul>
         </div>
 
@@ -70,12 +70,12 @@ document.addEventListener('DOMContentLoaded', function() {
             خدمة العملاء
           </h3>
           <ul class="footer-links">
-            <li><a href="#support"><i class="fas fa-chevron-left"></i> الدعم الفني</a></li>
-            <li><a href="#privacy"><i class="fas fa-chevron-left"></i> سياسة الخصوصية</a></li>
-            <li><a href="#terms"><i class="fas fa-chevron-left"></i> الشروط والأحكام</a></li>
-            <li><a href="#refund"><i class="fas fa-chevron-left"></i> سياسة الاسترجاع</a></li>
-            <li><a href="#security"><i class="fas fa-chevron-left"></i> الأمان والحماية</a></li>
-            <li><a href="#contact"><i class="fas fa-chevron-left"></i> اتصل بنا</a></li>
+            <li><a href="https://wa.me/201063498957" target="_blank"><i class="fas fa-chevron-left"></i> 01063498957 | الدعم الفني</a></li>
+            <li><a href="index.html#delivery"><i class="fas fa-chevron-left"></i> سياسة الخصوصية</a></li>
+            <li><a href="index.html#delivery"><i class="fas fa-chevron-left"></i> الشروط والأحكام</a></li>
+            <li><a href="index.html#delivery"><i class="fas fa-chevron-left"></i> سياسة الاسترجاع</a></li>
+            <li><a href="index.html#delivery"><i class="fas fa-chevron-left"></i> الأمان والحماية</a></li>
+            <li><a href="https://wa.me/201004896232" target="_blank"><i class="fas fa-chevron-left"></i> اتصل بنا</a></li>
           </ul>
         </div>
 
@@ -92,16 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
               </div>
               <div class="contact-details">
                 <span class="contact-label">اتصل بنا</span>
-                <a href="tel:+201034046979" class="contact-value">+20 103 404 6979</a>
-              </div>
-            </div>
-            <div class="contact-item">
-              <div class="contact-icon">
-                <i class="fas fa-envelope-open"></i>
-              </div>
-              <div class="contact-details">
-                <span class="contact-label">البريد الإلكتروني</span>
-                <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=marketonline.team@gmail.com" target="_blank" rel="noopener noreferrer" class="contact-value">marketonline.team@gmail.com</a>
+                <a href="tel:+201004896232" class="contact-value">01004896232</a>
               </div>
             </div>
             <div class="contact-item">
@@ -110,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
               </div>
               <div class="contact-details">
                 <span class="contact-label">العنوان</span>
-                <span class="contact-value">مصر - قنا</span>
+                <span class="contact-value">قنا / عمرو أفندي / آخر شارع أجواء</span>
               </div>
             </div>
             <div class="contact-item">
@@ -156,45 +147,25 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="social-section">
           <h4>تابعنا على</h4>
           <div class="social-icons">
-            <a href="https://www.facebook.com/LootoHub" target="_blank" class="social-icon facebook" aria-label="Facebook">
-              <i class="fab fa-facebook-f"></i>
-              <span class="social-label">Facebook</span>
-            </a>
-            <a href="https://wa.me/201034046979" target="_blank" class="social-icon whatsapp" aria-label="WhatsApp">
+            <a href="https://wa.me/201004896232" target="_blank" class="social-icon whatsapp" aria-label="WhatsApp">
               <i class="fab fa-whatsapp"></i>
               <span class="social-label">WhatsApp</span>
-            </a>
-            <a href="https://t.me/lootohub" target="_blank" class="social-icon telegram" aria-label="Telegram">
-              <i class="fab fa-telegram-plane"></i>
-              <span class="social-label">Telegram</span>
-            </a>
-            <a href="https://www.tiktok.com/@lootohub" target="_blank" class="social-icon tiktok" aria-label="TikTok">
-              <i class="fab fa-tiktok"></i>
-              <span class="social-label">TikTok</span>
-            </a>
-            <a href="https://www.instagram.com/lootohub" target="_blank" class="social-icon instagram" aria-label="Instagram">
-              <i class="fab fa-instagram"></i>
-              <span class="social-label">Instagram</span>
-            </a>
-            <a href="https://www.youtube.com/@lootohub" target="_blank" class="social-icon youtube" aria-label="YouTube">
-              <i class="fab fa-youtube"></i>
-              <span class="social-label">YouTube</span>
             </a>
           </div>
         </div>
 
         <div class="copyright-section">
           <div class="copyright-text">
-            <p>&copy; 2025 <span class="baraka-brand">Market Online</span> - جميع الحقوق محفوظة</p>
+            <p>&copy; 2026 <span class="baraka-brand">Disney</span> - جميع الحقوق محفوظة</p>
           </div>
           <div class="footer-legal">
-            <a href="#privacy">الخصوصية</a>
+            <a href="index.html#delivery">الخصوصية</a>
             <span class="separator">•</span>
-            <a href="#terms">الشروط</a>
+            <a href="index.html#delivery">الشروط</a>
             <span class="separator">•</span>
-            <a href="#cookies">الكوكيز</a>
+            <a href="index.html#delivery">الكوكيز</a>
             <span class="separator">•</span>
-            <a href="#sitemap">خريطة الموقع</a>
+            <a href="index.html#delivery">خريطة الموقع</a>
           </div>
         </div>
       </div>
@@ -215,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
   <div class="chat-widget" role="dialog" aria-label="مساعد الدردشة">
     <div class="chat-header">
       <div class="chat-title-wrap">
-        <span class="chat-avatar"><i class="fas fa-basket-shopping"></i></span>
+        <span class="chat-avatar"><img src="./Assets/disny-192.png" alt="Disney Flower"></span>
         <div>
           <div class="chat-title">مساعد التسوق</div>
           <span class="chat-status"><i class="fas fa-circle"></i> متاح الآن</span>
@@ -227,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     </div>
     <div class="chat-messages" id="chatMessages">
-      <div class="msg bot initial-message">أهلاً بك! اسألني عن الأقسام أو التوصيل أو العروض.</div>
+      <div class="msg bot initial-message">أهلاً بك في Disney! اسألني عن الورود أو الهدايا أو التوصيل.</div>
       <div class="quick-actions">
         <button class="chip" data-store-action="delivery">التوصيل</button>
         <button class="chip" data-store-action="prices">الأسعار</button>
@@ -242,9 +213,9 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
       <div class="chat-hint"><i class="fas fa-sparkles"></i> اسألني عن الأسعار أو الأقسام أو التوصيل</div>
       <div class="chat-cta-buttons">
-        <a href="https://wa.me/201034046979" target="_blank" class="cta-btn whatsapp" aria-label="واتساب"><i class="fab fa-whatsapp"></i> واتساب</a>
-        <a href="tg://resolve?phone=201034046979" class="cta-btn telegram" aria-label="تلجرام"><i class="fab fa-telegram"></i> تلجرام</a>
-        <a href="https://www.facebook.com/LootoHub/" target="_blank" class="cta-btn facebook" aria-label="فيسبوك"><i class="fab fa-facebook"></i> فيسبوك</a>
+        <a href="https://wa.me/201004896232" target="_blank" class="cta-btn whatsapp" aria-label="واتساب"><i class="fab fa-whatsapp"></i> واتساب</a>
+        <a href="tg://resolve?phone=201004896232" class="cta-btn telegram" aria-label="تلجرام"><i class="fab fa-telegram"></i> تلجرام</a>
+        <a href="https://www.facebook.com/profile.php?id=61552545176576" target="_blank" class="cta-btn facebook" aria-label="فيسبوك"><i class="fab fa-facebook"></i> فيسبوك</a>
       </div>
     </div>
   </div>
@@ -291,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
           
           <div class="form-group">
             <label>كلمة المرور</label>
-            <input type="text" class="form-input private-input" id="registerPassword" placeholder="أدخل كلمة مرور قوية (6 أحرف على الأقل)" autocomplete="off" autocapitalize="none" spellcheck="false" required>
+            <input type="password" class="form-input private-input" id="registerPassword" placeholder="أدخل كلمة مرور قوية (6 أحرف على الأقل)" autocomplete="off" autocapitalize="none" spellcheck="false" required>
           </div>
           
           <button type="submit" class="btn-submit">إنشاء الحساب</button>
@@ -313,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
           
           <div class="form-group">
             <label>كلمة المرور</label>
-            <input type="text" class="form-input private-input" id="loginPassword" placeholder="أدخل كلمة المرور" autocomplete="off" autocapitalize="none" spellcheck="false" required>
+            <input type="password" class="form-input private-input" id="loginPassword" placeholder="أدخل كلمة المرور" autocomplete="off" autocapitalize="none" spellcheck="false" required>
           </div>
           
           <button type="submit" class="btn-submit">تسجيل الدخول</button>
@@ -338,8 +309,8 @@ document.addEventListener('DOMContentLoaded', function() {
   <footer class="compact-footer" aria-label="تذييل مختصر">
     <div class="compact-footer-inner">
       <a class="compact-footer-brand" href="index.html">
-        <img src="./icons/icon.png" alt="">
-        <span>Market Online</span>
+        <img src="./Assets/disny.png" alt="Disney Flower">
+        <span>Disney</span>
       </a>
       <nav class="compact-footer-links" aria-label="روابط سريعة">
         <a href="index.html">الرئيسية</a>
@@ -347,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <a href="offers.html">العروض</a>
         <a href="reviews.html">آراء العملاء</a>
       </nav>
-      <span class="compact-footer-copy">© 2025 Market Online</span>
+      <span class="compact-footer-copy">© 2026 Disney</span>
     </div>
   </footer>
 `;
@@ -364,11 +335,21 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Initialize newsletter subscription handler
-  window.handleNewsletterSubscribe = function(event) {
+  window.handleNewsletterSubscribe = async function(event) {
     event.preventDefault();
-    const email = event.target.querySelector('input[type="email"]').value;
-    alert('شكراً لاشتراكك! سنرسل لك أحدث العروض على: ' + email);
-    event.target.reset();
+    const form = event.target;
+    const email = form.querySelector('input[type="email"]').value.trim().toLowerCase();
+    try {
+      const client = window.supabaseCatalog?.client;
+      if (client) {
+        const { error } = await client.from('newsletter_subscribers').insert({ email });
+        if (error && error.code !== '23505') throw error;
+      }
+      alert('شكرًا لاشتراكك! سنرسل لك أحدث عروض Disney.');
+      form.reset();
+    } catch (error) {
+      alert('تعذر تسجيل الاشتراك حاليًا، حاول مرة أخرى.');
+    }
     return false;
   };
 
@@ -394,49 +375,44 @@ function loadFirebaseScripts() {
   const monthlyEl = document.getElementById("monthly");
 
   const visitorId = localStorage.getItem("marketOnlineVisitorId") || crypto.randomUUID();
+  let visitorTrackingAvailable = true;
   localStorage.setItem("marketOnlineVisitorId", visitorId);
 
-  async function getCustomerId() {
-    const { data: authData } = await client.auth.getUser();
-    if (authData?.user?.id) return authData.user.id;
-    const localUser = window.AuthSystem?.getCurrentUser?.();
-    if (localUser?.email && crypto.subtle) {
-      const bytes = new TextEncoder().encode(`market-online:${localUser.email.trim().toLowerCase()}`);
-      const digest = await crypto.subtle.digest("SHA-256", bytes);
-      return `email:${Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("")}`;
-    }
-    return visitorId;
-  }
 
   async function runCounter() {
-    const customerId = await getCustomerId();
+
     const { data, error } = await client.rpc("track_visitor", {
-      p_customer_id: customerId,
-      p_count: true
+      p_visitor_id: visitorId,
+      p_page_path: window.location.pathname
     });
     if (error) throw error;
     const stats = Array.isArray(data) ? data[0] : data;
     if (!stats) throw new Error("Visitor counter returned no statistics");
-    if (totalEl) totalEl.innerText = stats.total;
-    if (dailyEl) dailyEl.innerText = stats.daily;
-    if (monthlyEl) monthlyEl.innerText = stats.monthly;
+    if (totalEl) totalEl.innerText = stats.total_visits;
+    if (dailyEl) dailyEl.innerText = stats.today_visits;
+    if (monthlyEl) monthlyEl.innerText = stats.today_visits;
   }
 
   const updatePresence = async () => {
-    const { error } = await client
-      .from("visitor_presence")
-      .upsert({ visitor_id: visitorId, last_active: new Date().toISOString() });
+    const { error } = await client.rpc("touch_visitor_presence", {
+      p_visitor_id: visitorId,
+      p_page_path: window.location.pathname
+    });
     if (error) throw error;
   };
 
   runCounter().catch((error) => {
+    visitorTrackingAvailable = false;
     console.error("[Visitor Counter] Failed to update counters:", error);
   });
   updatePresence().catch((error) => {
+    visitorTrackingAvailable = false;
     console.error("[Visitor Counter] Failed to update online presence:", error);
   });
   setInterval(() => {
+    if (!visitorTrackingAvailable) return;
     updatePresence().catch((error) => {
+      visitorTrackingAvailable = false;
       console.error("[Visitor Counter] Failed to update online presence:", error);
     });
   }, 15000);
@@ -479,7 +455,7 @@ function initializeChatbot() {
         setTimeout(() => {
           const welcomeMsg = document.createElement('div');
           welcomeMsg.className = 'msg bot';
-          welcomeMsg.innerHTML = `أهلاً بيك في Market Online! 🎮😎<br>أنا هنا عشان أساعدك تشحن ألعابك بسرعة! ⚡<br><br>اختار اللي عايزه من هنا 👇${getQuickButtons()}`;
+          welcomeMsg.innerHTML = `أهلاً بيك في Disney! 🎮😎<br>أنا هنا عشان أساعدك تشحن ألعابك بسرعة! ⚡<br><br>اختار اللي عايزه من هنا 👇${getQuickButtons()}`;
           chatMessages.appendChild(welcomeMsg);
           chatMessages.scrollTop = chatMessages.scrollHeight;
           attachButtonHandlers();
@@ -732,7 +708,7 @@ function initializeChatbot() {
     };
     
     if (action === 'whatsapp') {
-      window.open('https://wa.me/201034046979', '_blank');
+      window.open('https://wa.me/201004896232', '_blank');
       return;
     }
     

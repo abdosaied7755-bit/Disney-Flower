@@ -1,0 +1,13 @@
+:root { --disney-pink:#f4a7c1; --disney-wine:#8e244d; --disney-cream:#fff8f2; --disney-ink:#33232b; --disney-border:rgba(142,36,77,.18); }
+body { direction: rtl; font-family: "Tajawal", "Rubik", system-ui, sans-serif !important; background: var(--disney-cream) !important; color: var(--disney-ink) !important; }
+.header { background: var(--disney-wine) !important; border-color: rgba(244,167,193,.28) !important; }
+.header h1, .header .meta { color: #fff !important; }
+.header .btn, button { background: linear-gradient(135deg,var(--disney-wine),#b83f6b) !important; }
+.login-box, .card { background: #fff !important; color: var(--disney-ink) !important; border-color: var(--disney-border) !important; box-shadow: 0 16px 40px rgba(104,27,57,.1) !important; }
+.login-box input, .catalog-form input, .catalog-form select, .catalog-form textarea, .catalog-search { background: #fff !important; color: var(--disney-ink) !important; border-color: var(--disney-border) !important; }
+.catalog-row { background: var(--disney-pink-pale, #fff0f5) !important; border-color: var(--disney-border) !important; }
+.catalog-row-actions button, .catalog-form button { color: #fff !important; }
+.catalog-status, .visitor-admin-status { color: #28784c !important; }
+.catalog-status.error, .visitor-admin-status.error { color: #a5204f !important; }
+.offer-admin-icon { background: linear-gradient(135deg,var(--disney-wine),var(--disney-pink)) !important; }
+.password-dialog-card { background: var(--disney-cream) !important; color: var(--disney-ink) !important; border-color: var(--disney-border) !important; }

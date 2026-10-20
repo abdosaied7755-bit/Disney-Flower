@@ -1,6 +1,12 @@
 (function initSupabaseCatalog() {
-  const SUPABASE_URL = 'https://rnlvbxtzemsdncwlkkxi.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_xzoauSK8_LMaut9ornZaBQ_3oC4wFxV';
+  const SUPABASE_URL = 'https://srpfxplqcigxthzbxseu.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_fNwkuYfrxMnEgj3IToEfgw_RzVpXuoe';
+
+  window.DISNEY_FLOWER_CONFIG = Object.freeze({
+    name: 'Disney',
+    address: 'قنا / عمرو أفندي / آخر شارع أجواء',
+    supabaseUrl: SUPABASE_URL
+  });
 
   if (!window.supabase || typeof window.supabase.createClient !== 'function') return;
 
@@ -10,8 +16,10 @@
   function mapCategory(category, products) {
     return {
       id: category.id,
+      slug: category.slug || '',
       name: category.name,
       description: category.description || '',
+      sortOrder: Number(category.sort_order) || 0,
       meta: `${products.length} منتج`,
       image: category.image_url || category.image || '',
       parentId: category.parent_id || null,
@@ -24,7 +32,11 @@
         image: product.image_url || product.image || '',
         categoryId: product.category_id,
         isActive: product.is_active !== false,
-        isSpecialOffer: product.is_special_offer === true
+        isSpecialOffer: product.is_special_offer === true,
+        productType: product.product_type || '',
+        occasion: product.occasion || '',
+        stockQuantity: Number(product.stock_quantity) || 0,
+        isFeatured: product.is_featured === true
       }))
     };
   }
@@ -62,6 +74,12 @@
     if (categoriesResult.error || productsResult.error) {
       window.supabaseCatalog.lastError = categoriesResult.error || productsResult.error;
       console.warn('Supabase catalog is unavailable; using the local catalog.', categoriesResult.error || productsResult.error);
+      window.dispatchEvent(new CustomEvent('catalog:error', { detail: window.supabaseCatalog.lastError }));
+      return false;
+    }
+
+    if (!Array.isArray(categoriesResult.data) || categoriesResult.data.length === 0) {
+      window.supabaseCatalog.lastError = new Error('لا توجد أقسام منشورة في قاعدة Disney بعد.');
       window.dispatchEvent(new CustomEvent('catalog:error', { detail: window.supabaseCatalog.lastError }));
       return false;
     }

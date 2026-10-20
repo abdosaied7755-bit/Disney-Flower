@@ -1,69 +1,72 @@
 {
-  "name": "Market Online - سوبر ماركتك أونلاين",
-  "short_name": "Market Online",
-  "id": "./index.html",
-  "description": "كل احتياجات بيتك في مكان واحد مع توصيل سريع وعروض يومية",
-  "start_url": "./index.html",
-  "scope": "./",
-  "display": "standalone",
-  "orientation": "portrait-primary",
-  "dir": "rtl",
-  "lang": "ar",
-  "theme_color": "#16a085",
-  "background_color": "#fffaf0",
-  "icons": [
-    {
-      "src": "./icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "./icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "أقسام السوبر ماركت",
-      "short_name": "الأقسام",
-      "description": "الوصول السريع لكل أقسام ومنتجات السوق",
-      "url": "./games.html",
-      "icons": [
-        {
-          "src": "./icons/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "عروض اليوم",
-      "short_name": "العروض",
-      "description": "منتجات وعروض البيت اليومية",
-      "url": "./index.html#offers",
-      "icons": [
-        {
-          "src": "./icons/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    }
-  ],
-  "categories": ["shopping", "food", "lifestyle"]
+    "name":  "Disney Flower",
+    "short_name":  "Disney",
+    "id":  "./index.html",
+    "description":  "ÙˆØ±ÙˆØ¯ ÙˆÙ‡Ø¯Ø§ÙŠØ§ Ø±Ø§Ù‚ÙŠØ© ØªØµÙ„ Ø¥Ù„Ù‰ Ù…Ù† ØªØ­Ø¨ ÙÙŠ Ù‚Ù†Ø§",
+    "start_url":  "./index.html",
+    "scope":  "./",
+    "display":  "standalone",
+    "orientation":  "portrait-primary",
+    "dir":  "rtl",
+    "lang":  "ar",
+    "theme_color":  "#B83F70",
+    "background_color":  "#FFF9F6",
+    "icons":  [
+                  {
+                      "src":  "./Assets/disny-192.png",
+                      "sizes":  "192x192",
+                      "type":  "image/png",
+                      "purpose":  "any"
+                  },
+                  {
+                      "src":  "./Assets/disny-512.png",
+                      "sizes":  "512x512",
+                      "type":  "image/png",
+                      "purpose":  "any"
+                  },
+                  {
+                      "src":  "./Assets/disny-192.png",
+                      "sizes":  "192x192",
+                      "type":  "image/png",
+                      "purpose":  "maskable"
+                  },
+                  {
+                      "src":  "./Assets/disny-512.png",
+                      "sizes":  "512x512",
+                      "type":  "image/png",
+                      "purpose":  "maskable"
+                  }
+              ],
+    "shortcuts":  [
+                      {
+                          "name":  "Ø£Ù‚Ø³Ø§Ù… Ø§Ù„ÙˆØ±ÙˆØ¯ ÙˆØ§Ù„Ù‡Ø¯Ø§ÙŠØ§",
+                          "short_name":  "Ø§Ù„Ø£Ù‚Ø³Ø§Ù…",
+                          "description":  "Ø§Ù„ÙˆØµÙˆÙ„ Ø§Ù„Ø³Ø±ÙŠØ¹ Ù„ÙƒÙ„ Ø£Ù‚Ø³Ø§Ù… Disney ÙˆÙ…Ù†ØªØ¬Ø§ØªÙ‡Ø§",
+                          "url":  "./games.html",
+                          "icons":  [
+                                        {
+                                            "src":  "./Assets/disny-192.png",
+                                            "sizes":  "192x192",
+                                            "type":  "image/png"
+                                        }
+                                    ]
+                      },
+                      {
+                          "name":  "Ø¹Ø±ÙˆØ¶ Ø§Ù„ÙŠÙˆÙ…",
+                          "short_name":  "Ø§Ù„Ø¹Ø±ÙˆØ¶",
+                          "description":  "Ø£Ø¬Ù…Ù„ Ø¹Ø±ÙˆØ¶ Ø§Ù„ÙˆØ±ÙˆØ¯ ÙˆØ§Ù„Ù‡Ø¯Ø§ÙŠØ§",
+                          "url":  "./index.html#offers",
+                          "icons":  [
+                                        {
+                                            "src":  "./Assets/disny-192.png",
+                                            "sizes":  "192x192",
+                                            "type":  "image/png"
+                                        }
+                                    ]
+                      }
+                  ],
+    "categories":  [
+                       "shopping",
+                       "lifestyle"
+                   ]
 }

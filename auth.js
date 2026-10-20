@@ -15,8 +15,18 @@
     }
   }
 
+  let authSubscription = null;
+  let authInitialized = false;
+
   function setup() {
+    if (authInitialized) return;
+    if (!document.getElementById('authOverlay')) {
+      setTimeout(setup, 0);
+      return;
+    }
+    authInitialized = true;
     setupEventListeners();
+    subscribeToAuthChanges();
     checkSession();
     // Set register as default tab
     setDefaultTab();
@@ -141,26 +151,23 @@
     hideAlerts();
   }
 
-  // Supabase Auth is the production account store. LocalStorage is only a
-  // localhost fallback so the local preview can still be tested if Supabase
-  // Email Auth has not been enabled yet.
+  // Supabase Auth is the only account store; LocalStorage keeps only a non-secret UI session.
   function getSupabaseClient() {
     return window.supabaseCatalog && window.supabaseCatalog.client
       ? window.supabaseCatalog.client
       : null;
   }
 
-  function isLocalDevelopment() {
-    return window.location.protocol === 'file:' ||
-      ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
-  }
 
   function supabaseUserToSession(user) {
     const metadata = user && user.user_metadata ? user.user_metadata : {};
     const email = (user && user.email) || '';
+    const metadataNames = [metadata.name, metadata.full_name, metadata.fullName, metadata.display_name]
+      .filter(value => typeof value === 'string' && value.trim().length >= 2)
+      .map(value => value.trim());
     return {
       id: user.id,
-      name: metadata.name || metadata.full_name || email.split('@')[0] || 'المستخدم',
+      name: metadataNames[0] || email.split('@')[0] || 'المستخدم',
       email,
       createdAt: user.created_at || new Date().toISOString(),
       authProvider: 'supabase'
@@ -174,6 +181,19 @@
     return session;
   }
 
+  function subscribeToAuthChanges() {
+    const client = getSupabaseClient();
+    if (!client || authSubscription) return;
+    const result = client.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        persistSupabaseUser(session.user);
+      } else {
+        localStorage.removeItem('currentUser');
+        updateUI(null);
+      }
+    });
+    authSubscription = result?.data?.subscription || null;
+  }
   async function syncSupabaseSession() {
     const client = getSupabaseClient();
     if (!client) return;
@@ -188,11 +208,11 @@
 
       // Do not keep showing a stale remote account after its session ends.
       const currentUser = getCurrentUser();
-      if (currentUser?.authProvider === 'supabase' || (!isLocalDevelopment() && currentUser?.authProvider === 'local')) {
+      if (currentUser) {
         localStorage.removeItem('currentUser');
         updateUI(null);
       }
-      // A local user is preserved only for the localhost preview fallback.
+      // لا توجد جلسات محلية للحسابات؛ Supabase هو المصدر الوحيد.
     } catch (error) {
       console.warn('Supabase session check failed:', error);
     }
@@ -209,11 +229,7 @@
     if (message.includes('email not confirmed')) {
       return 'الحساب ده اتعمل قبل إيقاف Confirm email وما زال غير مؤكد. أكّده من Authentication > Users في Supabase أو احذفه وسجّل بالبريد من جديد.';
     }
-    if (message.includes('email logins are disabled') || message.includes('email provider is disabled')) {
-      return isLocalDevelopment()
-        ? 'تسجيل البريد غير مفعّل في Supabase، لذلك تم تفعيل التسجيل المحلي للمعاينة فقط.'
-        : 'تسجيل البريد غير مفعّل في Supabase. فعّل Email provider من Authentication > Providers.';
-    }
+    if (message.includes('email logins are disabled') || message.includes('email provider is disabled')) { return 'تسجيل البريد غير مفعّل في Supabase. فعّل Email provider من Authentication > Providers.'; }
     if (message.includes('signups not allowed') || message.includes('signup is disabled')) {
       return 'إنشاء الحسابات متوقف في Supabase. فعّل Allow new users to sign up من إعدادات Authentication.';
     }
@@ -226,33 +242,6 @@
     return form === 'register'
       ? 'تعذر إنشاء الحساب الآن. تأكد من البيانات وحاول مرة أخرى.'
       : 'تعذر تسجيل الدخول الآن. تأكد من البيانات وحاول مرة أخرى.';
-  }
-
-  function registerLocally(name, email, password, form) {
-    const users = getUsers();
-    const exists = users.some(user => String(user.email || '').toLowerCase() === email.toLowerCase());
-    if (exists) {
-      showAlert('register', 'error', 'هذا البريد مسجل بالفعل! الرجاء تسجيل الدخول');
-      return false;
-    }
-
-    users.push({
-      id: 'local-' + Date.now(),
-      name,
-      email,
-      password,
-      createdAt: new Date().toISOString(),
-      authProvider: 'local'
-    });
-    localStorage.setItem('users', JSON.stringify(users));
-    showAlert('register', 'success', 'تم إنشاء الحساب محليًا للمعاينة. في الاستضافة يجب تفعيل Supabase Email Auth.');
-    setTimeout(() => {
-      switchTab('login');
-      form.reset();
-      hideAlerts();
-      showToast(`تم تسجيلك بنجاح يا ${name}! الآن سجّل دخولك`);
-    }, 1500);
-    return true;
   }
 
   // Register
@@ -275,47 +264,7 @@
       return;
     }
 
-    const client = getSupabaseClient();
-    if (client) {
-      try {
-        const result = await client.auth.signUp({
-          email,
-          password,
-          options: { data: { name } }
-        });
-        if (result.error) throw result.error;
-
-        if (result.data?.session?.user) {
-          persistSupabaseUser(result.data.session.user);
-          e.target.reset();
-          closeModal();
-          showToast('تم إنشاء حسابك وتسجيل الدخول بنجاح ✓');
-          return;
-        }
-
-        showAlert('register', 'error', 'تم حفظ الحساب، لكن Supabase لم ينشئ جلسة دخول. تأكد من إيقاف Confirm email ثم جرّب تسجيل الدخول.');
-        return;
-      } catch (error) {
-        const message = String(error?.message || '').toLowerCase();
-        const canFallback = isLocalDevelopment() && (
-          message.includes('email logins are disabled') ||
-          message.includes('email provider is disabled') ||
-          message.includes('failed to fetch') ||
-          message.includes('network') ||
-          message.includes('rate limit') ||
-          message.includes('too many')
-        );
-        if (!canFallback) {
-          showAlert('register', 'error', getAuthErrorMessage(error, 'register'));
-          return;
-        }
-      }
-    } else if (!isLocalDevelopment()) {
-      showAlert('register', 'error', 'تعذر الاتصال بخدمة الحسابات. لا يمكن إنشاء حساب على الاستضافة بدون Supabase.');
-      return;
-    }
-
-    registerLocally(name, email, password, e.target);
+    const client = getSupabaseClient(); if (!client) { showAlert('register', 'error', 'تعذر الاتصال بخدمة الحسابات. لا يمكن إنشاء حساب بدون Supabase.'); return; } try { const result = await client.auth.signUp({ email, password, options: { data: { name } } }); if (result.error) throw result.error; if (result.data?.session?.user) { persistSupabaseUser(result.data.session.user); e.target.reset(); closeModal(); showToast('تم إنشاء حسابك وتسجيل الدخول بنجاح ✓'); } else { showAlert('register', 'success', 'تم إنشاء الحساب. راجع بريدك الإلكتروني لتأكيد الحساب ثم سجّل الدخول.'); } } catch (error) { showAlert('register', 'error', getAuthErrorMessage(error, 'register')); }
   }
 
   // Login
@@ -333,34 +282,7 @@
       return;
     }
 
-    const client = getSupabaseClient();
-    let remoteError = null;
-    if (client) {
-      try {
-        const result = await client.auth.signInWithPassword({ email, password });
-        if (!result.error && result.data?.user) {
-          const session = persistSupabaseUser(result.data.user);
-          closeModal();
-          showToast(`مرحباً ${session.name}! تم تسجيل الدخول بنجاح ✓`);
-          return;
-        }
-        remoteError = result.error;
-      } catch (error) {
-        remoteError = error;
-      }
-    }
-
-    const localUser = getUsers().find(user =>
-      String(user.email || '').toLowerCase() === email.toLowerCase() && user.password === password
-    );
-    if (localUser && isLocalDevelopment()) {
-      loginUser(localUser, 'local');
-      closeModal();
-      showToast(`مرحباً ${localUser.name}! تم تسجيل الدخول بنجاح ✓`);
-      return;
-    }
-
-    showAlert('login', 'error', remoteError ? getAuthErrorMessage(remoteError, 'login') : 'البريد الإلكتروني أو كلمة المرور غير صحيحة');
+    const client = getSupabaseClient(); if (!client) { showAlert('login', 'error', 'تعذر الاتصال بخدمة الحسابات. حاول مرة أخرى بعد التأكد من إعداد Supabase.'); return; } try { const result = await client.auth.signInWithPassword({ email, password }); if (result.error) throw result.error; const session = persistSupabaseUser(result.data.user); closeModal(); showToast('مرحباً ' + session.name + '! تم تسجيل الدخول بنجاح ✓'); } catch (error) { showAlert('login', 'error', getAuthErrorMessage(error, 'login')); }
   }
 
   // Logout
@@ -379,19 +301,6 @@
     }
   }
 
-  // User Management
-  function loginUser(user, provider) {
-    const session = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      createdAt: user.createdAt,
-      authProvider: provider || user.authProvider || 'local'
-    };
-    localStorage.setItem('currentUser', JSON.stringify(session));
-    updateUI(session);
-  }
-
   function checkSession() {
     const currentUser = getCurrentUser();
     updateUI(currentUser);
@@ -408,14 +317,6 @@
     }
   }
 
-  function getUsers() {
-    try {
-      const data = localStorage.getItem('users');
-      return data ? JSON.parse(data) : [];
-    } catch (error) {
-      return [];
-    }
-  }
 
   // UI Update
   function updateUI(user) {

@@ -1,6 +1,6 @@
 (function initSupabaseCatalog() {
-  const SUPABASE_URL = 'https://rnlvbxtzemsdncwlkkxi.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_xzoauSK8_LMaut9ornZaBQ_3oC4wFxV';
+  const SUPABASE_URL = 'https://srpfxplqcigxthzbxseu.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_fNwkuYfrxMnEgj3IToEfgw_RzVpXuoe';
 
   if (!window.supabase || typeof window.supabase.createClient !== 'function') return;
 

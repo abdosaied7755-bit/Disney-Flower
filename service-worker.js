@@ -1,9 +1,9 @@
-// Service Worker خفيف لـ Market Online - لتثبيت PWA فقط
-const CACHE_NAME = 'baraka-market-simple-v2.0';
+// Service Worker خفيف لـ Disney - لتثبيت PWA فقط
+const CACHE_NAME = 'disney-flower-luxury-v5.0';
 const LOGO_ASSETS = [
-  './icons/icon.png',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
+  './Assets/disny.png',
+  './Assets/disny-192.png',
+  './Assets/disny-512.png',
 ];
 
 // Install - فقط تسجيل (بدون cache ثقيل)
@@ -35,9 +35,7 @@ self.addEventListener('activate', (event) => {
 // Fetch - دائماً من الشبكة (Network First) - بدون cache للصفحات
 self.addEventListener('fetch', (event) => {
   const requestUrl = new URL(event.request.url);
-  const isLogoRequest = requestUrl.pathname.endsWith('/icons/icon.png') ||
-    requestUrl.pathname.endsWith('/icons/icon-192.png') ||
-    requestUrl.pathname.endsWith('/icons/icon-512.png');
+  const isLogoRequest = ['/Assets/disny.png', '/Assets/disny-192.png', '/Assets/disny-512.png'].some(path => requestUrl.pathname.endsWith(path));
 
   if (isLogoRequest) {
     event.respondWith(

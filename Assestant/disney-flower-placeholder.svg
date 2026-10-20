@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" role="img" aria-label="Disney وردة وهدايا">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff8f2"/><stop offset="1" stop-color="#f8c2d5"/></linearGradient><linearGradient id="box" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a73762"/><stop offset="1" stop-color="#8e244d"/></linearGradient></defs>
+  <rect width="900" height="700" rx="48" fill="url(#bg)"/>
+  <circle cx="230" cy="240" r="112" fill="#f4a7c1" opacity=".8"/><circle cx="370" cy="190" r="92" fill="#fff" opacity=".78"/><circle cx="500" cy="250" r="115" fill="#f1b5ca" opacity=".75"/>
+  <path d="M116 305c45-33 88-31 126 4-35 41-83 58-126 33-20-12-20-25 0-37Zm190-89c29-47 70-62 119-38 12 43-6 80-56 102-31 14-51-2-63-64Zm156 84c43-33 86-31 126 4-35 41-83 58-126 33-20-12-20-25 0-37Z" fill="#8e244d"/>
+  <path d="M160 405h490v170H160z" fill="url(#box)"/><path d="M382 405v170" stroke="#f8c2d5" stroke-width="24"/><path d="M160 454h490" stroke="#f8c2d5" stroke-width="22"/>
+  <path d="M360 405c-83-13-104-62-71-86 27-19 64 20 93 86m25 0c83-13 104-62 71-86-27-19-64 20-93 86" fill="none" stroke="#8e244d" stroke-width="18"/>
+  <text x="450" y="640" text-anchor="middle" font-family="Georgia,serif" font-size="42" font-weight="700" fill="#8e244d">Disney Flowers &amp; Gifts</text>
+</svg>

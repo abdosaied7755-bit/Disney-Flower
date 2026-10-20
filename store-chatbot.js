@@ -53,7 +53,7 @@
 
     function generateResponse(message) {
       const msg = normalize(message);
-      if (msg.match(/سلام|هاي|هلا|مرحب|صباح|مساء|اهلا/)) return [`أهلاً بيك يا قمر! 😊 أنا مساعد Market Online. أساعدك تختار طلبك وتعرف الأسعار والتوصيل.`, quickButtons()];
+      if (msg.match(/سلام|هاي|هلا|مرحب|صباح|مساء|اهلا/)) return [`أهلاً بيك يا قمر! 😊 أنا مساعد Disney. أساعدك تختار طلبك وتعرف الأسعار والتوصيل.`, quickButtons()];
       if (msg.match(/توصيل|دليفري|يوصل|مكان|منطقه|وقت وصول|مواعيد/)) return ['بنوصّل طلبك لحد باب البيت بسرعة 🚚<br>غالبًا التوصيل بيكون خلال 45 لـ 60 دقيقة، والدفع عند الاستلام متاح. ابعتلنا منطقتك ونأكدلك التفاصيل 😊', quickButtons()];
       if (msg.match(/دفع|فودافون|كاش|فيزا|استلام|انستاباي/)) return ['الدفع سهل يا باشا 💳<br>متاح الدفع عند الاستلام، وكمان نقدر ننسق معاك طريقة الدفع المناسبة وقت تأكيد الطلب.', quickButtons()];
       if (msg.match(/قسم|اقسام|اصناف|فئات|موجود|كتالوج/)) return [`عندنا ${catalog.length} أقسام متاحة دلوقتي 👇<br>${catalog.map(category => `• ${escapeHtml(category.name)} (${category.products?.length || 0} منتج)`).join('<br>') || 'بنحدّث الأقسام حاليًا، جرب كمان شوية.'}`, categoryButtons()];
@@ -79,7 +79,7 @@
     function showTyping() {
       const typing = document.createElement('div');
       typing.className = 'msg bot typing-message';
-      typing.innerHTML = '<span class="typing-label">مساعد Market Online يكتب</span><span class="typing-indicator" aria-label="جاري كتابة الرد"><span></span><span></span><span></span></span>';
+      typing.innerHTML = '<span class="typing-label">مساعد Disney يكتب</span><span class="typing-indicator" aria-label="جاري كتابة الرد"><span></span><span></span><span></span></span>';
       chatMessages.appendChild(typing);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }

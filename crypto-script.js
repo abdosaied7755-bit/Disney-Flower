@@ -95,6 +95,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
   const closeMenu = () => {
     navMenu.classList.remove('open');
+    burger.setAttribute('aria-expanded', 'false');
     burger.classList.remove('active');
     overlay.classList.remove('show');
   };
@@ -104,6 +105,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     navMenu.classList.toggle('open');
     burger.classList.toggle('active');
     overlay.classList.toggle('show', willOpen);
+    burger.setAttribute('aria-expanded', String(willOpen));
   };
 
   burger.addEventListener('click', toggleMenu);
@@ -154,9 +156,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   // ===== محسّن الذكاء الاصطناعي =====
   const aiResponses = {
     'توصيل|الدليفري|يوصل|التسليم': '🚚 التوصيل عندنا سريع ومرن:\n\n✅ اختر عنوانك ووقت الاستلام\n✅ نجهز طلبك بعناية\n✅ متابعة سهلة حتى باب البيت\n\nللاستفسار عن منطقتك تواصل معنا على واتساب.',
-    'عروض|خصم|تخفيض': '🏷️ عندنا عروض يومية على البقالة والخضار والمشروبات ومستلزمات البيت. افتح قسم "عروض اليوم" وشوف الاختيارات المتاحة.',
+    'عروض|خصم|تخفيض': '🏷️ عندنا عروض يومية على الورود والبوكيهات وبوكسات الهدايا والشوكولاتة. افتح قسم "عروض اليوم" وشوف الاختيارات المتاحة.',
     'دفع|فلوس|كاش|بطاقة': '💳 تقدر تدفع بالطريقة الأنسب لك، ونوفر الدفع عند الاستلام حسب منطقتك. ابعت لنا على واتساب ونأكد لك التفاصيل.',
-    'منتجات|أقسام|بتبيعوا|متاح': '🛒 هتلاقي عندنا بقالة أساسية، خضار وفاكهة، مشروبات وسناكس، تنظيف وعناية، مستلزمات مطبخ، وألبان ومجمدات.',
+    'منتجات|أقسام|بتبيعوا|متاح': '🛒 هتلاقي عندنا بوكيهات ورد، بوكسات هدايا، شوكولاتة، دُمى، بطاقات إهداء وهدايا مخصصة.',
     // الأسعار والألعاب
     'pubg|ببجي': { emoji: '🔫', title: 'PUBG Mobile UC', prices: [
       { amount: '60 UC', price: 50 }, { amount: '325 UC', price: 225 }, { amount: '660 UC', price: 460 },
@@ -185,14 +187,14 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     'طريقة الشراء|كيفية الدفع|كيف اشترى': 'طريقة الشراء سهلة جداً:\n1️⃣ اختر اللعبة والباقة من الموقع\n2️⃣ اضغط "اشتري الآن"\n3️⃣ ستُفتح رسالة واتساب جاهزة\n4️⃣ أرسلها إلينا والشحن فوري ⚡',
     'طرق الدفع|أقبل ايه|تحويل بنكي': '💳 طرق الدفع المتاحة:\n\n🔹 فودافون كاش - فوري\n🔹 أورنج موني - فوري\n🔹 إتصالات كاش - فوري\n🔹 تحويل بنكي - في نفس اليوم\n🔹 ويسترن يونيون - فوري\n🔹 PayPal - فوري\n\nاختر الطريقة اللي تناسبك، كلهم آمنين وسريعين! ✅',
     'تفاصيل الشحن|ازاى الشحن|هيبقا ازاى': '⚡ تفاصيل الشحن الفوري:\n\n✅ بعد ما تبعت التأكيد:\n• نستقبل طلبك فوراً\n• نتحقق من البيانات (دقيقة)\n• نشحن الرصيد مباشرة على حسابك\n\n✅ الرصيد يظهر عندك في:\n• PUBG/COD: 2-5 دقائق\n• Free Fire: 1-3 دقائق\n• Mobile Legends: 2-4 دقائق\n\n✅ ما في تأخير أو مشاكل، شحن آمن وموثّق 🔐',
-    'وقت الشحن|كام وقت|متى بيوصل': '⏱️ وقت الشحن الفوري:\n\n🚀 في الأغلب: 5-10 دقائق من التأكيد\n⚡ أسرع: بعض الطلبات في دقيقة واحدة!\n\n⌛ أقصى مدة: 30 دقيقة (في حالات نادرة)\n\n📞 لو تأخر: اتصل/واتس 201034046979\nنحل المشكلة فوراً ✅',
+    'وقت الشحن|كام وقت|متى بيوصل': '⏱️ وقت الشحن الفوري:\n\n🚀 في الأغلب: 5-10 دقائق من التأكيد\n⚡ أسرع: بعض الطلبات في دقيقة واحدة!\n\n⌛ أقصى مدة: 30 دقيقة (في حالات نادرة)\n\n📞 لو تأخر: اتصل/واتس 201004896232\nنحل المشكلة فوراً ✅',
     'الأمان|آمن|أثق|مش خايف': '🛡️ أموالك آمنة معنا 100%:\n\n✅ آلاف العملاء الراضيين\n✅ شحن موثّق بكوبون موقّع\n✅ ضمان استرجاع المال لو ما وصل\n✅ دعم عملاء 24/7 بسرعة\n✅ كل الطلبات محفوظة وآمنة\n✅ بدون فيروسات أو مشاكل\n\nتقدر تشتري براحة تامة! 😊',
     'عروض|خصم|discount|فلاش': '🔥 عروضنا الحصرية:\n\n⏰ عروض فلاش: كل 6 ساعات!\n💰 خصم حتى 10% على الباقات\n🎁 هدايا مجانية مع الشراء\n🔔 اشترك بالإشعارات ما تفوتك عرض\n\n👉 العروض الحالية في قسم "العروض"\nادخل بسرعة قبل ما تخلص الكميات! ⚡',
     'هل يوجد رسوم|تكاليف إضافية|خفية': '✨ بدون رسوم إضافية:\n\n💯 السعر اللي شايفه = السعر النهائي\n🎉 لا رسوم مخفية\n✅ لا كوميشن أو تحويل\n🔒 أسعار شفافة وآمنة\n\nاللي تشوفه على الموقع = ادفع بالظبط كده!\nالحمد لله على الشفافية! 😊',
     'شكرا|شكراً|تمام|بسيطة': '😊 أهلاً وسهلاً!\nأي سؤال تاني؟ أنا هنا 24/7\nاستمتع باللعبة وخدك رصيد حلو! 🎮💪',
     
     // ===== الأسئلة الشائعة بالعامية المصرية =====
-    'تحويل فودافون|vodafone|فودا': '💳 طريقة تحويل فودافون كاش:\n\n1️⃣ اطلع *110# واختر "تحويل رصيد"\n2️⃣ ادخل رقم 201034046979\n3️⃣ ادخل المبلغ المطلوب\n4️⃣ أكّد بالرقم السري\n5️⃣ ابعت لنا رسالة التأكيد\n\nسهلة وسريعة والمبلغ يوصل فوراً! ✅',
+    'تحويل فودافون|vodafone|فودا': '💳 طريقة تحويل فودافون كاش:\n\n1️⃣ اطلع *110# واختر "تحويل رصيد"\n2️⃣ ادخل رقم 201004896232\n3️⃣ ادخل المبلغ المطلوب\n4️⃣ أكّد بالرقم السري\n5️⃣ ابعت لنا رسالة التأكيد\n\nسهلة وسريعة والمبلغ يوصل فوراً! ✅',
     'في حد كاتم فلوسي|ماحدش ضامن|ضايع': '🛡️ احنا ضامنين أموالك 100%:\n\n✅ كل طلب ليه رقم وكوبون موقع\n✅ لو ما وصل الرصيد = فلوسك راجعة\n✅ عندنا مرتجعات سريعة ومضمونة\n✅ دعم فني رد على طول\n✅ آلاف الناس ثقتنا بسرعتنا\n\nما تقلق، انت في أمان! 💪',
     'كام سعر الشحنة|بكام|غالي': '💰 الأسعار عندنا الأرخص:\n\n✅ أسعار تنافسية جداً\n✅ أرخص من أي موقع تاني\n✅ عروض فلاش كل يوم\n✅ ولو لقيت أرخص = نساويه ليك\n\nنحنا بنشتغل بهامش ربح قليل للسرعة والثقة! 🎯',
     'هل في ضمان|لو ما وصل|إذا ضاع': '✅ نعم في ضمان 100%:\n\n🔹 الرصيد ما وصل؟ = استرجاع فلوسك\n🔹 اتأخر كتير؟ = نحل المشكلة فوراً\n🔹 ما وصلت الرسالة؟ = نبعتها ليك برسالة جديدة\n🔹 في مشكلة تقنية؟ = نقدمك أولوية\n\nأموالك محمية معنا! 🛡️',
@@ -227,7 +229,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   }
 
   function showWelcomeMessage() {
-    addMessage('👋 أهلاً وسهلاً في Market Online!', true, true);
+    addMessage('👋 أهلاً وسهلاً في Disney!', true, true);
     setTimeout(() => {
       addMessage('أنا هنا لمساعدتك في:\n✅ الأقسام والمنتجات\n✅ العروض وطرق الدفع\n✅ التوصيل ومواعيد الاستلام\n\nاكتب سؤالك أو اختار من الأزرار 👆', true);
     }, 1000);
@@ -255,7 +257,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       return '👋 وعليكم السلام ورحمة الله وبركاته!\nكيف أساعدك اليوم؟ 😊';
     }
     if (input.includes('شنو') || input.includes('إيه') || input.includes('ايه الخدمة')) {
-      return 'احنا Market Online:\n🛒 احتياجات البيت في مكان واحد\n💰 عروض وأسعار واضحة\n🚚 توصيل سريع ومرن\n🛡️ منتجات مختارة بعناية\n\nتحب تتسوق أي قسم؟';
+      return 'احنا Disney:\n🛒 احتياجات البيت في مكان واحد\n💰 عروض وأسعار واضحة\n🚚 توصيل سريع ومرن\n🛡️ منتجات مختارة بعناية\n\nتحب تتسوق أي قسم؟';
     }
     if (input.includes('نوفر') || input.includes('خدمات') || input.includes('فيه إيه')) {
       return '🛒 الخدمات اللي عندنا:\n\n✅ أقسام متنوعة للبيت\n✅ عروض يومية وأسبوعية\n✅ توصيل لباب البيت\n✅ دعم عملاء سريع\n✅ دفع مرن وآمن\n\nتحب تبدأ منين؟ 💪';
@@ -906,13 +908,13 @@ class FlashDealsNotifier {
 
   showWelcomeNotification() {
     this.sendNotification(
-      '🎉 أهلاً بك في Market Online',
+      '🎉 أهلاً بك في Disney',
       'سنرسل لك إشعارات بالعروض الجديدة والخصومات الحصرية!',
-      './icons/icon.png'
+      './Assets/disny.png'
     );
   }
 
-  sendNotification(title, body, icon = './icons/icon.png', data = {}) {
+  sendNotification(title, body, icon = './Assets/disny.png', data = {}) {
     if (this.notificationPermission !== 'granted') {
       console.log('⚠️ لا يوجد إذن للإشعارات');
       return;
@@ -925,13 +927,13 @@ class FlashDealsNotifier {
         registration.showNotification(title, {
           body: body,
           icon: icon,
-          badge: './icons/icon.png',
+          badge: './Assets/disny.png',
           vibrate: [200, 100, 200],
           tag: 'flash-deal-' + Date.now(),
           requireInteraction: false,
           data: data,
           actions: [
-            { action: 'view', title: '👀 شاهد العروض', icon: './icons/icon.png' },
+            { action: 'view', title: '👀 شاهد العروض', icon: './Assets/disny.png' },
             { action: 'close', title: 'إغلاق' }
           ]
         });
@@ -941,7 +943,7 @@ class FlashDealsNotifier {
       const notification = new Notification(title, {
         body: body,
         icon: icon,
-        badge: './icons/icon.png',
+        badge: './Assets/disny.png',
         vibrate: [200, 100, 200],
         tag: 'flash-deal',
         requireInteraction: false
@@ -970,7 +972,7 @@ class FlashDealsNotifier {
     this.sendNotification(
       '🔥 عروض فلاش جديدة متاحة الآن!',
       `${dealText} - ${priceText}\nاسرع قبل انتهاء الوقت! ⏰`,
-      './icons/icon.png',
+      './Assets/disny.png',
       { url: '#flash-deals' }
     );
   }
@@ -980,14 +982,14 @@ class FlashDealsNotifier {
       this.sendNotification(
         '⏰ العروض توشك على الانتهاء!',
         'باقي 5 دقائق فقط على انتهاء عروض الفلاش الحالية',
-        './icons/icon.png',
+        './Assets/disny.png',
         { url: '#flash-deals' }
       );
     } else if (minutesLeft === 1) {
       this.sendNotification(
         '🚨 دقيقة واحدة فقط!',
         'أسرع! العروض ستنتهي خلال دقيقة واحدة',
-        './icons/icon.png',
+        './Assets/disny.png',
         { url: '#flash-deals' }
       );
     }
@@ -1070,7 +1072,7 @@ function attachFlashDealButtons() {
       const time = getCurrentTime();
       
       const message = `السلام عليكم، أريد طلب العرض:\n🔥 ${gameName}\n💰 ${priceText}\n⚡ عرض فلاش محدود\n🆔 رقم الطلب: ${requestId}\n🔐 الكود الموقّع: ${token}\n⏰ الوقت: ${time}\n⌛ صلاحية التوكين: ${new Date(expiresAt).toLocaleString()}`;
-      const whatsappUrl = `https://wa.me/201034046979?text=${encodeURIComponent(message)}`;
+      const whatsappUrl = `https://wa.me/201004896232?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
     });
   });
@@ -1180,7 +1182,7 @@ orderNowBtn?.addEventListener('click', function() {
   }
   
   const message = `السلام عليكم، أريد شحن:\n🎮 ${gameName}\n📦 الباقة: ${selectedPackage.amount}\n💰 السعر: ${price} جنيه`;
-  const whatsappUrl = `https://wa.me/201034046979?text=${encodeURIComponent(message)}`;
+  const whatsappUrl = `https://wa.me/201004896232?text=${encodeURIComponent(message)}`;
   window.open(whatsappUrl, '_blank');
 });
 
@@ -2225,7 +2227,7 @@ function showCelebration(reward) {
     // Setup WhatsApp button
     whatsappBtn.onclick = () => {
         const message = `مرحباً! أريد استلام مكافأة الولاء:\n${reward.name}\n${reward.description}\n\nرقم العميل: ${document.getElementById('customerId').textContent}`;
-        const whatsappUrl = `https://wa.me/201034046979?text=${encodeURIComponent(message)}`;
+        const whatsappUrl = `https://wa.me/201004896232?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
     };
     
@@ -2624,7 +2626,7 @@ function initFlashDealsButtons() {
       const time = getCurrentTime();
       
       const message = `السلام عليكم، أريد شراء:\n🎮 ${game}\n💰 السعر: ${priceText}\n🆔 رقم الطلب: ${requestId}\n🔐 الكود الموقّع: ${token}\n⚡ عرض فلاش محدود\n⏰ الوقت: ${time}\n⌛ صلاحية التوكين: ${new Date(expiresAt).toLocaleString()}`;
-      const whatsappUrl = `https://wa.me/201034046979?text=${encodeURIComponent(message)}`;
+      const whatsappUrl = `https://wa.me/201004896232?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
     });
   });
@@ -2893,7 +2895,7 @@ setupSocialProof();
     claimPrizeBtn.addEventListener('click', () => {
       if (currentPoints >= 100) {
         const message = encodeURIComponent(`مرحباً! لقد وصلت إلى 100 نقطة في برنامج الإحالة وأريد استلام هديتي 🎁`);
-        window.open(`https://wa.me/201034046979?text=${message}`, '_blank');
+        window.open(`https://wa.me/201004896232?text=${message}`, '_blank');
         
         // Reset thermometer after claim
         setTimeout(() => {
@@ -2951,16 +2953,16 @@ setupSocialProof();
   const cursorEl = document.querySelector('.typewriter-cursor');
   if (!typewriterEl) return;
 
-  const text = 'أهلاً بكم في Market Online';
+  const text = 'أهلاً بكم في Disney';
   let index = 0;
   
   function typeWriter() {
     const currentText = text.substring(0, index);
     
-    // Apply special styling to Market Online
+    // Apply special styling to Disney
     const styledText = currentText.replace(
-      'Market Online',
-      '<span class="baraka-brand">Market Online</span>'
+      'Disney',
+      '<span class="baraka-brand">Disney</span>'
     );
     
     typewriterEl.innerHTML = styledText;
@@ -3019,45 +3021,26 @@ function animateStats() {
 }
 
 // Newsletter Subscription Handler
-function handleNewsletterSubscribe(event) {
+async function handleNewsletterSubscribe(event) {
   event.preventDefault();
-  
   const form = event.target;
   const input = form.querySelector('input[type="email"]');
-  const email = input.value.trim();
-  
-  if (!email) {
-    showFooterNotification('❌', 'الرجاء إدخال البريد الإلكتروني', 'error');
-    return false;
-  }
-  
-  // Email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
+  const email = input.value.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     showFooterNotification('❌', 'الرجاء إدخال بريد إلكتروني صحيح', 'error');
     return false;
   }
-  
-  // Save to localStorage
-  let subscribers = JSON.parse(localStorage.getItem('newsletter_emails') || '[]');
-  
-  if (subscribers.includes(email)) {
-    showFooterNotification('ℹ️', 'أنت مشترك بالفعل في نشرتنا', 'info');
-    return false;
+  try {
+    const client = window.supabaseCatalog?.client;
+    if (client) {
+      const { error } = await client.from('newsletter_subscribers').insert({ email });
+      if (error && error.code !== '23505') throw error;
+    }
+    showFooterNotification('✅', 'تم الاشتراك بنجاح في نشرة Disney', 'success');
+    input.value = '';
+  } catch (error) {
+    showFooterNotification('❌', 'تعذر تسجيل الاشتراك حاليًا', 'error');
   }
-  
-  subscribers.push(email);
-  localStorage.setItem('newsletter_emails', JSON.stringify(subscribers));
-  
-  // Success
-  showFooterNotification('✅', 'تم الاشتراك بنجاح! شكراً لك', 'success');
-  
-  // Create confetti effect
-  createConfetti();
-  
-  // Clear form
-  input.value = '';
-  
   return false;
 }
 
@@ -3293,7 +3276,7 @@ function animateFooterSpeedometers() {
 }
 
 // ===== Console Welcome Message =====
-console.log('%c🎮 Welcome to Market Online! 🎮', 'color: #9b5bff; font-size: 24px; font-weight: bold;');
+console.log('%c🎮 Welcome to Disney! 🎮', 'color: #9b5bff; font-size: 24px; font-weight: bold;');
 console.log('%cللدعم التقني: support@lootohub.com', 'color: #00ffcc; font-size: 14px;');
 
 

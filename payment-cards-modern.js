@@ -5,7 +5,7 @@
 
 // ===== CONFIGURATION =====
 const CONFIG = {
-  whatsappNumber: "201034046979",
+  whatsappNumber: "201004896232",
   whatsappMessage: "السلام عليكم 👋\n\nأريد الاستفسار عن طرق الدفع المتاحة والباقات المتوفرة لديكم.\n\nشكراً لكم 🌟",
   animationDuration: 2000, // Duration for counter animation
   observerThreshold: 0.3 // When to start animations

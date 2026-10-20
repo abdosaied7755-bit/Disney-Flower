@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Disney Flowers and Gifts</title>
+  <desc id="desc">وردة وردية مع شريط هدايا وهوية Disney</desc>
+  <defs>
+    <linearGradient id="petal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8c2d5"/><stop offset="1" stop-color="#f4a7c1"/></linearGradient>
+    <linearGradient id="wine" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a73762"/><stop offset="1" stop-color="#8e244d"/></linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="92" fill="#fff8f2"/>
+  <circle cx="256" cy="190" r="128" fill="#fce6ee"/>
+  <path d="M256 296c-25 36-31 66-25 98h50c6-32 0-62-25-98Z" fill="#8e244d"/>
+  <path d="M256 288c-43-21-79-55-82-96-2-27 15-47 38-43 27 5 44 31 44 63 0-32 17-58 44-63 23-4 40 16 38 43-3 41-39 75-82 96Z" fill="url(#petal)"/>
+  <path d="M256 282c-35-36-48-78-33-108 10-20 32-25 48-8 18 19 18 53-15 116Z" fill="url(#wine)" opacity=".95"/>
+  <path d="M176 224c-39 16-64 42-71 74 35 12 73-5 105-48" fill="none" stroke="#8e244d" stroke-width="12" stroke-linecap="round"/>
+  <path d="M336 224c39 16 64 42 71 74-35 12-73-5-105-48" fill="none" stroke="#8e244d" stroke-width="12" stroke-linecap="round"/>
+  <text x="256" y="382" text-anchor="middle" font-family="Georgia,serif" font-size="70" font-weight="700" fill="#8e244d">Disney</text>
+  <text x="256" y="420" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" letter-spacing="5" fill="#33232b">FLOWERS &amp; GIFTS</text>
+</svg>

@@ -1,10 +1,11 @@
-// PWA Installer - Market Online
+// PWA Installer - Disney Flower
 // نسخة محسّنة مع نافذة تثبيت بتصميم احترافي
 
 class PWAInstaller {
   constructor() {
     this.deferredPrompt = window.__barakaDeferredPrompt || null;
     this.modalShown = false;
+    this.seenKey = 'pwa-install-seen-v3';
     this.init();
   }
 
@@ -22,6 +23,7 @@ class PWAInstaller {
     // عند التثبيت الناجح
     window.addEventListener('appinstalled', () => {
       localStorage.setItem('pwa-installed', 'true');
+      localStorage.setItem(this.seenKey, 'true');
       this.hideInstallModal();
       this.hideHeroButton();
       console.log('✅ تطبيق مثبت بنجاح');
@@ -39,13 +41,13 @@ class PWAInstaller {
     }
 
     // إذا لم يكن التطبيق مثبتاً، اعرض نافذة التثبيت بعد تحميل الصفحة
-    if (!isInstalled && localStorage.getItem('pwa-install-seen-v3') !== 'true') {
+    if (!isInstalled && localStorage.getItem(this.seenKey) !== 'true') {
       setTimeout(() => {
         const stillNotInstalled = this.checkIfInstalled();
         console.log('⏱️ بعد 3 ثوان - التحقق من التثبيت:', stillNotInstalled);
         console.log('beforeinstallprompt متاح:', !!this.deferredPrompt);
         
-        if (!stillNotInstalled && localStorage.getItem('pwa-install-seen-v3') !== 'true') {
+        if (!stillNotInstalled && localStorage.getItem(this.seenKey) !== 'true') {
           console.log('✅ التطبيق غير مثبت - سيتم عرض النافذة');
           this.createInstallModal();
         } else {
@@ -97,6 +99,10 @@ class PWAInstaller {
   }
 
   createInstallModal() {
+    if (!this.isHomePage() || this.checkIfInstalled() || localStorage.getItem(this.seenKey) === 'true') {
+      return;
+    }
+
     if (this.modalShown) {
       console.log('⚠️ النافذة مفتوحة بالفعل');
       return;
@@ -116,8 +122,8 @@ class PWAInstaller {
         <button class="pwa-modal-close" id="pwa-modal-close-btn">✕</button>
         
         <div class="pwa-modal-header">
-          <img src="./icons/icon.png" alt="Market Online" class="pwa-modal-logo">
-          <h2>حمّل تطبيق Market Online</h2>
+          <img src="./Assets/disny-192.png" alt="Disney Flower" class="pwa-modal-logo">
+          <h2>حمّل تطبيق Disney Flower</h2>
           <p class="pwa-modal-subtitle">استمتع بتجربة أفضل وأسرع</p>
         </div>
         
@@ -154,7 +160,7 @@ class PWAInstaller {
     
     document.body.appendChild(modal);
     this.modalShown = true;
-    localStorage.setItem('pwa-install-seen-v3', 'true');
+    localStorage.setItem(this.seenKey, 'true');
 
     // أضف styling إلى الـ modal
     this.addModalStyles();
@@ -456,6 +462,7 @@ class PWAInstaller {
       modal.classList.remove('show');
       setTimeout(() => modal.remove(), 300);
       this.modalShown = false;
+    this.seenKey = 'pwa-install-seen-v3';
     }
   }
 
@@ -473,14 +480,14 @@ class PWAInstaller {
       if (subtitle) {
         subtitle.textContent = isLocalFile
           ? 'افتح الموقع من رابط https أو localhost أولاً، لأن المتصفح لا يسمح بتثبيت PWA من ملف محلي.'
-          : 'التثبيت متاح من قائمة المتصفح: افتح القائمة ثم اختر تثبيت Market Online على جهازك.';
+          : 'التثبيت متاح من قائمة المتصفح: افتح القائمة ثم اختر تثبيت Disney Flower على جهازك.';
       }
       const button = document.getElementById('heroInstallBtn');
       if (button) button.classList.add('install-help-state');
       this.showInstallNotice(
         isLocalFile
           ? 'التثبيت يحتاج تشغيل الموقع من localhost أو رابط HTTPS.'
-          : 'التثبيت غير متاح الآن. افتح قائمة المتصفح واختر تثبيت Market Online.'
+          : 'التثبيت غير متاح الآن. افتح قائمة المتصفح واختر تثبيت Disney Flower.'
       );
       return;
     }

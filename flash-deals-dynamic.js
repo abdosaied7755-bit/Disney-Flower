@@ -1,5 +1,5 @@
 /**
- * Dynamic Flash Deals System - Limited عروض Market Online
+ * Dynamic Flash Deals System - Limited عروض Disney Flower
  * 6 cards displayed with premium packages (1500+ EGP)
  * First card always shows PUBG with rotating offers every 6 hours
  * Other cards show different games
