@@ -222,25 +222,36 @@ $$;
 create or replace function public.track_visitor(p_visitor_id text, p_page_path text default null)
 returns jsonb language plpgsql security definer set search_path = public as $$
 declare
-  is_new boolean;
   total_count integer;
   today_count integer;
+  month_count integer;
 begin
-  if p_visitor_id is null or char_length(trim(p_visitor_id)) < 8 then raise exception 'Invalid visitor identifier'; end if;
+  if p_visitor_id is null or char_length(trim(p_visitor_id)) < 8 then
+    raise exception 'Invalid visitor identifier';
+  end if;
+
   insert into public.visitor_stats(visitor_id)
   values (left(trim(p_visitor_id), 120))
-  on conflict (visitor_id) do update set last_seen_at = now(), total_visits = public.visitor_stats.total_visits + 1
-  returning (xmax = 0) into is_new;
-  insert into public.visitor_daily(visit_date, visits, unique_visitors)
-  values (current_date, 1, case when is_new then 1 else 0 end)
-  on conflict (visit_date) do update set visits = public.visitor_daily.visits + 1,
-    unique_visitors = public.visitor_daily.unique_visitors + case when is_new then 1 else 0 end;
+  on conflict (visitor_id) do update set last_seen_at = now();
+
   insert into public.visitor_presence(visitor_id, page_path, last_seen_at)
   values (left(trim(p_visitor_id), 120), p_page_path, now())
   on conflict (visitor_id) do update set page_path = excluded.page_path, last_seen_at = now();
-  select coalesce(sum(total_visits), 0)::integer into total_count from public.visitor_stats;
-  select coalesce(visits, 0)::integer into today_count from public.visitor_daily where visit_date = current_date;
-  return jsonb_build_object('total_visits', total_count, 'today_visits', today_count);
+
+  select count(*)::integer into total_count
+  from public.visitor_stats;
+  select count(*)::integer into today_count
+  from public.visitor_stats
+  where last_seen_at >= date_trunc('day', now());
+  select count(*)::integer into month_count
+  from public.visitor_stats
+  where last_seen_at >= date_trunc('month', now());
+
+  return jsonb_build_object(
+    'total_visits', total_count,
+    'today_visits', today_count,
+    'month_visits', month_count
+  );
 end;
 $$;
 

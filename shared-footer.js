@@ -376,6 +376,7 @@ function loadFirebaseScripts() {
 
   const visitorId = localStorage.getItem("marketOnlineVisitorId") || crypto.randomUUID();
   let visitorTrackingAvailable = true;
+  const PRESENCE_REFRESH_MS = 20000;
   localStorage.setItem("marketOnlineVisitorId", visitorId);
 
 
@@ -390,7 +391,7 @@ function loadFirebaseScripts() {
     if (!stats) throw new Error("Visitor counter returned no statistics");
     if (totalEl) totalEl.innerText = stats.total_visits;
     if (dailyEl) dailyEl.innerText = stats.today_visits;
-    if (monthlyEl) monthlyEl.innerText = stats.today_visits;
+    if (monthlyEl) monthlyEl.innerText = stats.month_visits ?? stats.today_visits;
   }
 
   const updatePresence = async () => {
@@ -409,13 +410,16 @@ function loadFirebaseScripts() {
     visitorTrackingAvailable = false;
     console.error("[Visitor Counter] Failed to update online presence:", error);
   });
-  setInterval(() => {
-    if (!visitorTrackingAvailable) return;
+  const refreshPresence = () => {
+    if (!visitorTrackingAvailable || document.visibilityState === 'hidden') return;
     updatePresence().catch((error) => {
       visitorTrackingAvailable = false;
       console.error("[Visitor Counter] Failed to update online presence:", error);
     });
-  }, 15000);
+  };
+  setInterval(refreshPresence, PRESENCE_REFRESH_MS);
+  document.addEventListener('visibilitychange', refreshPresence);
+  window.addEventListener('pageshow', refreshPresence);
 }
 
 // Chatbot Widget Functionality - USES 'open' CLASS

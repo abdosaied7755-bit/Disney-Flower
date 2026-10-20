@@ -10,7 +10,20 @@
 
   if (!window.supabase || typeof window.supabase.createClient !== 'function') return;
 
-  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const client = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY,
+    window.DISNEY_ADMIN_PAGE
+      ? {
+          auth: {
+            storageKey: 'disney-admin-auth',
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: false
+          }
+        }
+      : undefined
+  );
   window.supabaseCatalog = { client, loadedFromDatabase: false, realtimeEnabled: false };
 
   function mapCategory(category, products) {

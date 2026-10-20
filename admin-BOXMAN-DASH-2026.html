@@ -7,6 +7,7 @@
 <title>Disney - لوحة الإدارة</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>window.DISNEY_ADMIN_PAGE = true;</script>
 <script src="./supabase-catalog.js"></script>
 <style>
 :root{ --accent:#8b3dff; --bg:#0a0b1a; --card:#121433; --text:#e8e8f3; }
@@ -112,8 +113,21 @@ button{
   .stats { grid-template-columns:1fr; gap:14px; }
   .card { padding:16px; border-radius:12px; }
   .card h3 { font-size:1rem; }
-  #dashboard { padding:14px; }
+  #dashboard { padding:10px; }
   canvas#chart { height: 180px !important; width: 100% !important; }
+  .header { padding:12px; }
+  .header h1 { width:100%; font-size:1rem; line-height:1.35; }
+  .header .meta { gap:8px; font-size:.78rem; }
+  .header .meta span { min-width:0; line-height:1.5; }
+  .catalog-admin-grid,
+  .reviews-admin-grid { grid-template-columns:1fr; gap:14px; }
+  .offer-price-grid { grid-template-columns:1fr; }
+  .catalog-row { align-items:stretch; flex-direction:column; gap:9px; }
+  .catalog-row-actions { width:100%; }
+  .catalog-row-actions button { flex:1; }
+  .visitor-admin-actions { align-items:stretch; }
+  .visitor-admin-actions button { width:100%; }
+  .reviews-admin-heading { flex-direction:column; }
 }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -283,23 +297,24 @@ async function init(){
   }
 
   async function loadCounters(){
-    const today = new Date().toISOString().slice(0, 10);
-    const firstOfMonth = new Date(); firstOfMonth.setDate(1);
-    const [allResult, todayResult, monthResult] = await Promise.all([
-      client.from("visitor_stats").select("total_visits"),
-      client.from("visitor_daily").select("visits").eq("visit_date", today).maybeSingle(),
-      client.from("visitor_daily").select("visits").gte("visit_date", firstOfMonth.toISOString().slice(0, 10))
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const monthStart = new Date(todayStart.getFullYear(), todayStart.getMonth(), 1);
+    const [totalResult, todayResult, monthResult] = await Promise.all([
+      client.from("visitor_stats").select("visitor_id", { count: "exact", head: true }),
+      client.from("visitor_stats").select("visitor_id", { count: "exact", head: true }).gte("last_seen_at", todayStart.toISOString()),
+      client.from("visitor_stats").select("visitor_id", { count: "exact", head: true }).gte("last_seen_at", monthStart.toISOString())
     ]);
-    if (allResult.error || todayResult.error || monthResult.error) throw (allResult.error || todayResult.error || monthResult.error);
-    const totalCount = (allResult.data || []).reduce((sum, row) => sum + Number(row.total_visits || 0), 0);
-    const todayCount = Number(todayResult.data?.visits || 0);
-    const monthCount = (monthResult.data || []).reduce((sum, row) => sum + Number(row.visits || 0), 0);
+    if (totalResult.error || todayResult.error || monthResult.error) throw (totalResult.error || todayResult.error || monthResult.error);
+    const totalCount = totalResult.count || 0;
+    const todayCount = todayResult.count || 0;
+    const monthCount = monthResult.count || 0;
     total.innerText = totalCount; daily.innerText = todayCount; monthly.innerText = monthCount;
     chart.data.datasets[0].data = [todayCount, monthCount, totalCount]; chart.update();
   }
 
   async function loadOnline(){
-    const cutoff = new Date(Date.now() - 30000).toISOString();
+    const cutoff = new Date(Date.now() - 90000).toISOString();
     const { count, error } = await client.from("visitor_presence").select("visitor_id", { count: "exact", head: true }).gt("last_seen_at", cutoff);
     if (error) throw error;
     online.innerText = count || 0;

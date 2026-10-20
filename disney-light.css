@@ -633,9 +633,30 @@ button { cursor: pointer; }
   .category-page .category-cards-grid, .category-page .product-grid { grid-template-columns: 1fr; gap: 14px; }
   .category-page .category-card-image, .category-page .nested-category-card-image { height: 155px; }
   .category-page .product-card-image { height: 175px; }
-  .category-page .product-actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .category-page .product-actions .quantity-control { grid-column: 1 / -1; justify-self: start; }
-  .category-page .product-add-btn, .category-page .product-buy-btn { min-height: 42px; padding-inline: 8px; }
+  .category-page .product-actions,
+  .category-detail-page .product-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .category-page .product-actions .quantity-control,
+  .category-detail-page .product-actions .quantity-control {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .category-page .product-actions .quantity-control button,
+  .category-page .product-actions .quantity-control output,
+  .category-detail-page .product-actions .quantity-control button,
+  .category-detail-page .product-actions .quantity-control output {
+    flex: 1;
+    width: auto;
+  }
+  .category-page .product-add-btn, .category-page .product-buy-btn,
+  .category-detail-page .product-add-btn, .category-detail-page .product-buy-btn {
+    min-height: 42px;
+    padding-inline: 8px;
+  }
   .reviews-page .reviews-hero { padding-bottom: 20px; }
   .reviews-page .reviews-hero-copy { text-align: center; }
   .reviews-page .reviews-hero-art { min-height: 270px; max-width: 355px; transform: none; }
