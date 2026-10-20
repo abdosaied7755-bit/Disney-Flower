@@ -1,9 +1,13 @@
 (function initOffersPage() {
   const grid = document.getElementById('offersGrid');
   const emptyState = document.getElementById('offersEmpty');
+  const loadingState = document.getElementById('offersLoading');
   const searchInput = document.getElementById('offersSearch');
   const categoryFilter = document.getElementById('offersCategoryFilter');
   if (!grid || !emptyState) return;
+
+  let catalogState = 'loading';
+  const defaultEmptyMarkup = emptyState.innerHTML;
 
   const state = {
     items: [],
@@ -206,6 +210,20 @@
   }
 
   function render() {
+    if (loadingState) loadingState.hidden = catalogState !== 'loading';
+    if (catalogState === 'loading') {
+      grid.hidden = true;
+      emptyState.hidden = true;
+      return;
+    }
+    if (catalogState === 'error') {
+      grid.hidden = true;
+      emptyState.hidden = false;
+      emptyState.innerHTML = '<i class="fas fa-triangle-exclamation"></i><h3>تعذر تحميل العروض حاليًا</h3><p>حاول تحديث الصفحة مرة أخرى.</p>';
+      return;
+    }
+
+    emptyState.innerHTML = defaultEmptyMarkup;
     const query = normalize(state.query);
     const selectedCategory = String(state.category);
     state.visibleItems = state.items.filter(item => {
@@ -311,10 +329,25 @@
     render();
   }
 
-  window.addEventListener('catalog:updated', refresh);
+  window.addEventListener('catalog:updated', () => {
+    catalogState = 'ready';
+    refresh();
+  });
+  window.addEventListener('catalog:error', () => {
+    catalogState = 'error';
+    render();
+  });
   refresh();
 
   if (window.supabaseCatalog?.ready) {
-    window.supabaseCatalog.ready.then(refresh);
+    window.supabaseCatalog.ready.then(loaded => {
+      if (loaded) {
+        catalogState = 'ready';
+        refresh();
+      } else if (catalogState !== 'error') {
+        catalogState = 'error';
+        render();
+      }
+    });
   }
 })();

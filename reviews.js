@@ -7,6 +7,14 @@
   const state = { reviews: [], query: '', filter: 'all', source: 'local' };
 
   const isLocalDevelopment = () => window.location.protocol === 'file:' || ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
+  const getSupabaseRestConfig = () => {
+    const config = window.DISNEY_FLOWER_CONFIG || {};
+    return { url: config.supabaseUrl || 'https://srpfxplqcigxthzbxseu.supabase.co', key: config.supabaseKey || 'sb_publishable_fNwkuYfrxMnEgj3IToEfgw_RzVpXuoe' };
+  };
+
+  const getStoredRestSession = () => {
+    try { return JSON.parse(localStorage.getItem('disney-public-auth') || 'null'); } catch { return null; }
+  };
 
   const getCurrentUser = () => {
     try {
@@ -146,6 +154,21 @@
       }
     }
 
+    try {
+      const config = getSupabaseRestConfig();
+      const stored = getStoredRestSession();
+      const response = await fetch(config.url + '/rest/v1/customer_reviews?select=id,customer_id,customer_name,rating,review_text,is_published,is_featured,admin_reply,created_at,updated_at&is_published=eq.true&order=created_at.desc', {
+        headers: { apikey: config.key, Authorization: 'Bearer ' + (stored?.access_token || config.key) }
+      });
+      const data = await response.json().catch(() => []);
+      if (!response.ok) throw new Error('Reviews request failed');
+      state.source = 'remote';
+      state.reviews = Array.isArray(data) ? data : [];
+      render();
+      return;
+    } catch (error) {
+      console.info('تقييمات Supabase REST غير متاحة حاليًا.', error.message || error);
+    }
     if (!isLocalDevelopment()) {
       state.source = 'remote-error';
       state.reviews = [];
@@ -201,6 +224,19 @@
       if (client && state.source === 'remote' && user.authProvider === 'supabase') {
         const result = await client.from('customer_reviews').insert(payload);
         if (result.error) throw result.error;
+      } else if (state.source === 'remote' && user.authProvider === 'supabase') {
+        const config = getSupabaseRestConfig();
+        const stored = getStoredRestSession();
+        if (!stored?.access_token) throw new Error('لا توجد جلسة دخول صالحة لإرسال التقييم.');
+        const response = await fetch(config.url + '/rest/v1/customer_reviews', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Prefer: 'return=minimal', apikey: config.key, Authorization: 'Bearer ' + stored.access_token },
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data.message || data.hint || 'Reviews insert failed');
+        }
       } else if (isLocalDevelopment()) {
         const localReviews = getLocalReviews();
         localReviews.unshift({ ...payload, id: 'local-' + Date.now(), created_at: new Date().toISOString() });

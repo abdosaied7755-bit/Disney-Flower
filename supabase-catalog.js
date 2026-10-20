@@ -1,30 +1,44 @@
 (function initSupabaseCatalog() {
   const SUPABASE_URL = 'https://srpfxplqcigxthzbxseu.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_fNwkuYfrxMnEgj3IToEfgw_RzVpXuoe';
+  const CATALOG_TIMEOUT_MS = 12000;
 
   window.DISNEY_FLOWER_CONFIG = Object.freeze({
     name: 'Disney',
     address: 'قنا / عمرو أفندي / آخر شارع أجواء',
-    supabaseUrl: SUPABASE_URL
+    supabaseUrl: SUPABASE_URL,
+    supabaseKey: SUPABASE_KEY,
   });
 
-  if (!window.supabase || typeof window.supabase.createClient !== 'function') return;
-
-  const client = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY,
-    window.DISNEY_ADMIN_PAGE
-      ? {
-          auth: {
-            storageKey: 'disney-admin-auth',
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: false
-          }
-        }
-      : undefined
-  );
+  const hasSupabaseClient = window.supabase && typeof window.supabase.createClient === 'function';
+  const client = hasSupabaseClient
+    ? window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY,
+        window.DISNEY_ADMIN_PAGE
+          ? {
+              auth: {
+                storageKey: 'disney-admin-auth',
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: false
+              }
+            }
+          : undefined
+      )
+    : null;
   window.supabaseCatalog = { client, loadedFromDatabase: false, realtimeEnabled: false };
+
+  async function fetchTable(table, query) {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`, {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    if (!response.ok) throw new Error(`Supabase ${table} request failed (${response.status})`);
+    return { data: await response.json(), error: null };
+  }
 
   function mapCategory(category, products) {
     return {
@@ -79,14 +93,22 @@
   }
 
   async function loadCatalog() {
-    const [categoriesResult, productsResult] = await Promise.all([
-      client.from('categories').select('*').eq('is_active', true).order('sort_order'),
-      client.from('products').select('*').order('created_at', { ascending: false })
+    const request = Promise.all([
+      client
+        ? client.from('categories').select('*').eq('is_active', true).order('sort_order')
+        : fetchTable('categories', 'select=*&is_active=eq.true&order=sort_order.asc'),
+      client
+        ? client.from('products').select('*').order('created_at', { ascending: false })
+        : fetchTable('products', 'select=*&order=created_at.desc')
     ]);
+    const timeout = new Promise((resolve, reject) => {
+      setTimeout(() => reject(new Error('انتهت مهلة تحميل كتالوج Disney.')), CATALOG_TIMEOUT_MS);
+    });
+    const [categoriesResult, productsResult] = await Promise.race([request, timeout]);
 
     if (categoriesResult.error || productsResult.error) {
       window.supabaseCatalog.lastError = categoriesResult.error || productsResult.error;
-      console.warn('Supabase catalog is unavailable; using the local catalog.', categoriesResult.error || productsResult.error);
+      console.warn('Supabase catalog is unavailable; no local catalog fallback will be shown.', categoriesResult.error || productsResult.error);
       window.dispatchEvent(new CustomEvent('catalog:error', { detail: window.supabaseCatalog.lastError }));
       return false;
     }
@@ -114,11 +136,14 @@
 
   window.supabaseCatalog.loadCatalog = loadCatalog;
   window.supabaseCatalog.ready = loadCatalog().catch(error => {
-    console.warn('Supabase catalog load failed; using the local catalog.', error);
+    window.supabaseCatalog.lastError = error;
+    window.dispatchEvent(new CustomEvent('catalog:error', { detail: error }));
+    console.warn('Supabase catalog load failed; no local catalog fallback will be shown.', error);
     return false;
   });
 
   window.supabaseCatalog.ready.then(() => {
+    if (!client) return;
     const channel = client.channel('catalog-live-updates')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => loadCatalog())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => loadCatalog())

@@ -158,6 +158,58 @@
       : null;
   }
 
+  function getSupabaseRestConfig() {
+    const config = window.DISNEY_FLOWER_CONFIG || {};
+    return {
+      url: config.supabaseUrl || 'https://srpfxplqcigxthzbxseu.supabase.co',
+      key: config.supabaseKey || 'sb_publishable_fNwkuYfrxMnEgj3IToEfgw_RzVpXuoe'
+    };
+  }
+
+  function getStoredRestSession() {
+    try { return JSON.parse(localStorage.getItem('disney-public-auth') || 'null'); } catch { return null; }
+  }
+
+  async function requestSupabaseAuth(path, body, accessToken) {
+    const config = getSupabaseRestConfig();
+    const response = await fetch(config.url + '/auth/v1/' + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: config.key, Authorization: 'Bearer ' + (accessToken || config.key) },
+      body: JSON.stringify(body)
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(data.msg || data.error_description || data.message || 'Supabase auth request failed');
+      error.status = response.status;
+      throw error;
+    }
+    return data;
+  }
+
+  function persistRestSession(authData) {
+    const user = authData?.user || authData?.data?.user;
+    const accessToken = authData?.access_token || authData?.data?.session?.access_token;
+    if (accessToken && user) {
+      localStorage.setItem('disney-public-auth', JSON.stringify({ access_token: accessToken, refresh_token: authData.refresh_token || authData.data?.session?.refresh_token || '', user }));
+    }
+    return user ? persistSupabaseUser(user) : null;
+  }
+
+  async function syncRestSession() {
+    const stored = getStoredRestSession();
+    if (!stored?.access_token || !stored.user) return;
+    try {
+      const config = getSupabaseRestConfig();
+      const response = await fetch(config.url + '/auth/v1/user', { headers: { apikey: config.key, Authorization: 'Bearer ' + stored.access_token } });
+      if (!response.ok) throw new Error('Stored auth session expired');
+      persistSupabaseUser(await response.json());
+    } catch (error) {
+      localStorage.removeItem('disney-public-auth');
+      localStorage.removeItem('currentUser');
+      updateUI(null);
+    }
+  }
+
 
   function supabaseUserToSession(user) {
     const metadata = user && user.user_metadata ? user.user_metadata : {};
@@ -183,6 +235,7 @@
 
   function subscribeToAuthChanges() {
     const client = getSupabaseClient();
+    if (!client) { syncRestSession(); return; }
     if (!client || authSubscription) return;
     const result = client.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
@@ -264,7 +317,26 @@
       return;
     }
 
-    const client = getSupabaseClient(); if (!client) { showAlert('register', 'error', 'تعذر الاتصال بخدمة الحسابات. لا يمكن إنشاء حساب بدون Supabase.'); return; } try { const result = await client.auth.signUp({ email, password, options: { data: { name } } }); if (result.error) throw result.error; if (result.data?.session?.user) { persistSupabaseUser(result.data.session.user); e.target.reset(); closeModal(); showToast('تم إنشاء حسابك وتسجيل الدخول بنجاح ✓'); } else { showAlert('register', 'success', 'تم إنشاء الحساب. راجع بريدك الإلكتروني لتأكيد الحساب ثم سجّل الدخول.'); } } catch (error) { showAlert('register', 'error', getAuthErrorMessage(error, 'register')); }
+    try {
+      const client = getSupabaseClient();
+      const result = client
+        ? await client.auth.signUp({ email, password, options: { data: { name } } })
+        : await requestSupabaseAuth('signup', { email, password, data: { name } });
+      if (result.error) throw result.error;
+      const authData = client ? result.data : result;
+      const user = authData?.user;
+      const session = authData?.session || authData;
+      if (session?.access_token && user) {
+        if (client) persistSupabaseUser(user); else persistRestSession(result);
+        e.target.reset();
+        closeModal();
+        showToast('تم إنشاء حسابك وتسجيل الدخول بنجاح ✓');
+      } else {
+        showAlert('register', 'success', 'تم إنشاء الحساب. راجع بريدك الإلكتروني لتأكيد الحساب ثم سجّل الدخول.');
+      }
+    } catch (error) {
+      showAlert('register', 'error', getAuthErrorMessage(error, 'register'));
+    }
   }
 
   // Login
@@ -282,7 +354,19 @@
       return;
     }
 
-    const client = getSupabaseClient(); if (!client) { showAlert('login', 'error', 'تعذر الاتصال بخدمة الحسابات. حاول مرة أخرى بعد التأكد من إعداد Supabase.'); return; } try { const result = await client.auth.signInWithPassword({ email, password }); if (result.error) throw result.error; const session = persistSupabaseUser(result.data.user); closeModal(); showToast('مرحباً ' + session.name + '! تم تسجيل الدخول بنجاح ✓'); } catch (error) { showAlert('login', 'error', getAuthErrorMessage(error, 'login')); }
+    try {
+      const client = getSupabaseClient();
+      const result = client
+        ? await client.auth.signInWithPassword({ email, password })
+        : await requestSupabaseAuth('token?grant_type=password', { email, password });
+      if (result.error) throw result.error;
+      const authData = client ? result.data : result;
+      const session = client ? persistSupabaseUser(authData.user) : persistRestSession(result);
+      closeModal();
+      showToast('مرحباً ' + session.name + '! تم تسجيل الدخول بنجاح ✓');
+    } catch (error) {
+      showAlert('login', 'error', getAuthErrorMessage(error, 'login'));
+    }
   }
 
   // Logout
@@ -293,6 +377,7 @@
     if (client && currentUser?.authProvider === 'supabase') {
       try { await client.auth.signOut(); } catch (error) { console.warn('Supabase logout failed:', error); }
     }
+    localStorage.removeItem('disney-public-auth');
     localStorage.removeItem('currentUser');
     updateUI(null);
     showToast('تم تسجيل الخروج بنجاح. نتمنى رؤيتك قريباً');

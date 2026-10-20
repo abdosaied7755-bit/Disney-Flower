@@ -165,7 +165,6 @@ button { cursor: pointer; }
 .category-search, #categorySearch, .catalog-search { width: min(100%, 380px); padding: 11px 14px; border: 1px solid var(--disney-pink); border-radius: 999px; background: var(--disney-cream); color: var(--disney-wine); outline: 0; }
 .category-search:focus, #categorySearch:focus, .catalog-search:focus { border-color: var(--disney-wine); box-shadow: 0 0 0 3px rgba(244,167,193,.45); }
 .category-product-grid, #productGrid, #categoryProductGrid, #offersGrid, #reviewsGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px; }
-.category-card-image, .product-card-image, .nested-category-card-image { background-image: url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1400&q=86'); }
 .nested-category-card { overflow: hidden; padding: 0; border: 1px solid var(--disney-wine); border-radius: 18px; background: var(--disney-cream); color: var(--disney-wine); text-align: right; }
 .nested-category-card-image { min-height: 150px; background: var(--disney-pink) center/cover no-repeat; }
 .nested-category-card-content { padding: 14px; }
@@ -286,7 +285,7 @@ button { cursor: pointer; }
 .market-discovery-header p { max-width: 480px; margin: 0; }
 .market-discovery-layout { display: grid; grid-template-columns: minmax(250px,.8fr) minmax(0,1.2fr); gap: 16px; }
 .market-feature-deal, .market-department-panel { padding: 16px; background: var(--disney-cream); border: 1px solid var(--disney-wine); border-radius: 18px; }
-.market-feature-deal-image { min-height: 170px; border-radius: 14px; background: var(--disney-pink) url('https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=1400&q=86') center/cover no-repeat; }
+.market-feature-deal-image { min-height: 170px; border-radius: 14px; background: #fff; }
 .market-feature-deal h3, .market-panel-heading h3 { margin: 12px 0 5px; }
 .market-feature-deal p { margin: 0 0 12px; }
 .market-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
@@ -511,7 +510,7 @@ button { cursor: pointer; }
   background-size: cover;
 }
 
-.category-card-image::after, .product-card-image::after, .offer-card-media::after, .market-feature-deal-image::after {
+.category-card-image::after, .product-card-image::after, .offer-card-media::after {
   position: absolute;
   inset: auto 0 0;
   height: 35%;
@@ -1748,6 +1747,32 @@ p { color: var(--disney-muted); }
 .offers-page .offer-add-btn:hover,
 .offers-page .offer-buy-btn:hover { background: var(--disney-rose); color: var(--disney-white); transform: translateY(-2px); }
 .offers-page .offers-empty { padding: 35px 15px; text-align: center; color: var(--disney-muted); }
+.catalog-inline-loader {
+  grid-column: 1 / -1;
+  min-height: 150px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  padding: 24px;
+  border: 1px solid rgba(132, 38, 77, .12);
+  border-radius: 18px;
+  background: rgba(255, 253, 251, .82);
+  color: var(--disney-muted);
+  text-align: center;
+}
+.catalog-inline-loader p { margin: 0; }
+.catalog-loader-spinner {
+  width: 34px;
+  height: 34px;
+  border: 3px solid var(--disney-blush);
+  border-top-color: var(--disney-burgundy);
+  border-radius: 50%;
+  animation: catalogLoaderSpin .8s linear infinite;
+}
+.catalog-inline-error { color: var(--disney-burgundy); }
+.catalog-inline-error i { font-size: 1.4rem; }
+@keyframes catalogLoaderSpin { to { transform: rotate(360deg); } }
 @media (max-width: 900px) {
   .offers-page .offers-hero-grid { grid-template-columns: 1fr; }
   .offers-page .offers-hero-copy { text-align: center; }
@@ -2800,7 +2825,8 @@ html, body { overflow-x: clip; }
 .category-page .category-card-image,
 .category-page .nested-category-card-image,
 .game-card-image {
-  background-color: #fffafc;
+  background-color: #fff;
+  background-image: none;
   background-repeat: no-repeat;
   background-size: contain;
   cursor: zoom-in;

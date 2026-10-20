@@ -1,14 +1,19 @@
 (async function initCategoryDetail() {
-  const disneyFallbackImage = 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1400&q=86';
   const categoryId = new URLSearchParams(window.location.search).get('category');
   const requestedProduct = new URLSearchParams(window.location.search).get('product');
-  const categories = window.marketCategories || [];
+  const getCategories = () => window.marketCategoriesFlat || window.marketCategories || [];
   const grid = document.getElementById('categoryProductGrid');
   const title = document.getElementById('categoryDetailTitle');
   const description = document.getElementById('categoryDetailDescription');
   const count = document.getElementById('categoryDetailCount');
 
   if (!grid) return;
+
+  const imageStyle = value => { const image = String(value || '').trim().replace(/'/g, '%27'); return image ? `background-image:url('${image}')` : ''; };
+
+  const catalogLoadingMarkup = '<div class="catalog-inline-loader" role="status"><span class="catalog-loader-spinner" aria-hidden="true"></span><p>جاري تحميل منتجات القسم...</p></div>';
+  const catalogErrorMarkup = '<div class="catalog-inline-loader catalog-inline-error" role="alert"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i><p>تعذر تحميل منتجات القسم حاليًا. حاول تحديث الصفحة.</p></div>';
+  const showCatalogState = markup => { grid.innerHTML = markup; };
 
   const money = value => `${value.toLocaleString('ar-EG')} جنيه`;
   const getCart = () => JSON.parse(localStorage.getItem('gameCart') || '[]');
@@ -25,10 +30,10 @@
     title.textContent = category.name;
     description.textContent = `${category.description} - اختيارات مختارة بأسعار واضحة وتوصيل سريع.`;
     count.textContent = `${(category.allProducts || products).filter(product => product.isActive !== false).length} منتجات داخل القسم`;
-    const childCards = childCategories.map(child => `<a class='nested-category-card' href='game-detail.html?category=${encodeURIComponent(child.id)}'><div class='nested-category-card-image' style='background-image:url(${child.image || child.products?.[0]?.image || ''})'></div><div class='nested-category-card-content'><h3>${child.name}</h3><p>${child.description || ''}</p><strong>${child.allProducts?.length || child.products?.length || 0} منتجات <i class='fas fa-arrow-left'></i></strong></div></a>`).join('');
+    const childCards = childCategories.map(child => `<a class='nested-category-card' href='game-detail.html?category=${encodeURIComponent(child.id)}'><div class='nested-category-card-image' style="${imageStyle(child.image || child.products?.[0]?.image)}"></div><div class='nested-category-card-content'><h3>${child.name}</h3><p>${child.description || ''}</p><strong>${child.allProducts?.length || child.products?.length || 0} منتجات <i class='fas fa-arrow-left'></i></strong></div></a>`).join('');
     const productCards = products.map((product, index) => `
     <article class="product-card${product.isActive === false ? ' is-unavailable' : ''}" data-product-index="${index}" aria-disabled="${product.isActive === false}">
-      <div class="product-card-image" style="background-image:url('${product.image || "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1400&q=86"}')"></div>
+      <div class="product-card-image" style="${imageStyle(product.image)}"></div>
       <div class="product-card-body">
         <h3>${product.name}</h3><span class="product-unit">${product.unit}</span><strong class="product-price">${money(product.price)}</strong>
         ${product.isActive === false ? '<strong class="product-unavailable-label">غير متاح</strong>' : '<div class="product-actions"><div class="quantity-control"><button type="button" data-action="decrease" aria-label="تقليل الكمية">-</button><output>1</output><button type="button" data-action="increase" aria-label="زيادة الكمية">+</button></div><button class="product-add-btn" type="button" data-action="add"><i class="fas fa-cart-plus"></i> أضف للسلة</button><button class="product-buy-btn" type="button" data-action="buy"><i class="fab fa-whatsapp"></i> شراء</button></div>'}
@@ -80,7 +85,7 @@
       const id = `disney_${product.id || `${category.id}_${product.name}`}`;
       const existing = cart.find(item => item.id === id);
       if (existing) existing.quantity = (existing.quantity || 1) + quantity();
-      else cart.push({ id, type: 'disney', key: category.id, productId: product.id || null, name: product.name, priceEGP: product.price, oldPriceEGP: product.oldPrice || null, img: product.image || 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1400&q=86', quantity: quantity() });
+      else cart.push({ id, type: 'disney', key: category.id, productId: product.id || null, name: product.name, priceEGP: product.price, oldPriceEGP: product.oldPrice || null, img: product.image || '', quantity: quantity() });
       saveCart(cart);
       card.classList.remove('is-added');
       requestAnimationFrame(() => card.classList.add('is-added'));
@@ -90,7 +95,7 @@
       const id = `disney_${product.id || `${category.id}_${product.name}`}`;
       const existing = cart.find(item => item.id === id);
       if (existing) existing.quantity = (existing.quantity || 1) + quantity();
-      else cart.push({ id, type: 'disney', key: category.id, productId: product.id || null, name: product.name, priceEGP: product.price, oldPriceEGP: product.oldPrice || null, img: product.image || 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1400&q=86', quantity: quantity() });
+      else cart.push({ id, type: 'disney', key: category.id, productId: product.id || null, name: product.name, priceEGP: product.price, oldPriceEGP: product.oldPrice || null, img: product.image || '', quantity: quantity() });
       saveCart(cart);
       window.location.href = 'checkout.html';
     });
@@ -109,18 +114,32 @@
   }
   }
 
-  const initialCategory = (window.marketCategoriesFlat || categories).find(item => item.id === categoryId);
-  if (initialCategory || !categoryId) renderCategory(initialCategory || categories[0]);
-  window.addEventListener('catalog:updated', event => {
-  const updatedCategory = (window.marketCategoriesFlat || event.detail || []).find(item => item.id === categoryId) || (event.detail || [])[0];
-  if (updatedCategory && (Array.isArray(updatedCategory.products) || updatedCategory.children)) renderCategory(updatedCategory);
-  });
+  const renderCurrentCategory = () => {
+    const categories = getCategories();
+    const currentCategory = categories.find(item => String(item.id) === String(categoryId)) || (!categoryId ? categories[0] : null);
+    if (currentCategory) {
+      renderCategory(currentCategory);
+      return;
+    }
+    const heading = document.createElement('div');
+    heading.className = 'category-detail-empty';
+    heading.setAttribute('role', 'status');
+    heading.innerHTML = '<i class="fas fa-box-open" aria-hidden="true"></i><h2>القسم غير متاح</h2><p>لم نعثر على هذا القسم في البيانات الحالية.</p>';
+    grid.replaceChildren(heading);
+  };
 
-  // Show the local catalog immediately, then replace it when the remote catalog is ready.
+  showCatalogState(catalogLoadingMarkup);
+  window.addEventListener('catalog:updated', event => {
+    const updatedCategory = (window.marketCategoriesFlat || event.detail || []).find(item => String(item.id) === String(categoryId)) || (!categoryId ? (event.detail || [])[0] : null);
+    if (updatedCategory) renderCategory(updatedCategory);
+    else renderCurrentCategory();
+  });
+  window.addEventListener('catalog:error', () => showCatalogState(catalogErrorMarkup));
+
   if (window.supabaseCatalog?.ready) {
-    window.supabaseCatalog.ready.then(() => {
-      const updatedCategory = (window.marketCategoriesFlat || window.marketCategories || []).find(item => item.id === categoryId);
-      if (updatedCategory && (Array.isArray(updatedCategory.products) || updatedCategory.children)) renderCategory(updatedCategory);
+    window.supabaseCatalog.ready.then(loaded => {
+      if (loaded) renderCurrentCategory();
+      else showCatalogState(catalogErrorMarkup);
     });
   }
 })();
