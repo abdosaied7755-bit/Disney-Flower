@@ -122,7 +122,7 @@ class PWAInstaller {
         <button class="pwa-modal-close" id="pwa-modal-close-btn">✕</button>
         
         <div class="pwa-modal-header">
-          <img src="./Assets/disny-192.png" alt="Disney Flower" class="pwa-modal-logo">
+          <img src="./Assets/disny.png" alt="Disney Flower" class="pwa-modal-logo">
           <h2>حمّل تطبيق Disney Flower</h2>
           <p class="pwa-modal-subtitle">استمتع بتجربة أفضل وأسرع</p>
         </div>
@@ -211,18 +211,20 @@ class PWAInstaller {
       .pwa-modal-overlay {
         position: absolute;
         inset: 0;
-        background: rgba(16, 42, 42, 0.58);
+        background: rgba(62, 25, 45, 0.68);
       }
 
       .pwa-modal-content {
         position: relative;
-        background: linear-gradient(135deg, #fffaf0 0%, #e5f2dc 100%);
-        border: 1px solid #9dc99c;
-        border-radius: 14px;
-        padding: 20px 16px;
-        max-width: 340px;
-        width: 85%;
-        box-shadow: 0 20px 60px rgba(16, 42, 42, 0.22), 0 0 40px rgba(22, 160, 133, 0.12);
+        direction: rtl;
+        overflow: hidden;
+        background: linear-gradient(145deg, #fffafc 0%, #f9d5e3 100%);
+        border: 1px solid #e4a7bd;
+        border-radius: 24px;
+        padding: 24px 18px 18px;
+        max-width: 370px;
+        width: min(90%, 370px);
+        box-shadow: 0 24px 70px rgba(86, 24, 55, 0.24), 0 0 42px rgba(184, 63, 112, 0.16);
         animation: slideUp 0.4s ease-out;
       }
 
@@ -232,7 +234,7 @@ class PWAInstaller {
         right: 20px;
         background: none;
         border: none;
-        color: #087f5b;
+        color: #7d234a;
         font-size: 28px;
         cursor: pointer;
         opacity: 0.6;
@@ -250,8 +252,22 @@ class PWAInstaller {
       }
 
       .pwa-modal-header {
+        position: relative;
+        z-index: 1;
         text-align: center;
-        margin-bottom: 15px;
+        margin-bottom: 18px;
+      }
+
+      .pwa-modal-content::before {
+        content: '';
+        position: absolute;
+        top: -90px;
+        left: -70px;
+        width: 210px;
+        height: 210px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.46);
+        pointer-events: none;
       }
 
       .pwa-modal-logo {
@@ -259,26 +275,28 @@ class PWAInstaller {
         height: 65px;
         object-fit: contain;
         margin-bottom: 10px;
-        animation: float 2s ease-in-out infinite;
+        animation: float 4.8s ease-in-out infinite;
       }
 
       .pwa-modal-header h2 {
         font-size: 18px;
         font-weight: bold;
-        color: #087f5b;
+        color: #7d234a;
         margin: 0 0 6px 0;
       }
 
       .pwa-modal-subtitle {
-        color: #60746f;
+        color: #765c66;
         font-size: 14px;
         margin: 0;
       }
 
       .pwa-modal-features {
+        position: relative;
+        z-index: 1;
         display: grid;
-        gap: 8px;
-        margin: 15px 0;
+        gap: 9px;
+        margin: 16px 0 18px;
       }
 
       .pwa-feature {
@@ -286,34 +304,36 @@ class PWAInstaller {
         align-items: center;
         gap: 8px;
         padding: 8px;
-        background: rgba(22, 160, 133, 0.09);
+        background: rgba(184, 63, 112, 0.08);
         border-radius: 6px;
-        border-left: 3px solid #16a085;
+        border-right: 3px solid #b83f70;
       }
 
       .pwa-feature i {
-        color: #16a085;
+        color: #b83f70;
         font-size: 14px;
         flex-shrink: 0;
       }
 
       .pwa-feature span {
-        color: #087f5b;
+        color: #7d234a;
         font-size: 12px;
       }
 
       .pwa-modal-actions {
+        position: relative;
+        z-index: 1;
         display: flex;
         flex-direction: column;
-        gap: 8px;
-        margin-top: 15px;
+        gap: 9px;
+        margin-top: 18px;
       }
 
       .pwa-btn-install,
       .pwa-btn-cancel {
         padding: 10px 16px;
         border: none;
-        border-radius: 8px;
+        border-radius: 999px;
         font-size: 13px;
         font-weight: 600;
         cursor: pointer;
@@ -325,16 +345,16 @@ class PWAInstaller {
       }
 
       .pwa-btn-install {
-        background: #c7e9b2;
-        color: #087f5b;
-        border: 2px solid #16a085;
-        box-shadow: 0 8px 20px rgba(22, 160, 133, 0.18);
+        background: linear-gradient(135deg, #b83f70 0%, #8f2d58 100%);
+        color: #fff;
+        border: 2px solid #8f2d58;
+        box-shadow: 0 10px 24px rgba(143, 45, 88, 0.24);
       }
 
       .pwa-btn-install:hover {
         transform: translateY(-2px);
-        background: #9bd39c;
-        box-shadow: 0 12px 30px rgba(22, 160, 133, 0.28);
+        background: linear-gradient(135deg, #d9658f 0%, #b83f70 100%);
+        box-shadow: 0 14px 32px rgba(143, 45, 88, 0.3);
       }
 
       .pwa-btn-install:active {
@@ -343,13 +363,13 @@ class PWAInstaller {
 
       .pwa-btn-cancel {
         background: transparent;
-        color: #087f5b;
-        border: 1px solid #75b987;
+        color: #7d234a;
+        border: 1px solid #c86b8f;
       }
 
       .pwa-btn-cancel:hover {
-        background: rgba(22, 160, 133, 0.12);
-        color: #087f5b;
+        background: rgba(184, 63, 112, 0.1);
+        color: #7d234a;
       }
 
       @keyframes fadeInScale {
@@ -388,7 +408,7 @@ class PWAInstaller {
           transform: translateY(0px);
         }
         50% {
-          transform: translateY(-15px);
+          transform: translateY(-5px);
         }
       }
 
@@ -462,7 +482,6 @@ class PWAInstaller {
       modal.classList.remove('show');
       setTimeout(() => modal.remove(), 300);
       this.modalShown = false;
-    this.seenKey = 'pwa-install-seen-v3';
     }
   }
 

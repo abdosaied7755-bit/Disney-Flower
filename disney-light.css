@@ -1144,7 +1144,6 @@ p { color: var(--disney-muted); }
 .invoice-customer h3 { color: var(--disney-rose); }
 .invoice-customer-details > div, .invoice-receipt-meta { color: var(--disney-muted); }
 .invoice-customer-details strong { color: var(--disney-ink); }
-.invoice-stamp { border-color: var(--disney-gold); color: var(--disney-gold); }
 
 .advanced-footer, .compact-footer {
   background: var(--disney-burgundy);
@@ -3107,5 +3106,174 @@ body.image-lightbox-open {
   .cart-item-remove {
     width: 31px;
     height: 31px;
+  }
+}
+/* Invoice header alignment v1.17 */
+.checkout-page .invoice-heading {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72px;
+  padding: 0 62px 18px;
+}
+.checkout-page .invoice-heading > div {
+  min-width: 0;
+  text-align: center;
+}
+.checkout-page .invoice-heading > div span,
+.checkout-page .invoice-heading > div h2 {
+  display: block;
+  text-align: center;
+}
+.checkout-page .invoice-heading .invoice-receipt-logo {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 54px;
+  height: 54px;
+  margin: 0;
+  transform: translateY(-50%);
+  object-fit: contain;
+  border: 1px solid var(--disney-border);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(142, 36, 77, .1);
+}
+.checkout-page .invoice-heading > i {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 46px;
+  height: 46px;
+  margin: 0;
+  transform: translateY(-50%);
+  border: 1px solid var(--disney-border);
+  border-radius: 14px;
+  background: #fff0f4;
+  color: var(--disney-burgundy);
+  box-shadow: 0 8px 18px rgba(142, 36, 77, .08);
+}
+.checkout-page .invoice-heading h2 {
+  margin: 5px 0 0;
+  line-height: 1.35;
+}
+@media (max-width: 560px) {
+  .checkout-page .invoice-heading {
+    min-height: 62px;
+    padding-inline: 48px;
+  }
+  .checkout-page .invoice-heading .invoice-receipt-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+  .checkout-page .invoice-heading > i {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+  }
+  .checkout-page .invoice-heading h2 {
+    font-size: 1.05rem;
+  }
+}
+
+/* Invoice polish v1.20 */
+.checkout-page .invoice-submit {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 0;
+}
+.checkout-page .invoice-card .checkout-error {
+  min-height: 20px;
+  margin: 0 0 8px;
+  text-align: center;
+}
+.checkout-page .invoice-heading > i {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1;
+  border-radius: 14px;
+  transform: none;
+}
+.checkout-page .invoice-heading > i::before {
+  display: block;
+}
+@media (max-width: 560px) {
+  .checkout-page .invoice-heading > i {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    font-size: 1rem;
+  }
+}
+/* Homepage hero motion v1.21 */
+@keyframes disneyHeroMainFloat {
+  0%, 100% { transform: rotate(-2deg) translate3d(0, 0, 0); }
+  50% { transform: rotate(0deg) translate3d(0, -9px, 0); }
+}
+@keyframes disneyHeroTopFloat {
+  0%, 100% { transform: rotate(-9deg) translate3d(0, 0, 0); }
+  50% { transform: rotate(-6deg) translate3d(0, -12px, 0); }
+}
+@keyframes disneyHeroSideFloat {
+  0%, 100% { transform: rotate(8deg) translate3d(0, 0, 0); }
+  50% { transform: rotate(5deg) translate3d(0, -9px, 0); }
+}
+@keyframes disneyHeroBrandFloat {
+  0%, 100% { transform: translate3d(-50%, 0, 0) rotate(-3deg); }
+  50% { transform: translate3d(-50%, -6px, 0) rotate(-1deg); }
+}
+@keyframes disneyHeroBadgeFloat {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -6px, 0); }
+}
+@keyframes disneyHeroImageBreathStrong {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.045); }
+}
+.market-home .market-product-collage .hero-product-main {
+  animation: disneyHeroMainFloat 6.5s ease-in-out infinite;
+}
+.market-home .market-product-collage .hero-product-top {
+  animation: disneyHeroTopFloat 5.8s ease-in-out infinite;
+  animation-delay: -1.4s;
+}
+.market-home .market-product-collage .hero-product-side {
+  animation: disneyHeroSideFloat 6.2s ease-in-out infinite;
+  animation-delay: -3.1s;
+}
+.market-home .market-product-collage .hero-product-brand {
+  animation: disneyHeroBrandFloat 5.4s ease-in-out infinite;
+  animation-delay: -2.2s;
+}
+.market-home .market-hero-visual .floating-card-one {
+  animation: disneyHeroBadgeFloat 5.6s ease-in-out infinite;
+  animation-delay: -1.8s;
+}
+.market-home .market-hero-visual .floating-card-two {
+  animation: disneyHeroBadgeFloat 5.1s ease-in-out infinite;
+  animation-delay: -3.2s;
+}
+.market-home .market-product-collage .hero-product img {
+  animation-name: disneyHeroImageBreathStrong;
+  animation-duration: 6.8s;
+}
+.market-home .market-product-collage .hero-product-top img { animation-delay: -2s; }
+.market-home .market-product-collage .hero-product-side img { animation-delay: -4s; }
+@media (prefers-reduced-motion: reduce) {
+  .market-home .market-product-collage .hero-product-main,
+  .market-home .market-product-collage .hero-product-top,
+  .market-home .market-product-collage .hero-product-side,
+  .market-home .market-product-collage .hero-product-brand,
+  .market-home .market-hero-visual .floating-card-one,
+  .market-home .market-hero-visual .floating-card-two,
+  .market-home .market-product-collage .hero-product img {
+    animation: none;
   }
 }

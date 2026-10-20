@@ -8,29 +8,29 @@
     <!-- Open Graph / Facebook / WhatsApp -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Disney Flower">
-    <meta property="og:url" content="https://abdosaied7755-bit.github.io/Maket-Online/checkout.html">
+    <meta property="og:url" content="https://abdosaied7755-bit.github.io/Disney-Flower/checkout.html">
     <meta property="og:title" content="تأكيد طلب Disney Flower">
     <meta property="og:description" content="أكمل بيانات التوصيل وأرسل طلبك من Disney Flower بسهولة عبر واتساب.">
-    <meta property="og:image" content="https://abdosaied7755-bit.github.io/Maket-Online/Assets/disny.png">
+    <meta property="og:image" content="https://abdosaied7755-bit.github.io/Disney-Flower/Assets/disny.png">
     <meta property="og:image:alt" content="شعار Disney Flower للورود والهدايا">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1254">
     <meta property="og:image:height" content="1254">
   <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://abdosaied7755-bit.github.io/Maket-Online/checkout.html">
+    <meta name="twitter:url" content="https://abdosaied7755-bit.github.io/Disney-Flower/checkout.html">
     <meta name="twitter:title" content="تأكيد طلب Disney Flower">
     <meta name="twitter:description" content="أكمل بيانات التوصيل وأرسل طلبك من Disney Flower بسهولة عبر واتساب.">
-    <meta name="twitter:image" content="https://abdosaied7755-bit.github.io/Maket-Online/Assets/disny.png">
+    <meta name="twitter:image" content="https://abdosaied7755-bit.github.io/Disney-Flower/Assets/disny.png">
     <meta name="twitter:image:alt" content="شعار Disney Flower للورود والهدايا">
-  <link rel="canonical" href="https://abdosaied7755-bit.github.io/Maket-Online/checkout.html">
+  <link rel="canonical" href="https://abdosaied7755-bit.github.io/Disney-Flower/checkout.html">
     <meta property="og:locale" content="ar_EG">
 <title>Disney Flower - تأكيد الطلب</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700&display=swap">
-  <link rel="stylesheet" href="./disney-light.css?v=1.4">
+  <link rel="stylesheet" href="./disney-light.css?v=1.20">
 </head>
 <body class="checkout-page">
   <header class="checkout-header"><a href="index.html" class="checkout-brand"><img src="./Assets/disny.png" alt="Disney Flower"><span>Disney</span></a><a href="games.html" class="checkout-back"><i class="fas fa-arrow-right"></i> الرجوع للتسوق</a></header>
@@ -46,13 +46,14 @@
         <label for="giftMessage">رسالة الإهداء (اختياري)</label><textarea id="giftMessage" name="giftMessage" rows="2" maxlength="500" placeholder="اكتب رسالة قصيرة مع الهدية"></textarea>
         <div class="checkout-form-grid"><div><label for="deliveryDate">تاريخ التوصيل (اختياري)</label><input id="deliveryDate" name="deliveryDate" type="date"></div><div><label for="deliverySlot">فترة التوصيل (اختياري)</label><select id="deliverySlot" name="deliverySlot"><option value="">اختر الفترة</option><option>من 10 صباحًا إلى 2 ظهرًا</option><option>من 2 ظهرًا إلى 6 مساءً</option><option>من 6 مساءً إلى 10 مساءً</option></select></div></div>
         <label for="deliveryInstructions">تعليمات التغليف أو التوصيل (اختياري)</label><textarea id="deliveryInstructions" name="deliveryInstructions" rows="2" maxlength="500" placeholder="أي تفاصيل تساعدنا في تجهيز الطلب"></textarea>
-        <p id="checkoutError" class="checkout-error" role="alert"></p>
-        <button class="checkout-submit" type="submit"><i class="fab fa-whatsapp"></i> تأكيد وإرسال الطلب</button>
+
       </form>
       <section class="invoice-card" aria-labelledby="invoiceTitle">
         <div class="invoice-heading"><div><span>Disney</span><h2 id="invoiceTitle">ملخص الفاتورة</h2></div><i class="fas fa-basket-shopping"></i></div>
         <div id="invoiceItems" class="invoice-items"></div>
         <div class="invoice-totals"><div><span>إجمالي المنتجات</span><strong id="invoiceSubtotal">0 جنيه</strong></div><div><span>التوصيل</span><strong>20 جنيه</strong></div><div class="invoice-total"><span>الإجمالي النهائي</span><strong id="invoiceTotal">20 جنيه</strong></div></div>
+<p id="checkoutError" class="checkout-error" role="alert"></p>
+        <button class="checkout-submit invoice-submit" form="checkoutForm" type="submit"><i class="fab fa-whatsapp"></i> تأكيد وإرسال الطلب</button>
       </section>
     </div>
   </main>
