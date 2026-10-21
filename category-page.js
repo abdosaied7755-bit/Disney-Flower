@@ -49,7 +49,7 @@ window.marketCategories = marketCategories;
   function renderCategories(query = '') {
     if (catalogState !== 'ready') return;
     const normalizedQuery = query.trim().toLocaleLowerCase('ar-EG');
-    const filtered = getRoots().filter(category => (category.name + ' ' + category.description).toLocaleLowerCase('ar-EG').includes(normalizedQuery) && (!favoritesOnly || (category.allProducts || category.products || []).some(product => isFavoriteProduct(category, product))));
+    const filtered = getRoots().filter(category => { const products = category.allProducts || category.products || []; const haystack = (category.name + ' ' + (category.description || '') + ' ' + products.map(product => product.name).join(' ')).toLocaleLowerCase('ar-EG'); return haystack.includes(normalizedQuery) && (!favoritesOnly || products.some(product => isFavoriteProduct(category, product))); });
     categoryCards.innerHTML = filtered.map(category => `<a class="category-card" href="game-detail.html?category=${encodeURIComponent(category.id)}" data-category-id="${escapeHtml(category.id)}"><div class="category-card-image" style="${imageStyle(category.image)}"></div><div class="category-card-content"><h3>${escapeHtml(category.name)}</h3><p>${escapeHtml(category.description)}</p><div class="category-card-meta"><span>${escapeHtml(category.meta || `${category.products?.length || 0} منتجات`)}</span><strong>تصفح القسم <i class="fas fa-arrow-left"></i></strong></div></div></a>`).join('') || '<p class="category-empty">لم نجد قسمًا بهذا الاسم.</p>';
   }
 
@@ -57,7 +57,7 @@ window.marketCategories = marketCategories;
     const key = favoriteKey(category, product);
     const isFavorite = favoriteList().includes(key);
     const unavailable = product.isActive === false;
-    return `<article class="product-card${unavailable ? ' product-unavailable' : ''}" data-product-index="${index}"><div class="product-card-image" style="${imageStyle(product.image)}"><button type="button" class="disney-favorite-btn${isFavorite ? ' is-favorite' : ''}" data-action="favorite" aria-label="${isFavorite ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}" aria-pressed="${isFavorite}" data-favorite-key="${escapeHtml(key)}"><i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i></button>${unavailable ? '<span class="product-unavailable-label">غير متاح حاليًا</span>' : ''}</div><div class="product-card-body"><h3>${escapeHtml(product.name)}</h3><span class="product-unit">${escapeHtml(product.unit || 'قطعة')}</span><div class="product-price-row"><strong class="product-price">${money(product.price)}</strong>${Number(product.oldPrice) > Number(product.price) ? `<del class="product-old-price">${money(product.oldPrice)}</del>` : ''}</div><div class="product-actions"><div class="quantity-control"><button type="button" data-action="decrease" aria-label="تقليل الكمية">-</button><output>1</output><button type="button" data-action="increase" aria-label="زيادة الكمية">+</button></div><button class="product-add-btn" type="button" data-action="add"${unavailable ? ' disabled' : ''}><i class="fas fa-cart-plus"></i> أضف</button><button class="product-buy-btn" type="button" data-action="buy"${unavailable ? ' disabled' : ''}><i class="fab fa-whatsapp"></i> اطلب</button></div></div></article>`;
+    return `<article class="product-card${unavailable ? ' product-unavailable is-unavailable' : ''}" data-product-index="${index}"><div class="product-card-image" style="${imageStyle(product.image)}"><button type="button" class="disney-favorite-btn${isFavorite ? ' is-favorite' : ''}" data-action="favorite" aria-label="${isFavorite ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}" aria-pressed="${isFavorite}" data-favorite-key="${escapeHtml(key)}"><i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i></button>${unavailable ? '<span class="product-unavailable-label">غير متاح حاليًا</span>' : ''}</div><div class="product-card-body"><h3>${escapeHtml(product.name)}</h3><span class="product-unit">${escapeHtml(product.unit || 'قطعة')}</span><div class="product-price-row"><strong class="product-price">${money(product.price)}</strong>${Number(product.oldPrice) > Number(product.price) ? `<del class="product-old-price">${money(product.oldPrice)}</del>` : ''}</div><div class="product-actions"><div class="quantity-control"><button type="button" data-action="decrease" aria-label="تقليل الكمية">-</button><output>1</output><button type="button" data-action="increase" aria-label="زيادة الكمية">+</button></div><button class="product-add-btn" type="button" data-action="add"${unavailable ? ' disabled' : ''}><i class="fas fa-cart-plus"></i> أضف</button><button class="product-buy-btn" type="button" data-action="buy"${unavailable ? ' disabled' : ''}><i class="fab fa-whatsapp"></i> اطلب</button></div></div></article>`;
   }
 
   function openCategory(categoryId) {
@@ -74,13 +74,13 @@ window.marketCategories = marketCategories;
     productCount.textContent = `${categoryProducts.length} منتج داخل القسم`;
     productGrid.innerHTML = childCategories.map(nestedCategoryTemplate).join('') + categoryProducts.map((product, index) => productTemplate(category, product, index)).join('') || '<p class="category-empty">لا توجد منتجات في هذا القسم بعد.</p>';
     productGrid.querySelectorAll('[data-nested-category]').forEach(card => card.addEventListener('click', () => openCategory(card.dataset.nestedCategory)));
-    bindProductActions(category);
+    bindProductActions(category, categoryProducts);
     document.querySelector('.category-browser-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  function bindProductActions(category) {
+  function bindProductActions(category, products) {
     productGrid.querySelectorAll('.product-card').forEach(card => {
-      const product = category.products[Number(card.dataset.productIndex)];
+      const product = products[Number(card.dataset.productIndex)];
       if (!product) return;
       const output = card.querySelector('output');
       card.querySelector('[data-action="increase"]')?.addEventListener('click', () => { output.value = Number(output.value || output.textContent) + 1; output.textContent = output.value; });

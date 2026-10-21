@@ -6,6 +6,7 @@
   const title = document.getElementById('categoryDetailTitle');
   const description = document.getElementById('categoryDetailDescription');
   const count = document.getElementById('categoryDetailCount');
+  const productSearch = document.getElementById('productSearch');
 
   if (!grid) return;
 
@@ -128,17 +129,33 @@
     grid.replaceChildren(heading);
   };
 
+  const normalizeSearch = value => String(value || '')
+    .normalize('NFKC')
+    .toLocaleLowerCase('ar-EG')
+    .replace(/[\u064B-\u065F\u0670]/g, '')
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/ى/g, 'ي')
+    .replace(/ة/g, 'ه')
+    .trim();
+  const filterRenderedProducts = value => {
+    const query = normalizeSearch(value);
+    grid.querySelectorAll('.product-card').forEach(card => {
+      const searchableText = normalizeSearch(card.querySelector('h3')?.textContent);
+      card.hidden = Boolean(query && !searchableText.includes(query));
+    });
+  };
+  productSearch?.addEventListener('input', event => filterRenderedProducts(event.target.value));
   showCatalogState(catalogLoadingMarkup);
   window.addEventListener('catalog:updated', event => {
     const updatedCategory = (window.marketCategoriesFlat || event.detail || []).find(item => String(item.id) === String(categoryId)) || (!categoryId ? (event.detail || [])[0] : null);
-    if (updatedCategory) renderCategory(updatedCategory);
+    if (updatedCategory) { renderCategory(updatedCategory); filterRenderedProducts(productSearch?.value || ''); }
     else renderCurrentCategory();
   });
   window.addEventListener('catalog:error', () => showCatalogState(catalogErrorMarkup));
 
   if (window.supabaseCatalog?.ready) {
     window.supabaseCatalog.ready.then(loaded => {
-      if (loaded) renderCurrentCategory();
+      if (loaded) { renderCurrentCategory(); filterRenderedProducts(productSearch?.value || ''); }
       else showCatalogState(catalogErrorMarkup);
     });
   }

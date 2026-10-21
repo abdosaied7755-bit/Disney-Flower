@@ -3324,3 +3324,78 @@ body.image-lightbox-open {
     animation: none;
   }
 }
+/* Live catalog search and unavailable product state */
+.market-search-results { max-height: min(520px, 65vh); }
+.market-search-result-copy { min-width: 0; }
+.market-search-result-status { justify-self: end; color: #c62828; font-size: .72rem; font-weight: 900; white-space: nowrap; }
+.market-search-result.is-unavailable { background: #fff4f4; }
+.market-search-result.is-unavailable .market-search-result-icon { background: #ffe1e1; color: #c62828; }
+
+.product-card.product-unavailable,
+.product-card.is-unavailable {
+  border-color: #e05252 !important;
+  background: #fffafa;
+  filter: grayscale(.22);
+  opacity: .86;
+}
+.product-card.product-unavailable .product-card-image,
+.product-card.is-unavailable .product-card-image,
+.catalog-product-unavailable .game-card-image { position: relative; }
+.product-card.product-unavailable .product-card-image::after,
+.product-card.is-unavailable .product-card-image::after,
+.catalog-product-unavailable .game-card-image::before {
+  content: '\063a\064a\0631\0020\0645\062a\0627\062d';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  background: rgba(164, 36, 36, .52);
+  color: #fff;
+  font-size: clamp(1.25rem, 3vw, 1.8rem);
+  font-weight: 900;
+  letter-spacing: .02em;
+}
+.product-card-image > .product-unavailable-label {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  left: 14px;
+  z-index: 4;
+  margin: 0;
+  border: 1px solid rgba(198, 40, 40, .2);
+  border-radius: 10px;
+  background: #ffe1e1;
+  color: #c62828;
+  text-align: center;
+  font-weight: 900;
+}
+.product-card-body .product-unavailable-label {
+  display: block;
+  margin-top: auto;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: #ffe1e1;
+  color: #c62828;
+  text-align: center;
+  font-weight: 900;
+}
+.product-card.product-unavailable .product-actions,
+.product-card.is-unavailable .product-actions { opacity: .55; pointer-events: none; }
+.product-card.product-unavailable .product-card-body h3,
+.product-card.is-unavailable .product-card-body h3 { color: #8f3c3c; }
+.product-actions button:disabled { cursor: not-allowed; }
+.catalog-product-unavailable .game-card-image::before { pointer-events: none; }
+.catalog-product-unavailable .game-card-overlay { z-index: 3; background: transparent; }
+.catalog-product-unavailable .game-card-btn { background: #c62828 !important; border-color: #c62828 !important; }
+.catalog-product-unavailable .game-card-content::after {
+  content: '\063a\064a\0631\0020\0645\062a\0627\062d';
+  display: block;
+  margin-top: 12px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: #ffe1e1;
+  color: #c62828;
+  text-align: center;
+  font-weight: 900;
+}
