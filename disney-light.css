@@ -3399,3 +3399,52 @@ body.image-lightbox-open {
   text-align: center;
   font-weight: 900;
 }
+
+/* Keep the home hero search list visible and useful on narrow screens. */
+.market-home .market-hero:has(.market-search-results.open) {
+  z-index: 40;
+  overflow: visible;
+}
+.market-home .market-hero:has(.market-search-results.open) .market-hero-copy {
+  position: relative;
+  z-index: 41;
+}
+@media (max-width: 560px) {
+  .market-home .market-hero .market-search-results {
+    max-height: min(56vh, 380px);
+  }
+  .market-home .market-hero .market-search-results.open {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+    padding: 6px;
+  }
+  .market-home .market-hero .market-search-result {
+    grid-template-columns: 28px minmax(0, 1fr) 14px;
+    min-height: 44px;
+    gap: 5px;
+    padding: 6px;
+  }
+  .market-home .market-hero .market-search-result-icon {
+    width: 26px;
+    height: 26px;
+    font-size: .72rem;
+  }
+  .market-home .market-hero .market-search-result strong { font-size: .72rem; }
+  .market-home .market-hero .market-search-result small { font-size: .61rem; }
+  .market-home .market-hero .market-search-result-arrow,
+  .market-home .market-hero .market-search-result-status { font-size: .62rem; }
+}
+.market-home .market-hero.has-search-results {
+  z-index: 40;
+  overflow: visible;
+}
+.market-home .market-hero.has-search-results .market-hero-copy {
+  position: relative;
+  z-index: 41;
+}
+
+/* Put the home hero message and search before the decorative collage on phones. */
+@media (max-width: 900px) {
+  .market-home .market-hero-copy { order: 1; }
+  .market-home .market-hero-visual { order: 2; }
+}

@@ -84,6 +84,7 @@
     if (!normalized) {
       box.innerHTML = '';
       box.classList.remove('open');
+      input.closest('.market-hero')?.classList.remove('has-search-results');
       return;
     }
 
@@ -97,6 +98,7 @@
         ${unavailable ? '<b class="market-search-result-status">غير متاح</b>' : '<i class="fas fa-arrow-left market-search-result-arrow"></i>'}
       </a>`;
     }).join('') : '<div class="market-search-empty">لا توجد نتائج مطابقة</div>';
+    input.closest('.market-hero')?.classList.add('has-search-results');
     box.classList.add('open');
   }
 
@@ -117,7 +119,10 @@
 
   document.addEventListener('click', event => {
     if (!event.target.closest('.market-search-host')) {
-      document.querySelectorAll('.market-search-results.open').forEach(box => box.classList.remove('open'));
+      document.querySelectorAll('.market-search-results.open').forEach(box => {
+        box.classList.remove('open');
+        box.closest('.market-hero')?.classList.remove('has-search-results');
+      });
     }
   });
 })();
