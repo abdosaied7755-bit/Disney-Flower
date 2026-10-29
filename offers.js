@@ -191,6 +191,7 @@
     return '<article class="offer-card" data-offer-index="' + index + '">' +
       '<div class="offer-card-media">' +
         '<img src="' + escapeHtml(safeImage(product.image)) + '" alt="' + escapeHtml(product.name) + '" loading="lazy">' +
+        '<button type="button" class="product-share-btn" data-action="share" aria-label="Ø´Ø§Ø±ÙƒØ© ' + escapeHtml(product.name) + '"><i class="fas fa-share-nodes"></i></button>' +
         '<span class="offer-label"><i class="fas fa-tags"></i> عرض خاص</span>' +
         '<span class="offer-discount">-' + item.discount.toLocaleString('ar-EG') + '%</span>' +
       '</div>' +
@@ -284,9 +285,15 @@
     const item = state.visibleItems[Number(card.dataset.offerIndex)];
     if (!item) return;
 
+    const action = actionButton.dataset.action;
+    if (action === 'share') {
+      event.stopPropagation();
+      window.DisneyProductShare?.open(actionButton, item.category, item.product);
+      return;
+    }
+
     const output = card.querySelector('output');
     const currentQuantity = () => Math.max(1, Number(output.value || output.textContent || 1));
-    const action = actionButton.dataset.action;
 
     if (action === 'increase') {
       output.value = currentQuantity() + 1;

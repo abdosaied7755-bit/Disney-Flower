@@ -1,0 +1,12 @@
+.events-admin-section { margin-top: 20px; display: grid; gap: 20px; }
+.events-admin-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.events-admin-heading h2 { margin: 0 0 7px; }
+.events-admin-heading p { margin: 0; opacity: .72; line-height: 1.7; font-size: .86rem; }
+.events-admin-heading .catalog-status { display: block; min-height: 22px; margin-top: 10px; }
+.events-admin-icon { display: grid; flex: none; width: 44px; height: 44px; place-items: center; border-radius: 14px; background: linear-gradient(135deg, #8e2452, #ed7da7); color: #fff; font-size: 1.15rem; }
+.events-admin-section .catalog-form textarea { width: 100%; box-sizing: border-box; resize: vertical; min-height: 120px; padding: 11px; border: 1px solid rgba(255,255,255,.15); border-radius: 8px; background: #0c1030; color: var(--text); font: inherit; line-height: 1.7; }
+.events-admin-section .catalog-form label { display: grid; gap: 6px; color: rgba(232,232,243,.82); font-size: .82rem; font-weight: 700; }
+.events-admin-grid { display: grid; grid-template-columns: minmax(280px, .85fr) minmax(0, 1.15fr); gap: 20px; }
+.event-admin-row { align-items: center; }
+.event-admin-row small { display: block; margin-top: 5px; line-height: 1.7; }
+@media (max-width: 800px) { .events-admin-grid { grid-template-columns: 1fr; } }

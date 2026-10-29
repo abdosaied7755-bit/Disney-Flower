@@ -1093,6 +1093,8 @@ p { color: var(--disney-muted); }
 .category-detail-summary span { border-color: var(--disney-border); background: rgba(255, 255, 255, .76); }
 .category-detail-summary i { color: var(--disney-gold); }
 .category-detail-page .product-card { min-height: 100%; }
+.category-detail-page.shared-product-view .category-detail-grid { grid-template-columns: minmax(280px, 560px); justify-content: center; }
+.category-detail-page.shared-product-view .category-search-box { display: none; }
 
 .offers-page .offers-hero {
   background:
@@ -2808,6 +2810,53 @@ body {
 }
 /* Card image sizing and accessible zoom preview. */
 html, body { overflow-x: clip; }
+
+/* Product sharing menu */
+.product-card, .catalog-product-card, .offer-card { position: relative; }
+.product-card-image, .game-card-image, .offer-card-media { position: relative; }
+.product-share-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid rgba(142,36,77,.18);
+  border-radius: 50%;
+  background: rgba(255,255,255,.92);
+  color: var(--disney-burgundy);
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(104,27,57,.13);
+  transition: transform .2s ease, background .2s ease, color .2s ease;
+}
+.product-share-btn:hover { transform: translateY(-2px); background: var(--disney-burgundy); color: #fff; }
+.product-share-menu {
+  position: absolute;
+  top: 48px;
+  left: 10px;
+  z-index: 12;
+  display: grid;
+  min-width: 148px;
+  gap: 5px;
+  padding: 9px;
+  border: 1px solid var(--disney-border);
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 16px 32px rgba(104,27,57,.18);
+}
+.product-share-menu strong { padding: 3px 6px 5px; color: var(--disney-wine); font-size: .75rem; }
+.product-share-menu button { display: flex; align-items: center; gap: 7px; padding: 7px 8px; border: 0; border-radius: 9px; background: #fff5f8; color: var(--disney-wine); cursor: pointer; font: inherit; font-size: .75rem; text-align: right; }
+.product-share-menu button:hover { background: var(--disney-pink); }
+.product-share-menu button[data-share-channel="whatsapp"] i { color: #25d366; }
+.product-share-menu button[data-share-channel="facebook"] i { color: #1877f2; }
+.product-share-menu button[data-share-channel="copy"] i { color: var(--disney-gold); }
+@media (max-width: 560px) {
+  .product-share-btn { top: 8px; left: 8px; width: 34px; height: 34px; }
+  .product-share-menu { top: 45px; left: 8px; }
+}
 .offers-page .offer-card-media {
   height: 178px;
   min-height: 0;

@@ -88,14 +88,21 @@
       : products;
     productGrid.innerHTML = dailyProducts.map(product => `
       <article class="game-showcase-card catalog-product-card${product.isActive === false ? ' catalog-product-unavailable' : ''}">
-        <div class="game-card-image" style="background-image:url('${imageUrl(product.image)}');background-size:cover;background-position:center">
+         <div class="game-card-image" style="background-image:url('${imageUrl(product.image)}');background-size:cover;background-position:center">
+           <button type="button" class="product-share-btn" data-action="share" aria-label="مشاركة المنتج"><i class="fas fa-share-nodes"></i></button>
           <div class="game-card-overlay"><a href="game-detail.html?category=${encodeURIComponent(product.category.id)}&product=${encodeURIComponent(product.name)}" class="game-card-btn">${product.isActive === false ? 'غير متاح' : '<i class="fas fa-eye"></i> عرض المنتج'}</a></div>
         </div>
         <div class="game-card-content"><h3 class="game-card-title">${escapeHtml(product.name)}</h3><div class="game-card-stats"><div class="stat-item"><i class="fas fa-layer-group"></i><span>${escapeHtml(product.category.name)}</span></div><div class="stat-item"><i class="fas fa-tag"></i><span>${Number(product.price).toLocaleString('ar-EG')} جنيه</span></div></div><div class="game-card-price"><span class="price-label"><i class="fas fa-weight-scale"></i> الوحدة: ${escapeHtml(product.unit)}</span></div></div>
       </article>`).join('') || '<p>لا توجد منتجات مضافة بعد.</p>';
 
-    productGrid.querySelectorAll('.catalog-product-card').forEach((card, index) => {
-      if (!dailyProducts[index]?.isSpecialOffer) return;
+     productGrid.querySelectorAll('.catalog-product-card').forEach((card, index) => {
+       const product = dailyProducts[index];
+       card.querySelector('[data-action="share"]')?.addEventListener('click', event => {
+         event.preventDefault();
+         event.stopPropagation();
+         window.DisneyProductShare?.open(event.currentTarget, product.category, product);
+       });
+       if (!product?.isSpecialOffer) return;
       card.classList.add('is-special-offer');
       const badge = document.createElement('span');
       badge.className = 'special-offer-badge';

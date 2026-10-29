@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#8e244d">
+  <meta name="description" content="تابع أحدث اللايف إيفنتات والعروض القادمة من Disney Flower.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Disney Flower">
+  <meta property="og:title" content="اللايف إيفنتات - Disney Flower">
+  <meta property="og:description" content="مواعيد وأخبار الإيفنتات القادمة من Disney Flower.">
+  <meta property="og:image" content="https://abdosaied7755-bit.github.io/Disney-Flower/Assets/disny-512.png?v=2">
+  <title>اللايف إيفنتات - Disney Flower</title>
+  <link rel="icon" href="./Assets/disny-192.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="./disney-light.css?v=1.21">
+  <link rel="stylesheet" href="./events.css?v=1.0">
+</head>
+<body class="events-page">
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-content">
+        <a href="index.html" class="nav-logo" aria-label="الرئيسية"><img src="./Assets/disny.png" alt="Disney Flower"></a>
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html"><i class="fas fa-house"></i> الرئيسية</a></li>
+          <li><a href="games.html"><i class="fas fa-store"></i> تسوق الآن</a></li>
+          <li><a href="offers.html"><i class="fas fa-tags"></i> العروض</a></li>
+          <li><a href="events.html" class="active"><i class="fas fa-calendar-days"></i> اللايف إيفنت</a></li>
+          <li><a href="reviews.html"><i class="fas fa-star"></i> آراء العملاء</a></li>
+        </ul>
+        <div class="nav-tools"><a class="login-btn" href="index.html#auth"><i class="fas fa-user"></i><span>دخول</span></a><a class="cart-icon-btn" href="games.html" aria-label="السلة"><i class="fas fa-shopping-cart"></i></a><button class="burger-btn" id="burgerBtn" aria-label="قائمة التنقل" aria-expanded="false" aria-controls="navMenu"><span></span><span></span><span></span></button></div>
+      </div>
+    </div>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+  <main class="events-main">
+    <header class="events-intro"><span class="section-badge"><i class="fas fa-sparkles"></i> Disney Live Events</span><h1>إيفنتات جاية تستحق المتابعة</h1><p>تابع كل تفاصيل الإيفنتات القادمة، واعرف المواعيد وشارك رأيك قبل ما تبدأ اللحظة.</p></header>
+    <section id="liveEventsList" class="live-events-list" aria-live="polite"><div class="events-empty">جاري تحميل الإيفنتات...</div></section>
+  </main>
+  <div id="footer-placeholder" data-footer-variant="compact"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabase-catalog.js?v=1.5"></script>
+  <script src="./events.js?v=1.0"></script>
+  <script src="./shared-footer.js?v=2.5"></script>
+  <script src="./ux-enhancements.js?v=1.1"></script>
+</body>
+</html>

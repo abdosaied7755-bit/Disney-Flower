@@ -1,0 +1,73 @@
+.events-page {
+  background:
+    radial-gradient(circle at 8% 8%, rgba(244, 167, 193, .22), transparent 22rem),
+    linear-gradient(180deg, #fffafc 0%, #fff8f2 100%);
+}
+
+.events-main {
+  width: min(1080px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(26px, 5vw, 64px) 0 76px;
+}
+
+.events-intro {
+  max-width: 720px;
+  margin: 0 auto 28px;
+  text-align: center;
+}
+
+.events-intro .section-badge { justify-content: center; }
+.events-intro h1 { margin: 12px 0 10px; color: var(--disney-wine); font-size: clamp(2rem, 5vw, 3.5rem); }
+.events-intro p { margin: 0; color: var(--disney-muted); line-height: 1.9; }
+
+.live-events-list { display: grid; gap: 24px; }
+
+.live-event-card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(240px, .82fr) minmax(0, 1.18fr);
+  min-height: 330px;
+  background: rgba(255, 255, 255, .9);
+  border: 1px solid var(--disney-border);
+  border-radius: 26px;
+  box-shadow: 0 18px 42px rgba(104, 27, 57, .1);
+}
+
+.live-event-media { position: relative; min-height: 300px; background: linear-gradient(135deg, #f9d5e3, #fff8f2); }
+.live-event-media img { width: 100%; height: 100%; min-height: 300px; object-fit: cover; }
+.live-event-media.is-empty::after { content: 'Disney Flower'; position: absolute; inset: 0; display: grid; place-items: center; color: var(--disney-wine); font: 700 1.5rem Georgia, serif; opacity: .55; }
+.live-event-status { position: absolute; top: 16px; right: 16px; padding: 7px 13px; border-radius: 999px; background: var(--disney-wine); color: #fff; font-size: .78rem; font-weight: 800; box-shadow: 0 8px 18px rgba(104, 27, 57, .18); }
+.live-event-status.is-live { background: #b83f70; }
+.live-event-status.is-ended { background: #765c66; }
+
+.live-event-content { display: flex; flex-direction: column; gap: 16px; padding: clamp(22px, 4vw, 38px); }
+.live-event-kicker { display: inline-flex; align-items: center; gap: 7px; color: var(--disney-rose); font-size: .82rem; font-weight: 800; }
+.live-event-content h2 { margin: 0; color: var(--disney-ink); font-size: clamp(1.4rem, 3vw, 2rem); line-height: 1.35; }
+.live-event-body { margin: 0; color: var(--disney-muted); line-height: 2; white-space: normal; }
+.live-event-dates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: auto; }
+.live-event-date { padding: 11px 13px; background: #fff5f8; border: 1px solid var(--disney-border); border-radius: 15px; }
+.live-event-date small, .live-event-date strong { display: block; }
+.live-event-date small { margin-bottom: 4px; color: var(--disney-muted); font-size: .72rem; }
+.live-event-date strong { color: var(--disney-wine); font-size: .82rem; line-height: 1.6; }
+.live-event-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 14px; border-top: 1px solid var(--disney-border); }
+.live-event-reactions { display: flex; flex-wrap: wrap; gap: 8px; }
+.live-event-reaction { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 7px 12px; border: 1px solid var(--disney-border); border-radius: 999px; background: #fff; color: var(--disney-wine); cursor: pointer; font: inherit; transition: transform .2s ease, background .2s ease, color .2s ease; }
+.live-event-reaction:hover, .live-event-reaction.is-selected { transform: translateY(-2px); background: var(--disney-wine); color: #fff; }
+.live-event-reaction.dislike:hover, .live-event-reaction.dislike.is-selected { background: #765c66; }
+.live-event-reaction strong { font-size: .82rem; }
+.live-event-note { color: var(--disney-muted); font-size: .75rem; }
+.events-empty, .events-error { padding: 34px 20px; border: 1px dashed var(--disney-border); border-radius: 20px; color: var(--disney-muted); text-align: center; background: rgba(255,255,255,.72); }
+
+@media (max-width: 700px) {
+  .events-main { width: min(100% - 20px, 620px); }
+  .live-event-card { grid-template-columns: 1fr; }
+  .live-event-media, .live-event-media img { min-height: 220px; height: 260px; }
+  .live-event-content { padding: 22px 17px; }
+  .live-event-actions { align-items: flex-start; flex-direction: column; }
+  .live-event-note { align-self: flex-end; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-event-reaction { transition: none; }
+}
